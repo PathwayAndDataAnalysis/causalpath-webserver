@@ -1,0 +1,1983 @@
+{
+  "nodes" : [ {
+    "css" : {
+      "backgroundColor" : "rgb(255,220,212)"
+    },
+    "data" : {
+      "tooltipText" : "PPP2R5D, 0.19945990625000004",
+      "sites" : [ ],
+      "id" : "PPP2R5D",
+      "text" : "PPP2R5D"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(212,220,255)"
+    },
+    "data" : {
+      "tooltipText" : "MAPK3, -0.19963482777777775",
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,80,40)",
+        "siteText" : "p",
+        "siteInfo" : "MAPK3-T202tY204y, 1.0104555555555557",
+        "siteBorderColor" : "rgb(0,180,20)"
+      } ],
+      "id" : "MAPK3",
+      "text" : "MAPK3"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,218,209)"
+    },
+    "data" : {
+      "tooltipText" : "CSNK2A1, 0.21288492361111117",
+      "sites" : [ ],
+      "id" : "CSNK2A1",
+      "text" : "CSNK2A1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(97,126,255)",
+        "siteText" : "p",
+        "siteInfo" : "MYH9-S1943s, -0.7350383333333333",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "MYH9",
+      "text" : "MYH9"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(92,122,255)"
+    },
+    "data" : {
+      "tooltipText" : "LCP2, -0.7601854920391916",
+      "sites" : [ ],
+      "id" : "LCP2",
+      "text" : "LCP2"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,175,157)",
+        "siteText" : "p",
+        "siteInfo" : "PAK1-S144s, 0.4546028947368421",
+        "siteBorderColor" : "rgb(0,180,20)"
+      } ],
+      "id" : "PAK1",
+      "text" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,80,40)",
+        "siteText" : "p",
+        "siteInfo" : "SPHK2-S387s, 1.1134791176470586",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "SPHK2",
+      "text" : "SPHK2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(149,168,255)"
+    },
+    "data" : {
+      "tooltipText" : "PLAUR, -0.49472564027292915",
+      "sites" : [ ],
+      "id" : "PLAUR",
+      "text" : "PLAUR"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(198,208,255)"
+    },
+    "data" : {
+      "tooltipText" : "CSK, -0.26643316944444445",
+      "sites" : [ ],
+      "id" : "CSK",
+      "text" : "CSK"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(218,225,255)"
+    },
+    "data" : {
+      "tooltipText" : "MAPK1, -0.17295658055555552",
+      "sites" : [ ],
+      "id" : "MAPK1",
+      "text" : "MAPK1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,212,202)"
+    },
+    "data" : {
+      "tooltipText" : "NRF1, 0.247630634057971",
+      "sites" : [ ],
+      "id" : "NRF1",
+      "text" : "NRF1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(219,226,255)"
+    },
+    "data" : {
+      "tooltipText" : "SHC1, -0.16646697499999996",
+      "sites" : [ ],
+      "id" : "SHC1",
+      "text" : "SHC1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(180,194,255)"
+    },
+    "data" : {
+      "tooltipText" : "PRKCB, -0.3481996091549296",
+      "sites" : [ ],
+      "id" : "PRKCB",
+      "text" : "PRKCB"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,94,57)",
+        "siteText" : "p",
+        "siteInfo" : "STMN1-S38s, 0.9207130714285715",
+        "siteBorderColor" : "rgb(180,0,20)"
+      } ],
+      "id" : "STMN1",
+      "text" : "STMN1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,221,213)"
+    },
+    "data" : {
+      "tooltipText" : "GSK3B, 0.19706979027777774",
+      "sites" : [ ],
+      "id" : "GSK3B",
+      "text" : "GSK3B"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(147,167,255)",
+        "siteText" : "p",
+        "siteInfo" : "MYLK-S1776s, -0.5040713333333334",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "MYLK",
+      "text" : "MYLK"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(189,202,255)",
+        "siteText" : "p",
+        "siteInfo" : "ABI1-S183s, -0.3055233333333333",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "ABI1",
+      "text" : "ABI1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,218,209)"
+    },
+    "data" : {
+      "tooltipText" : "ARNT, 0.21211073770491803",
+      "sites" : [ ],
+      "id" : "ARNT",
+      "text" : "ARNT"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,205,194)"
+    },
+    "data" : {
+      "tooltipText" : "CDK2, 0.28563034583333335",
+      "sites" : [ ],
+      "id" : "CDK2",
+      "text" : "CDK2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(200,210,255)"
+    },
+    "data" : {
+      "tooltipText" : "LYN, -0.2544478020833333",
+      "sites" : [ ],
+      "id" : "LYN",
+      "text" : "LYN"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,181,164)"
+    },
+    "data" : {
+      "tooltipText" : "AURKB, 0.4244249433106575",
+      "sites" : [ ],
+      "id" : "AURKB",
+      "text" : "AURKB"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(48,87,255)",
+        "siteText" : "p",
+        "siteInfo" : "SSH3-S37s, -0.9613197619047618",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "SSH3",
+      "text" : "SSH3"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(58,95,255)"
+    },
+    "data" : {
+      "tooltipText" : "APBB1IP, -0.9168214583333332",
+      "sites" : [ ],
+      "id" : "APBB1IP",
+      "text" : "APBB1IP"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(219,226,255)"
+    },
+    "data" : {
+      "tooltipText" : "PDK1, -0.16611405555555556",
+      "sites" : [ ],
+      "id" : "PDK1",
+      "text" : "PDK1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,130,101)",
+        "siteText" : "p",
+        "siteInfo" : "PDHA1-S295sS300s, 0.7142255555555554",
+        "siteBorderColor" : "rgb(180,0,20)"
+      } ],
+      "id" : "PDHA1",
+      "text" : "PDHA1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(135,157,255)",
+        "siteText" : "p",
+        "siteInfo" : "MYH10-S1956s, -0.5578275766666666",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "MYH10",
+      "text" : "MYH10"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(218,225,255)"
+    },
+    "data" : {
+      "tooltipText" : "PDK2, -0.17310627967306325",
+      "sites" : [ ],
+      "id" : "PDK2",
+      "text" : "PDK2"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,80,40)",
+        "siteText" : "p",
+        "siteInfo" : "FRS2-T463t, 1.0458142857142858",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "FRS2",
+      "text" : "FRS2"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "PML-S530s, -1.8420169047619048",
+        "siteBorderColor" : "rgb(0,180,20)"
+      }, {
+        "siteBackgroundColor" : "rgb(90,120,255)",
+        "siteText" : "p",
+        "siteInfo" : "PML-S518sS527s, -0.7689066402116402",
+        "siteBorderColor" : "rgb(0,180,20)"
+      }, {
+        "siteBackgroundColor" : "rgb(139,160,255)",
+        "siteText" : "p",
+        "siteInfo" : "PML-S518s, -0.5412532080200503",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "PML",
+      "text" : "PML"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,207,196)"
+    },
+    "data" : {
+      "tooltipText" : "SF1, 0.2749581319444444",
+      "sites" : [ ],
+      "id" : "SF1",
+      "text" : "SF1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(186,199,255)"
+    },
+    "data" : {
+      "tooltipText" : "VCL, -0.32214083194444443",
+      "sites" : [ ],
+      "id" : "VCL",
+      "text" : "VCL"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,196,183)"
+    },
+    "data" : {
+      "tooltipText" : "CDK1, 0.3363649305555556",
+      "sites" : [ ],
+      "id" : "CDK1",
+      "text" : "CDK1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "FLNA-S1630s, -1.3310532857142858",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "FLNA",
+      "text" : "FLNA"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(187,200,255)"
+    },
+    "data" : {
+      "tooltipText" : "NRP1, -0.3169904895104895",
+      "sites" : [ ],
+      "id" : "NRP1",
+      "text" : "NRP1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(180,194,255)",
+        "siteText" : "p",
+        "siteInfo" : "PRKAR1A-S83s, -0.347464261904762",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "PRKAR1A",
+      "text" : "PRKAR1A"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,138,111)"
+    },
+    "data" : {
+      "tooltipText" : "PAX2, 0.6702804054054056",
+      "sites" : [ ],
+      "id" : "PAX2",
+      "text" : "PAX2"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "CALD1-S789s, -1.9505666666666663",
+        "siteBorderColor" : "0 0 0"
+      }, {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "CALD1-T730t, -1.5934",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "CALD1",
+      "text" : "CALD1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(58,94,255)",
+        "siteText" : "p",
+        "siteInfo" : "LMNA-S392s, -0.9183183333333332",
+        "siteBorderColor" : "rgb(0,180,20)"
+      }, {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "LMNA-T19t, -1.6732458620689654",
+        "siteBorderColor" : "0 0 0"
+      }, {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "LMNA-S390s, -1.855178095238095",
+        "siteBorderColor" : "rgb(0,180,20)"
+      } ],
+      "id" : "LMNA",
+      "text" : "LMNA"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(198,209,255)"
+    },
+    "data" : {
+      "tooltipText" : "CAMK2A, -0.2650931944444443",
+      "sites" : [ ],
+      "id" : "CAMK2A",
+      "text" : "CAMK2A"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,99,64)",
+        "siteText" : "p",
+        "siteInfo" : "PPP1R14A-S130s, 0.8904488095238094",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "PPP1R14A",
+      "text" : "PPP1R14A"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,211,200)"
+    },
+    "data" : {
+      "tooltipText" : "TCF12, 0.2538673506493506",
+      "sites" : [ ],
+      "id" : "TCF12",
+      "text" : "TCF12"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "RUNX2-S28s, -1.0710439670329668",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "RUNX2",
+      "text" : "RUNX2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(196,207,255)"
+    },
+    "data" : {
+      "tooltipText" : "ARRB2, -0.2738386147132867",
+      "sites" : [ ],
+      "id" : "ARRB2",
+      "text" : "ARRB2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(171,186,255)"
+    },
+    "data" : {
+      "tooltipText" : "RAC1, -0.39166933750000005",
+      "sites" : [ ],
+      "id" : "RAC1",
+      "text" : "RAC1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,216,207)"
+    },
+    "data" : {
+      "tooltipText" : "RREB1, 0.22312141438848918",
+      "sites" : [ ],
+      "id" : "RREB1",
+      "text" : "RREB1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(213,221,255)"
+    },
+    "data" : {
+      "tooltipText" : "VWF, -0.19594626111111108",
+      "sites" : [ ],
+      "id" : "VWF",
+      "text" : "VWF"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,179,161)"
+    },
+    "data" : {
+      "tooltipText" : "MECOM, 0.43665904861111116",
+      "sites" : [ ],
+      "id" : "MECOM",
+      "text" : "MECOM"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(159,177,255)"
+    },
+    "data" : {
+      "tooltipText" : "NFKB1, -0.4458507069444444",
+      "sites" : [ ],
+      "id" : "NFKB1",
+      "text" : "NFKB1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(219,226,255)"
+    },
+    "data" : {
+      "tooltipText" : "AKT1, -0.16788856944444444",
+      "sites" : [ ],
+      "id" : "AKT1",
+      "text" : "AKT1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(207,216,255)"
+    },
+    "data" : {
+      "tooltipText" : "NEK7, -0.22433100138888895",
+      "sites" : [ ],
+      "id" : "NEK7",
+      "text" : "NEK7"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,130,101)",
+        "siteText" : "p",
+        "siteInfo" : "NUP98-S839s, 0.715136590909091",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "NUP98",
+      "text" : "NUP98"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "AHNAK-T158t, -1.2389533834586466",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "AHNAK",
+      "text" : "AHNAK"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(128,152,255)"
+    },
+    "data" : {
+      "tooltipText" : "IQGAP1, -0.5891968472222222",
+      "sites" : [ ],
+      "id" : "IQGAP1",
+      "text" : "IQGAP1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(170,186,255)",
+        "siteText" : "p",
+        "siteInfo" : "NF2-S518s, -0.39591399999999993",
+        "siteBorderColor" : "rgb(180,0,20)"
+      } ],
+      "id" : "NF2",
+      "text" : "NF2"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,171,152)",
+        "siteText" : "p",
+        "siteInfo" : "NCOA1-S395s, 0.4790306060606061",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "NCOA1",
+      "text" : "NCOA1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(140,161,255)"
+    },
+    "data" : {
+      "tooltipText" : "ARRB1, -0.535933513888889",
+      "sites" : [ ],
+      "id" : "ARRB1",
+      "text" : "ARRB1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(83,115,255)",
+        "siteText" : "p",
+        "siteInfo" : "EML3-T881t, -0.8009138888888887",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "EML3",
+      "text" : "EML3"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,196,182)"
+    },
+    "data" : {
+      "tooltipText" : "NR2F2, 0.33903069503546096",
+      "sites" : [ ],
+      "id" : "NR2F2",
+      "text" : "NR2F2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(162,179,255)"
+    },
+    "data" : {
+      "tooltipText" : "UBA7, -0.4317517194444445",
+      "sites" : [ ],
+      "id" : "UBA7",
+      "text" : "UBA7"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,222,214)"
+    },
+    "data" : {
+      "tooltipText" : "RBL2, 0.19110215106732356",
+      "sites" : [ ],
+      "id" : "RBL2",
+      "text" : "RBL2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(153,172,255)"
+    },
+    "data" : {
+      "tooltipText" : "VAV3, -0.4724481818181817",
+      "sites" : [ ],
+      "id" : "VAV3",
+      "text" : "VAV3"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "CTTN-T401tS405s, -1.253862745098039",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "CTTN",
+      "text" : "CTTN"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(113,140,255)"
+    },
+    "data" : {
+      "tooltipText" : "SPI1, -0.6589250064020485",
+      "sites" : [ ],
+      "id" : "SPI1",
+      "text" : "SPI1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,196,182)"
+    },
+    "data" : {
+      "tooltipText" : "TFCP2, 0.3385443895833334",
+      "sites" : [ ],
+      "id" : "TFCP2",
+      "text" : "TFCP2"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "MICALL1-T467tS471s, -1.3232111111111111",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "MICALL1",
+      "text" : "MICALL1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(40,80,255)"
+    },
+    "data" : {
+      "tooltipText" : "FN1, -1.1151345833333337",
+      "sites" : [ ],
+      "id" : "FN1",
+      "text" : "FN1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,176,158)"
+    },
+    "data" : {
+      "tooltipText" : "POU2F1, 0.45175889902676397",
+      "sites" : [ ],
+      "id" : "POU2F1",
+      "text" : "POU2F1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,216,207)"
+    },
+    "data" : {
+      "tooltipText" : "TEAD1, 0.22510703597122303",
+      "sites" : [ ],
+      "id" : "TEAD1",
+      "text" : "TEAD1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(82,114,255)",
+        "siteText" : "p",
+        "siteInfo" : "NCF1-S348s, -0.8062054054054054",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "NCF1",
+      "text" : "NCF1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,188,172)"
+    },
+    "data" : {
+      "tooltipText" : "YY1, 0.3840325527777778",
+      "sites" : [ ],
+      "id" : "YY1",
+      "text" : "YY1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(107,134,255)",
+        "siteText" : "p",
+        "siteInfo" : "SIRT2-S368s, -0.6886657894736843",
+        "siteBorderColor" : "rgb(180,0,20)"
+      } ],
+      "id" : "SIRT2",
+      "text" : "SIRT2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,192,178)"
+    },
+    "data" : {
+      "tooltipText" : "PRKDC, 0.3581060000000001",
+      "sites" : [ ],
+      "id" : "PRKDC",
+      "text" : "PRKDC"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(144,165,255)",
+        "siteText" : "p",
+        "siteInfo" : "VIM-S459s, -0.5148951572327044",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "VIM",
+      "text" : "VIM"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(102,131,255)",
+        "siteText" : "p",
+        "siteInfo" : "NUMA1-T2055t, -0.7096966666666666",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "NUMA1",
+      "text" : "NUMA1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,195,181)"
+    },
+    "data" : {
+      "tooltipText" : "CDC5L, 0.3446890138888889",
+      "sites" : [ ],
+      "id" : "CDC5L",
+      "text" : "CDC5L"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,130,101)",
+        "siteText" : "p",
+        "siteInfo" : "PDHA2-S293sS298s, 0.7142255555555554",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "PDHA2",
+      "text" : "PDHA2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,155,133)"
+    },
+    "data" : {
+      "tooltipText" : "MEIS1, 0.5690993611111111",
+      "sites" : [ ],
+      "id" : "MEIS1",
+      "text" : "MEIS1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,192,177)"
+    },
+    "data" : {
+      "tooltipText" : "TCF4, 0.36275104878048775",
+      "sites" : [ ],
+      "id" : "TCF4",
+      "text" : "TCF4"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(191,203,255)"
+    },
+    "data" : {
+      "tooltipText" : "GRB2, -0.29840868055555547",
+      "sites" : [ ],
+      "id" : "GRB2",
+      "text" : "GRB2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,224,217)"
+    },
+    "data" : {
+      "tooltipText" : "CREBBP, 0.17762242777777776",
+      "sites" : [ ],
+      "id" : "CREBBP",
+      "text" : "CREBBP"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(154,173,255)",
+        "siteText" : "p",
+        "siteInfo" : "NUP153-S386s, -0.46858095238095243",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "NUP153",
+      "text" : "NUP153"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,244,242)"
+    },
+    "data" : {
+      "tooltipText" : "MTOR, 0.06219688194444445",
+      "sites" : [ ],
+      "id" : "MTOR",
+      "text" : "MTOR"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "EEF2K-S74s, -1.0517725",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "EEF2K",
+      "text" : "EEF2K"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,195,181)"
+    },
+    "data" : {
+      "tooltipText" : "REPIN1, 0.3419826029411765",
+      "sites" : [ ],
+      "id" : "REPIN1",
+      "text" : "REPIN1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(134,157,255)",
+        "siteText" : "p",
+        "siteInfo" : "NAGK-S76s, -0.5611900738916257",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "NAGK",
+      "text" : "NAGK"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(188,200,255)"
+    },
+    "data" : {
+      "tooltipText" : "JAK2, -0.31199136446886444",
+      "sites" : [ ],
+      "id" : "JAK2",
+      "text" : "JAK2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,218,209)"
+    },
+    "data" : {
+      "tooltipText" : "E2F4, 0.21370845720720702",
+      "sites" : [ ],
+      "id" : "E2F4",
+      "text" : "E2F4"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "PTRF-S300s, -1.2691064285714289",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "PTRF",
+      "text" : "PTRF"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(198,208,255)"
+    },
+    "data" : {
+      "tooltipText" : "PLCG2, -0.26641396111111115",
+      "sites" : [ ],
+      "id" : "PLCG2",
+      "text" : "PLCG2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(173,188,255)"
+    },
+    "data" : {
+      "tooltipText" : "ITGB3, -0.38231188368794333",
+      "sites" : [ ],
+      "id" : "ITGB3",
+      "text" : "ITGB3"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(255,80,40)",
+        "siteText" : "p",
+        "siteInfo" : "TSC2-S981s, 1.8312588888888888",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "TSC2",
+      "text" : "TSC2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(188,200,255)"
+    },
+    "data" : {
+      "tooltipText" : "CDC42, -0.3119877998333333",
+      "sites" : [ ],
+      "id" : "CDC42",
+      "text" : "CDC42"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,227,220)"
+    },
+    "data" : {
+      "tooltipText" : "EP300, 0.16259703791666663",
+      "sites" : [ ],
+      "id" : "EP300",
+      "text" : "EP300"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,223,215)"
+    },
+    "data" : {
+      "tooltipText" : "ELF2, 0.1837830808080808",
+      "sites" : [ ],
+      "id" : "ELF2",
+      "text" : "ELF2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(175,190,255)"
+    },
+    "data" : {
+      "tooltipText" : "TLN1, -0.3733631611111111",
+      "sites" : [ ],
+      "id" : "TLN1",
+      "text" : "TLN1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,201,188)"
+    },
+    "data" : {
+      "tooltipText" : "ATF1, 0.3109130695652173",
+      "sites" : [ ],
+      "id" : "ATF1",
+      "text" : "ATF1"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,219,211)"
+    },
+    "data" : {
+      "tooltipText" : "ATF2, 0.2041456354609929",
+      "sites" : [ ],
+      "id" : "ATF2",
+      "text" : "ATF2"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(126,150,255)",
+        "siteText" : "p",
+        "siteInfo" : "FAM122A-S143s, -0.6019885416666666",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "FAM122A",
+      "text" : "FAM122A"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(40,80,255)"
+    },
+    "data" : {
+      "tooltipText" : "PLAU, -1.0074302914193198",
+      "sites" : [ ],
+      "id" : "PLAU",
+      "text" : "PLAU"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(255,200,187)"
+    },
+    "data" : {
+      "tooltipText" : "CREB1, 0.31585922499999997",
+      "sites" : [ ],
+      "id" : "CREB1",
+      "text" : "CREB1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(94,124,255)",
+        "siteText" : "p",
+        "siteInfo" : "FOXK2-S373s, -0.7467428571428573",
+        "siteBorderColor" : "rgb(0,180,20)"
+      } ],
+      "id" : "FOXK2",
+      "text" : "FOXK2"
+    }
+  }, {
+    "css" : {
+      "backgroundColor" : "rgb(108,136,255)"
+    },
+    "data" : {
+      "tooltipText" : "VAV1, -0.6819052499999998",
+      "sites" : [ ],
+      "id" : "VAV1",
+      "text" : "VAV1"
+    }
+  }, {
+    "data" : {
+      "sites" : [ {
+        "siteBackgroundColor" : "rgb(40,80,255)",
+        "siteText" : "p",
+        "siteInfo" : "RBM3-S147s, -1.2354355555555556",
+        "siteBorderColor" : "0 0 0"
+      } ],
+      "id" : "RBM3",
+      "text" : "RBM3"
+    }
+  } ],
+  "edges" : [ {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "dephosphorylates",
+      "source" : "PPP2R5D",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MYH9_1943",
+      "edgeType" : "phosphorylates",
+      "source" : "CSNK2A1",
+      "target" : "MYH9"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "LCP2",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "SPHK2_387, SPHK2_614",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "SPHK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "MAPK3",
+      "target" : "PLAUR"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "CSK",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "SPHK2_387, SPHK2_614",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK1",
+      "target" : "SPHK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "NRF1",
+      "target" : "SHC1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "STMN1_38, STMN1_25",
+      "edgeType" : "phosphorylates",
+      "source" : "PRKCB",
+      "target" : "STMN1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MYLK_1776",
+      "edgeType" : "phosphorylates",
+      "source" : "GSK3B",
+      "target" : "MYLK"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "ABI1_183, ABI1_392, ABI1_216, ABI1_225, ABI1_410, ABI1_267, ABI1_265, ABI1_394",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "ABI1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "downregulates-expression",
+      "source" : "ARNT",
+      "target" : "CDK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "LYN",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "SSH3_37",
+      "edgeType" : "phosphorylates",
+      "source" : "AURKB",
+      "target" : "SSH3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "APBB1IP",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PDHA1_300, PDHA1_232, PDHA1_293",
+      "edgeType" : "phosphorylates",
+      "source" : "PDK1",
+      "target" : "PDHA1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MYH10_1960, MYH10_1975, MYH10_1965, MYH10_1952, MYH10_1956",
+      "edgeType" : "phosphorylates",
+      "source" : "CSNK2A1",
+      "target" : "MYH10"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PDHA1_300, PDHA1_232, PDHA1_293",
+      "edgeType" : "phosphorylates",
+      "source" : "PDK2",
+      "target" : "PDHA1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "FRS2_455, FRS2_138, FRS2_458, FRS2_132, FRS2_463, FRS2_452, FRS2_376, FRS2_256, FRS2_135",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK1",
+      "target" : "FRS2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PML_530, PML_38, PML_28, PML_36, PML_527, PML_40",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "PML"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "SF1",
+      "target" : "VCL"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "FLNA_1084, FLNA_1533, FLNA_1630, FLNA_1436, FLNA_1459",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "FLNA"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "FRS2_455, FRS2_138, FRS2_458, FRS2_132, FRS2_463, FRS2_452, FRS2_376, FRS2_135",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "FRS2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "NRP1",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PRKAR1A_83",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "PRKAR1A"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "PAX2",
+      "target" : "VCL"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "CALD1_759, CALD1_789, CALD1_534",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "CALD1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "LMNA_392, LMNA_22, LMNA_19, LMNA_390",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "LMNA"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PPP1R14A_130",
+      "edgeType" : "phosphorylates",
+      "source" : "CAMK2A",
+      "target" : "PPP1R14A"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TCF12",
+      "target" : "PDK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "RUNX2_24, RUNX2_314, RUNX2_503, RUNX2_43, RUNX2_312, RUNX2_340, RUNX2_275, RUNX2_28, RUNX2_294",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "RUNX2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "ARRB2",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_204, PAK1_199, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "RAC1",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "RREB1",
+      "target" : "VWF"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "MECOM",
+      "target" : "NRP1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "downregulates-expression",
+      "source" : "NFKB1",
+      "target" : "AKT1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NUP98_591, NUP98_653, NUP98_553, NUP98_670, NUP98_595, NUP98_529, NUP98_606, NUP98_608, NUP98_839, NUP98_536, NUP98_822, NUP98_612, NUP98_623, NUP98_546",
+      "edgeType" : "phosphorylates",
+      "source" : "NEK7",
+      "target" : "NUP98"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "AHNAK_158",
+      "edgeType" : "phosphorylates",
+      "source" : "AURKB",
+      "target" : "AHNAK"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_203, MAPK3_204, MAPK3_201, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "IQGAP1",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NF2_518",
+      "edgeType" : "phosphorylates",
+      "source" : "PAK1",
+      "target" : "NF2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NCOA1_395, NCOA1_1185, NCOA1_1179",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK1",
+      "target" : "NCOA1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "ARRB1",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "EML3_883, EML3_881",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "EML3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "NR2F2",
+      "target" : "VCL"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "MECOM",
+      "target" : "VCL"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "downregulates-expression",
+      "source" : "PML",
+      "target" : "UBA7"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "downregulates-expression",
+      "source" : "RBL2",
+      "target" : "CDK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "NRF1",
+      "target" : "VAV3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "CTTN_405",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "CTTN"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "downregulates-expression",
+      "source" : "PML",
+      "target" : "SPI1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TFCP2",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MICALL1_620, MICALL1_621, MICALL1_469, MICALL1_470, MICALL1_471, MICALL1_619",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "MICALL1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "FN1",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "POU2F1",
+      "target" : "LYN"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PML_518",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "PML"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TEAD1",
+      "target" : "VCL"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "CTTN_405",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "CTTN"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NCF1_348, NCF1_345",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "NCF1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "YY1",
+      "target" : "LCP2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "downregulates-expression",
+      "source" : "SPI1",
+      "target" : "MAPK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "SIRT2_368",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "SIRT2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "VIM_459, VIM_430, VIM_56",
+      "edgeType" : "phosphorylates",
+      "source" : "PRKDC",
+      "target" : "VIM"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "STMN1_38, STMN1_25",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "STMN1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NUMA1_2015, NUMA1_2106, NUMA1_2087, NUMA1_2055",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "NUMA1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NCF1_283, NCF1_208, NCF1_348",
+      "edgeType" : "phosphorylates",
+      "source" : "CSNK2A1",
+      "target" : "NCF1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "CDC5L",
+      "target" : "NRP1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "PAX2",
+      "target" : "VWF"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "CALD1_730",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "CALD1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "POU2F1",
+      "target" : "NEK7"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PDHA2_291, PDHA2_298, PDHA2_230",
+      "edgeType" : "phosphorylates",
+      "source" : "PDK1",
+      "target" : "PDHA2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "SIRT2_331, SIRT2_368",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "SIRT2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TFCP2",
+      "target" : "LYN"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PDHA2_291, PDHA2_298",
+      "edgeType" : "phosphorylates",
+      "source" : "PDK2",
+      "target" : "PDHA2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "MEIS1",
+      "target" : "NRP1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TCF4",
+      "target" : "PRKCB"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "GRB2",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "CREBBP",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "SHC1",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "CDC5L",
+      "target" : "LYN"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NUP153_386, NUP153_388",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "NUP153"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "EEF2K_74, EEF2K_72",
+      "edgeType" : "phosphorylates",
+      "source" : "MTOR",
+      "target" : "EEF2K"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "REPIN1",
+      "target" : "PDK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NAGK_76",
+      "edgeType" : "phosphorylates",
+      "source" : "AURKB",
+      "target" : "NAGK"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PML_518",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "PML"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TEAD1",
+      "target" : "SHC1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_203, MAPK3_204, MAPK3_201, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "JAK2",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "REPIN1",
+      "target" : "PRKCB"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "downregulates-expression",
+      "source" : "E2F4",
+      "target" : "CDK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PTRF_300",
+      "edgeType" : "phosphorylates",
+      "source" : "AURKB",
+      "target" : "PTRF"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "PLCG2",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "NRF1",
+      "target" : "ARRB2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_203, MAPK3_204, MAPK3_201, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "ITGB3",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "TSC2_939, TSC2_981, TSC2_1462",
+      "edgeType" : "phosphorylates",
+      "source" : "AKT1",
+      "target" : "TSC2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_203, PAK1_204, PAK1_198, PAK1_199, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "CDC42",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "NRF1",
+      "target" : "JAK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "PML",
+      "target" : "EP300"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ELF2",
+      "target" : "VCL"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "POU2F1",
+      "target" : "NRP1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ELF2",
+      "target" : "TLN1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TFCP2",
+      "target" : "TLN1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ELF2",
+      "target" : "ARRB2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "TCF12",
+      "target" : "PRKCB"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ATF1",
+      "target" : "CDC42"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ELF2",
+      "target" : "NRP1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ATF2",
+      "target" : "CDC42"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "VCL",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "FAM122A_143",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "FAM122A"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NUMA1_2047, NUMA1_1811, NUMA1_1969, NUMA1_2055",
+      "edgeType" : "phosphorylates",
+      "source" : "AURKB",
+      "target" : "NUMA1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "TLN1",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "POU2F1",
+      "target" : "PRKCB"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "MAPK3",
+      "target" : "PLAU"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ELF2",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "CREB1",
+      "target" : "CDC42"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "MAPK3_204, MAPK3_202",
+      "edgeType" : "phosphorylates",
+      "source" : "VWF",
+      "target" : "MAPK3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "FOXK2_373, FOXK2_428",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "FOXK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "FOXK2_373, FOXK2_428",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK2",
+      "target" : "FOXK2"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "CTTN_113, CTTN_405, CTTN_418",
+      "edgeType" : "phosphorylates",
+      "source" : "PAK1",
+      "target" : "CTTN"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "NAGK_76",
+      "edgeType" : "phosphorylates",
+      "source" : "CDK1",
+      "target" : "NAGK"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "CTTN_405, CTTN_418",
+      "edgeType" : "phosphorylates",
+      "source" : "MAPK3",
+      "target" : "CTTN"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "VAV3",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "MECOM",
+      "target" : "FN1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "PAK1_423, PAK1_144",
+      "edgeType" : "phosphorylates",
+      "source" : "VAV1",
+      "target" : "PAK1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "POU2F1",
+      "target" : "VWF"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "RBM3_147",
+      "edgeType" : "phosphorylates",
+      "source" : "AURKB",
+      "target" : "RBM3"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "REPIN1",
+      "target" : "AKT1"
+    }
+  }, {
+    "data" : {
+      "tooltipText" : "",
+      "edgeType" : "upregulates-expression",
+      "source" : "ELF2",
+      "target" : "LYN"
+    }
+  } ]
+}

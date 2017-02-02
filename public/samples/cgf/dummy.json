@@ -1,0 +1,79 @@
+{
+   "nodes": [
+      {
+         "data":{
+            "id": "1",
+            "text":"A",
+            "tooltipText": "Protein",
+
+            "sites": [
+                        {
+                           "siteText": "P",
+                           "siteBackgroundColor": "mediumvioletred",
+                           "siteTextColor": "seagreen",
+                           "siteBorderColor": "khaki"
+                        },
+                        {
+                           "siteText": "P",
+                           "siteInfo": "Phosphorylates at S34",
+                           "siteBackgroundColor": "salmon",
+                           "siteTextColor": "darkmagenta",
+                           "siteBorderColor": "purple"
+                        }
+                     ]
+         },
+         "css": {
+                "backgroundColor": "lightblue",
+                "color": "cadetblue",
+                "borderWidth": "1px",
+                "borderColor": "ghostwhite"
+         }
+
+      },
+      {
+         "data":{
+                  "id": "2",
+                  "text":"B",
+                  "tooltipText": "Protein",
+                  "sites": [
+                               {
+                                  "siteText": "P",
+                                  "siteInfo": "Phosphorylates at S12",
+                                  "siteBackgroundColor": "crimson",
+                                  "siteTextColor": "black",
+                                  "siteBorderColor": "azure"
+                               },
+                               {
+                                  "siteText": "P",
+                                  "siteInfo": "Phosphorylates at S23",
+                                  "siteBackgroundColor": "coral",
+                                  "siteTextColor": "black",
+                                  "siteBorderColor": "rosyBrown"
+                               }
+                            ]
+         },
+         "css": {
+                 "backgroundColor": "mistyrose",
+                 "color": "lavenderblush",
+                 "borderWidth": "1px",
+                 "borderColor": "honeydew"
+          }
+
+      }
+   ],
+   "edges": [
+      {
+      "data":{
+            "source": "1",
+            "target": "2",
+            "edgeType": "controls-phosphorylation-of",
+            "tooltipText": "S12"
+         },
+         "css":{
+         "width": "1px"
+         }
+
+
+      }
+   ]
+}

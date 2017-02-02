@@ -1,0 +1,180 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+:root {
+    --input-width: 80%;
+    --graph-width:99%;
+    --margin-width: 10px;
+    --total-height: 90%;
+}
+
+#banner{
+    position: relative;
+    height: 70px;
+    /*width: 99%;*/
+    /*width:var(--graph-width);*/
+    /*width:  calc( var(--input-width) + var(--graph-width) + var(--margin-width));*/
+    background-color: #7d7d80;
+    margin:var(--margin-width);
+    padding: 10px;
+
+    text-align: center;
+    font-size: xx-large;
+    color:floralwhite;
+}
+
+
+
+#input-container{
+
+    position: relative;
+    top: 30%;
+    /*width: 70%;*/
+    /*left:10%;*/
+    height: 30%;
+    /*width: var(--input-width);*/
+    padding: 10px;
+    /*height: var(--total-height);*/
+    margin: var(--margin-width);
+    margin-top: 50px;
+
+    color: #444444;
+    background-color: #0B9BCD;
+
+    font-size:larger;
+    font-family: Verdana;
+}
+
+#graph-options-container{
+    /*position:absolute;*/
+    /*top: 60px;*/
+    /*margin:10px;*/
+    /*height: 10px;*/
+    /*width:var(--graph-width);*/
+    margin-left:10px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    display:none;
+}
+#graph-container{
+
+    position: relative;
+    /*top: 150px;*/
+    border: 1px solid #ddd;
+    display: none;
+
+    height: 85vh;
+    margin: var(--margin-width);
+
+}
+
+
+
+#graph-file-input{
+
+    font-size:medium;
+}
+
+
+.input-text{
+
+    font-size: small;
+    align: left;
+}
+
+.tab-link{
+
+    color: #444444;
+}
+
+
+/* Funda: don't forget to add this for fa file icons*/
+input[type="file"] {
+    display: none;
+}
+
+input[id = "back-button"]{
+    display: none;
+}
+
+
+input[id = "back-button"]{
+    display: none;
+}
+
+input[id = "demo-file-button"]{
+    display: none;
+}
+
+input[id = "download-button"]{
+    display: none;
+}
+
+/*One column of the initial input screen*/
+.input-td{
+    /*border: 1px solid #ccc;*/
+    display: inline-block;
+    font-size: large;
+    /*padding: 6px 12px;*/
+    cursor: pointer;
+    padding-top: 5px;
+    background-color: #0b9bcd;
+    color: floralwhite;
+    /*border-radius: 5px;*/
+    /*width:calc( var(--input-width)/2);*/
+}
+
+.fa-file-text{
+    font-size: xx-large;
+}
+
+.fa-arrow-circle-left{
+    /*padding-top: 10px;*/
+    font-size: xx-large;
+}
+
+.graph-options-td{
+
+    padding-left:20px;
+    /*padding-top: 30px;*/
+    font-size:small;
+}
+
+.instructions{
+    color:floralwhite;
+}
+
+.input-buttons{
+    font-size:medium;
+}
+
+
+
+/* Tooltip on right */
+.tooltip.bottom > .tooltip-inner {
+    border-right: 5px solid black;
+    font-size: medium;
+}
+/*#progress_bar {*/
+    /*margin: 10px 0;*/
+    /*padding: 3px;*/
+    /*border: 1px solid #000;*/
+    /*font-size: 14px;*/
+    /*clear: both;*/
+    /*opacity: 0;*/
+    /*-moz-transition: opacity 1s linear;*/
+    /*-o-transition: opacity 1s linear;*/
+    /*-webkit-transition: opacity 1s linear;*/
+/*}*/
+/*#progress_bar.loading {*/
+    /*opacity: 1.0;*/
+/*}*/
+/*#progress_bar .percent {*/
+    /*background-color: #99ccff;*/
+    /*height: auto;*/
+    /*width: 0;*/
+/*}*/
