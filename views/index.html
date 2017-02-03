@@ -65,9 +65,13 @@
     <!--Causality-related-->
 
     <div id = "banner">
-        CausalPath: Causality Analysis for Proteomics Profiles
+        CausalPath: Causality Analysis of Proteomic Profiles
     </div>
 
+    <div id = "info-div">
+
+        This web service runs <a href="https://github.com/PathwayAndDataAnalysis/causalpath" >CausalPath</a> analysis on proteomics and phosphoproteomics datasets and/or renders analysis results. For a new analysis, please prepare your input files according to the <a href="https://github.com/PathwayAndDataAnalysis/causalpath/blob/master/wiki/InputFormat.md">guidelines</a>. If you already have results, please visualize the result network by uploading the related .json file.
+    </div>
     <div id  = "graph-options-container">
         <table align= "top" cellpadding="10px" >
             <tbody>
@@ -133,7 +137,7 @@
                                 <i class="fa fa-upload"></i> Select
                             </label>
 
-                            <div><input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDir($event)" value ={_page.analysisFiles} multiple ></div>
+                            <div><input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDir()" value ={_page.analysisFiles} multiple ></div>
                         </div>
                     </td>
 

@@ -21,7 +21,11 @@ app.modelManager = null;
 
 var cgfCy;
 
-var isDemo = false;
+var graphChoiceEnum = {
+    JSON: 1, ANALYSIS: 2, DEMO: 3
+};
+
+var graphChoice;
 
 app.get('/', function (page, model, params) {
     function getId() {
@@ -102,10 +106,6 @@ app.proto.create = function (model) {
 
     socket = io();
 
-    isDemo = false;
-
-
-
 
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
@@ -117,16 +117,8 @@ app.proto.create = function (model) {
 };
 
 app.proto.runLayout = function(){
-
-
-
     if(docReady)
         cgfCy.runLayout();
-
-
-}
-app.proto.clearCgfText = function(){
-    this.model.set('_page.doc.cgfText','');
 }
 
 /***
@@ -160,7 +152,7 @@ app.proto.reloadGraph = function(){
 app.proto.loadDemoGraph = function(){
 
 
-    isDemo = true;
+    graphChoice = graphChoiceEnum.DEMO;
     this.model.set('_page.doc.cgfText', JSON.stringify(demoJson));
     this.createCyGraphFromCgf(demoJson);
 
@@ -170,6 +162,8 @@ app.proto.loadDemoGraph = function(){
 app.proto.loadGraphFile = function(e){
 
     var self = this;
+
+    graphChoice = graphChoiceEnum.JSON;
 
     var reader = new FileReader();
 
@@ -188,114 +182,17 @@ app.proto.loadGraphFile = function(e){
 
 
 /***
- * @param cgfJson
- * Create cytoscape graph from cgfJson
+ * //Take the input files and transfer them to the server in analysisDir and run shell command
+ * @param e
  */
-app.proto.createCyGraphFromCgf = function(cgfJson, callback){
-
-    var noTopologyGrouping = this.model.get('_page.doc.noTopologyGrouping');
-
-
-    if(cgfJson == null){
-        var cgfText = this.model.get('_page.doc.cgfText');
-        cgfJson = JSON.parse(cgfText);
-    }
-
-
-    if(cgfJson) {
-        this.modelManager.initModelFromJson(cgfJson);
-
-        var notyView = noty({
-            progressBar: true,
-            type: "information",
-            layout: "bottom",
-            text: "Drawing graph...Please wait."
-        });
-
-        if (docReady){
-
-            try{
-
-                cy.destroy();
-
-            }
-            catch(error){
-                //console.log(error + " Cytoscape not created yet.");
-            }
-        } //cytoscape is loaded
-
-
-
-        this.openGraphContainer();
-
-
-        var cgfContainer = new cgfCy.createContainer($('#graph-container'), cgfJson, !noTopologyGrouping, this.modelManager, function () {
-
-
-            $('#download-div').show();
-            notyView.close();
-
-            if (callback) callback();
-        });
-    }
-
-}
-
-app.proto.openGraphContainer = function(){
-    $('#input-container').hide();
-    $('#download-div').hide(); //this only appears after analysis is performed
-    $('#graph-options-container').show();
-    $('#graph-container').show();
-    // $('#graph-container').position.top = "100px";
-}
-
-app.proto.openInputContainer = function(){
-    $('#input-container').show();
-    $('#graph-options-container').hide();
-    $('#graph-container').hide();
-}
-//Download and save results as room.zip
-app.proto.downloadResults = function(){
-
-    var room = this.model.get('_page.room'); //each room will have its own folder
-
-    if(isDemo)
-        room = "demo"; //directly download
-    socket.emit('downloadRequest', room);
-
-    var notyView = noty({progressBar:true, type:"information", layout: "bottom",text: "Compressing files...Please wait."});
-    var dl = require('delivery');
-
-    var delivery = dl.listen(socket);
-    delivery.connect();
-
-
-    delivery.on('receive.start',function(fileUID){
-        notyView.setText( "Receiving the file...Please wait.");
-    });
-    delivery.on('receive.success',function(file){
-
-
-        var blob = new Blob([file.buffer], {
-            type: "application/zip"
-        });
-
-        saveAs(blob, file.name);
-
-
-        notyView.close();
-    });
-
-
-}
-
 app.proto.loadAnalysisDir = function(e){
-    //Take the two ` and put them on the server side in analysisDir and run shell command
+
 
     var self = this;
+    graphChoice = graphChoiceEnum.ANALYSIS;
     var fileCnt = $('#analysis-directory-input')[0].files.length;
     var fileContents = [];
-    var notyView = noty({progressBar:true, type:"information", layout: "bottom",text: "Reading files...Please wait."});
+    var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
 
     var room = this.model.get('_page.room');
     notyView.setText( "Reading files...Please wait.");
@@ -360,12 +257,19 @@ app.proto.loadAnalysisDir = function(e){
             var room = self.model.get('_page.room'); //each room will have its own folder
             socket.emit('analysisDir', fileContents, room, function(data){
 
-                self.createCyGraphFromCgf(JSON.parse(data), function(){
-                    notyView.close();
-                });
+                // if(data.indexOf("Error") == 0){
+                //     notyView.close();
+                //     notyView = noty({type:"error", layout: "bottom",text: "Error in analysis."});
+                //
+                // }
+                // else {
 
-                self.model.set('_page.doc.cgfText', data);
+                    self.createCyGraphFromCgf(JSON.parse(data), function () {
+                        notyView.close();
+                    });
 
+                    self.model.set('_page.doc.cgfText', data);
+            //    }
             });
 
 
@@ -378,31 +282,112 @@ app.proto.loadAnalysisDir = function(e){
 }
 
 
-app.proto.formatTime = function (message) {
-    var hours, minutes, seconds, period, time;
-    time = message && message.date;
-    if (!time) {
-        return;
+/***
+ * Create cytoscape graph from cgfJson
+ * @param cgfJson
+ */
+app.proto.createCyGraphFromCgf = function(cgfJson, callback){
+
+    var noTopologyGrouping = this.model.get('_page.doc.noTopologyGrouping');
+
+
+    if(cgfJson == null){
+        var cgfText = this.model.get('_page.doc.cgfText');
+        cgfJson = JSON.parse(cgfText);
     }
-    time = new Date(time);
-    hours = time.getHours();
 
-    minutes = time.getMinutes();
 
-    seconds = time.getSeconds();
+    if(cgfJson) {
+        this.modelManager.initModelFromJson(cgfJson);
 
-    if (minutes < 10) {
-        minutes = '0' + minutes;
+
+        if (docReady){
+
+            try{
+
+                cy.destroy();
+
+            }
+            catch(error){
+                //console.log(error + " Cytoscape not created yet.");
+            }
+        } //cytoscape is loaded
+
+
+
+        this.openGraphContainer();
+
+
+        var notyView = noty({type: "information", layout: "bottom",  text: "Drawing graph...Please wait."});
+
+        var cgfContainer = new cgfCy.createContainer($('#graph-container'), cgfJson, !noTopologyGrouping, this.modelManager, function () {
+
+
+            if(graphChoice != graphChoiceEnum.JSON) //As json object is not associated with any analysis data
+             $('#download-div').show();
+
+            notyView.close();
+
+            if (callback) callback();
+        });
     }
-    if (seconds < 10) {
-        seconds = '0' + seconds;
-    }
-    return hours + ':' + minutes + ':' + seconds;
-};
 
-app.proto.formatObj = function(obj){
+}
 
-    return JSON.stringify(obj, null, '\t');
-};
+/***
+ * Hides input selection menu and opens graph container
+ */
+app.proto.openGraphContainer = function(){
+    $('#info-div').hide();
+    $('#input-container').hide();
+    $('#download-div').hide(); //this only appears after analysis is performed
+    $('#graph-options-container').show();
+    $('#graph-container').show();
+}
+
+/***
+ * Initialization of the input selection menu
+ */
+app.proto.openInputContainer = function(){
+    $('#info-div').show();
+    $('#input-container').show();
+    $('#graph-options-container').hide();
+    $('#graph-container').hide();
+}
+
+/***
+ *Download and save results as <room>.zip
+ */
+app.proto.downloadResults = function(){
+
+    var room = this.model.get('_page.room'); //each room will have its own folder
+
+    if(graphChoice == graphChoiceEnum.DEMO)
+        room = "demo"; //directly download
+    socket.emit('downloadRequest', room);
+
+    var notyView = noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
+    var dl = require('delivery');
+
+    var delivery = dl.listen(socket);
+    delivery.connect();
 
 
+    delivery.on('receive.start',function(fileUID){
+        notyView.setText( "Receiving the file...Please wait.");
+    });
+    delivery.on('receive.success',function(file){
+
+
+        var blob = new Blob([file.buffer], {
+            type: "application/zip"
+        });
+
+        saveAs(blob, file.name);
+
+
+        notyView.close();
+    });
+
+
+}

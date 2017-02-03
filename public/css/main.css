@@ -27,7 +27,14 @@ body {
     color:floralwhite;
 }
 
-
+#info-div{
+    padding: 5%;
+    text-align: justify;
+}
+a:link    {color:blue; background-color:transparent; text-decoration:none}
+a:visited {color:coral; background-color:transparent; text-decoration:none}
+a:hover   {color:red; background-color:transparent; text-decoration:underline}
+a:active  {color:yellow; background-color:transparent; text-decoration:underline}
 
 #input-container{
 
