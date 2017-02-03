@@ -1,4 +1,4 @@
-CausalPath: Causality Analysis for Proteomics Profiles
+A Web Server for [CausalPath](https://github.com/PathwayAndDataAnalysis/causalpath)
 =======================================
 
 
