@@ -21,6 +21,7 @@ app.modelManager = null;
 
 var cgfCy;
 
+
 var graphChoiceEnum = {
     JSON: 1, ANALYSIS: 2, DEMO: 3
 };
@@ -105,6 +106,7 @@ app.proto.create = function (model) {
 
 
     socket = io();
+
 
 
     var id = model.get('_session.userId');
@@ -196,38 +198,29 @@ app.proto.loadAnalysisDir = function(e){
 
     var room = this.model.get('_page.room');
     notyView.setText( "Reading files...Please wait.");
+
+
     //Sending a zip file
     if(fileCnt == 1 &&  $('#analysis-directory-input')[0].files[0].name.split('.').pop().toLowerCase() == "zip"){
 
+        var file = $('#analysis-directory-input')[0].files[0];
 
-        var delivery = new Delivery(socket); //for file transfer
-        delivery.on('delivery.connect',function(delivery){
+        var reader = new FileReader();
 
-            var file = $('#analysis-directory-input')[0].files[0];
-            var extraParams = {room: room};
-            delivery.send(file, extraParams);
-
-
-
-        });
-        delivery.on('send.success',function(data){
-
-            console.log(data);
+        reader.onload = function (e) {
+            fileContents.push({name: file.name, content: e.target.result});
             notyView.setText( "Analyzing results...Please wait.");
+            socket.emit('analysisZip', e.target.result, room, function(json){
+                self.createCyGraphFromCgf(JSON.parse(json), function(){
+                    notyView.close();
+                });
 
-
-        });
-
-        socket.on('analyzedFile', function(data){
-            self.createCyGraphFromCgf(JSON.parse(data), function(){
+                self.model.set('_page.doc.cgfText', json);
                 notyView.close();
             });
+        }
 
-            self.model.set('_page.doc.cgfText', data);
-            notyView.close();
-
-        });
-
+        reader.readAsBinaryString(file);
 
     }
     else{
@@ -257,19 +250,19 @@ app.proto.loadAnalysisDir = function(e){
             var room = self.model.get('_page.room'); //each room will have its own folder
             socket.emit('analysisDir', fileContents, room, function(data){
 
-                // if(data.indexOf("Error") == 0){
-                //     notyView.close();
-                //     notyView = noty({type:"error", layout: "bottom",text: "Error in analysis."});
-                //
-                // }
-                // else {
+                if(data.indexOf("Error") == 0){
+                    notyView.close();
+                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+
+                }
+                else {
 
                     self.createCyGraphFromCgf(JSON.parse(data), function () {
                         notyView.close();
                     });
 
                     self.model.set('_page.doc.cgfText', data);
-            //    }
+                }
             });
 
 
@@ -355,8 +348,24 @@ app.proto.openInputContainer = function(){
     $('#graph-container').hide();
 }
 
+function base64ToZipBlob(data){
+
+    var byteCharacters = atob(data);
+    var byteNumbers = new Array(byteCharacters.length);
+    for (var i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    var byteArray = new Uint8Array(byteNumbers);
+
+    var blob = new Blob([byteArray], { type: "application/zip"});
+
+    return blob;
+
+}
+
 /***
- *Download and save results as <room>.zip
+ *Download and save results in <room>.zip
  */
 app.proto.downloadResults = function(){
 
@@ -364,30 +373,19 @@ app.proto.downloadResults = function(){
 
     if(graphChoice == graphChoiceEnum.DEMO)
         room = "demo"; //directly download
-    socket.emit('downloadRequest', room);
 
     var notyView = noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
-    var dl = require('delivery');
 
-    var delivery = dl.listen(socket);
-    delivery.connect();
+    socket.emit('downloadRequest', room, function(fileContent){
+        console.log("Zip file received.");
 
+        var blob = base64ToZipBlob(fileContent);
 
-    delivery.on('receive.start',function(fileUID){
-        notyView.setText( "Receiving the file...Please wait.");
-    });
-    delivery.on('receive.success',function(file){
-
-
-        var blob = new Blob([file.buffer], {
-            type: "application/zip"
-        });
-
-        saveAs(blob, file.name);
-
+        saveAs(blob, (room + ".zip"));
 
         notyView.close();
-    });
 
+
+    });
 
 }
