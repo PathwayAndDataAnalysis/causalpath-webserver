@@ -53,10 +53,10 @@ If mongo does not work:
 
 Get project from github:
 
->git clone -b CausalPath
-[*https://github.com/fdurupinar/codex.git*](https://github.com/fdurupinar/codex.git)
+>git clone
+[*https://github.com/PathwayAndDataAnalysis/causalpath-webserver.git*](https://github.com/PathwayAndDataAnalysis/causalpath-webserver.git)
 
->cd codex
+>cd causalpath-webserver
 
 >npm install
 
