@@ -11,9 +11,9 @@ app.loadViews(__dirname + '/views');
 //app.serverUse(module, 'derby-stylus');
 
 
-var docReady = false;
+var testMode = false;
 
-var useQunit = true;
+var docReady = false;
 
 var socket;
 
@@ -44,9 +44,9 @@ app.get('/', function (page, model, params) {
         docId = getId();
     }
 
-    // if( useQunit ){ // use qunit testing doc if we're testing so we don't disrupt real docs
-    //     docId = 'qunit';
-    // }
+     if( testMode ){ // use qunit testing doc if we're testing so we don't disrupt real docs
+         docId = 'qunit';
+     }
 
     return page.redirect('/' + docId);
 });
@@ -79,21 +79,11 @@ app.get('/:docId', function (page, model, arg, next) {
 
     });
 
-    //For sharing information with the server
-    model.subscribe(docPath, 'analysisFiles', function(err){
-        if (err) {
-            return next(err);
-        }
-
-    });
-
 
     model.set('_page.room', room);
 
 
     page.render();
-
-
 
 });
 
@@ -107,43 +97,28 @@ app.proto.create = function (model) {
 
     socket = io();
 
-
-
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
 
     this.modelManager = require('./public/src/model/modelManager.js')(model, model.get('_page.room'), model.get('_session.userId'),name );
 
+    if(testMode)
+        this.runUnitTests();
 
 
 };
+
 
 app.proto.runLayout = function(){
     if(docReady)
         cgfCy.runLayout();
 }
 
+
 /***
- * Returns nodes and edges in an array
- * @param modelJson keeps nodes and edges as a hash table of objects
+ * Reload the graph
+ * Called after changing topology grouping
  */
-function convertModelJsonToCgfJson(modelJson){
-    var nodes = [];
-    var edges = [];
-    for(var att in modelJson.nodes){
-        if(modelJson.nodes.hasOwnProperty(att)){
-            nodes.push(modelJson.nodes[att]);
-        }
-    }
-    for(var att in modelJson.edges){
-        if(modelJson.edges.hasOwnProperty(att)){
-            edges.push(modelJson.edges[att]);
-        }
-    }
-    return {nodes:nodes, edges:edges};
-}
-
-
 app.proto.reloadGraph = function(){
 
     cy.destroy();
@@ -151,17 +126,21 @@ app.proto.reloadGraph = function(){
     this.createCyGraphFromCgf(JSON.parse(cgfText));
 }
 
+/***
+ * Load demo graph from demoJson.js
+ */
 app.proto.loadDemoGraph = function(){
-
 
     graphChoice = graphChoiceEnum.DEMO;
     this.model.set('_page.doc.cgfText', JSON.stringify(demoJson));
     this.createCyGraphFromCgf(demoJson);
 
-
 }
 
-app.proto.loadGraphFile = function(e){
+/***
+ * Load graph file in json format
+ */
+app.proto.loadGraphFile = function(){
 
     var self = this;
 
@@ -176,7 +155,6 @@ app.proto.loadGraphFile = function(e){
         self.model.set('_page.doc.cgfText', this.result);
         self.createCyGraphFromCgf(JSON.parse(this.result));
 
-
     };
     //TODO: move graph-file-input to an argument
     reader.readAsText($("#graph-file-input")[0].files[0]);
@@ -184,11 +162,10 @@ app.proto.loadGraphFile = function(e){
 
 
 /***
- * //Take the input files and transfer them to the server in analysisDir and run shell command
- * @param e
+ * Take the input files and transfer them to the server in analysisDir and run shell command
+ * Produces graph from analysis results
  */
-app.proto.loadAnalysisDir = function(e){
-
+app.proto.loadAnalysisDir = function(){
 
     var self = this;
     graphChoice = graphChoiceEnum.ANALYSIS;
@@ -308,12 +285,13 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
 
 
-        this.openGraphContainer();
+        this.showGraphContainer();
 
 
         var notyView = noty({type: "information", layout: "bottom",  text: "Drawing graph...Please wait."});
 
-        var cgfContainer = new cgfCy.createContainer($('#graph-container'), cgfJson, !noTopologyGrouping, this.modelManager, function () {
+
+        var cgfContainer = new cgfCy.createContainer($('#graph-container'),  !noTopologyGrouping, this.modelManager, function () {
 
 
             if(graphChoice != graphChoiceEnum.JSON) //As json object is not associated with any analysis data
@@ -330,7 +308,7 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 /***
  * Hides input selection menu and opens graph container
  */
-app.proto.openGraphContainer = function(){
+app.proto.showGraphContainer = function(){
     $('#info-div').hide();
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
@@ -341,28 +319,14 @@ app.proto.openGraphContainer = function(){
 /***
  * Initialization of the input selection menu
  */
-app.proto.openInputContainer = function(){
+app.proto.showInputContainer = function(){
     $('#info-div').show();
     $('#input-container').show();
     $('#graph-options-container').hide();
     $('#graph-container').hide();
 }
 
-function base64ToZipBlob(data){
 
-    var byteCharacters = atob(data);
-    var byteNumbers = new Array(byteCharacters.length);
-    for (var i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-
-    var byteArray = new Uint8Array(byteNumbers);
-
-    var blob = new Blob([byteArray], { type: "application/zip"});
-
-    return blob;
-
-}
 
 /***
  *Download and save results in <room>.zip
@@ -387,5 +351,36 @@ app.proto.downloadResults = function(){
 
 
     });
+
+}
+/***
+ * Local function to convert binary-to-text encoded data into binary zip file
+ * @param data
+ * @returns {*}
+ */
+function base64ToZipBlob(data){
+
+    var byteCharacters = atob(data);
+    var byteNumbers = new Array(byteCharacters.length);
+    for (var i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    var byteArray = new Uint8Array(byteNumbers);
+
+    var blob = new Blob([byteArray], { type: "application/zip"});
+
+    return blob;
+
+}
+
+
+/***
+ * Run unit tests
+ */
+app.proto.runUnitTests = function(){
+
+    require("./test/testsGraphCreation.js")();
+    require("./test/testOptions.js")(); //to print out results
 
 }

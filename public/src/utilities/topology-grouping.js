@@ -2,29 +2,26 @@
  * Created by durupina on 9/6/16.
  */
 
-
+/***
+ *
+ * @param cyElements
+ * @returns Object with elements grouped by their topologies {{nodes: Array, edges: Array}}
+ */
 function groupTopology(cyElements){
 
-    //Don't change nodes and edges, get their duplicates -- otherwise the global object may change
+    //Don't change cyElements, get duplicates -- otherwise the global object may change
     var nodes =  [];
     var edges = [];
 
-
     for(var i = 0; i < cyElements.nodes.length; i++){
-
         var nodeClone = _.clone(cyElements.nodes[i]);
         nodes.push(nodeClone);
-
     }
 
     for(var i = 0; i < cyElements.edges.length; i++){
-
         var edgeClone = _.clone(cyElements.edges[i]);
         edges.push(edgeClone);
-
     }
-
-
 
     //store the edges associated with each node
     nodes.forEach(function(node){
@@ -38,32 +35,25 @@ function groupTopology(cyElements){
         });
     });
 
-    //n^2 comparison of nodes
+    //Comparison of nodes
     var parentId = 0;
     var newNodes = [];
     for(var i = 0; i < nodes.length; i++){
         for(var j = i+1; j < nodes.length; j++){
-
-            if(i==j)
-                console.log("i  = j !!! WArning")
-
-            if(areNodesAnalogous(nodes[i],nodes[j],edges)) {
-
-                if(nodes[i].data.parent!=null) { //already added in the newnode list
+            if(areNodesAnalogous(nodes[i],nodes[j],edges)) { //combine analogous nodes under the same parent
+                if(nodes[i].data.parent!=null) { //first node already in the newnode list
                     nodes[j].data.parent = nodes[i].data.parent;
                     newNodes.forEach(function(newNode){
                         if(newNode.data.id == nodes[i].data.parent){
-                            newNode.incoming = nodes[i].incoming;
-                            newNode.outgoing = nodes[i].outgoing;
-                            newNode.data.children.push(nodes[j].data.id); //add new node as a child
+                            //  newNode.incoming = nodes[i].incoming;
+                            // newNode.outgoing = nodes[i].outgoing;
+                            newNode.data.children.push(nodes[j].data.id); //add node j as a child
 
                         }
                     })
 
                 }
-
-
-                else {
+                else { //Create a new node and assign it as the parent of both nodes
                     nodes[i].data.parent = nodes[j].data.parent = "p" + parentId;
                     parentId++;
                     newNodes.push({data:{id:nodes[i].data.parent, children: [nodes[i].data.id, nodes[j].data.id], edgeType:findCliqueEdgeType(nodes[i].data.id, nodes[j].data.id,edges)},
@@ -74,11 +64,11 @@ function groupTopology(cyElements){
         }
     }
 
-    //add parents and connected edges
+    //add new nodes and connected edges
     newNodes.forEach(function(newNode){
         nodes.push(newNode); //Add new nodes to the old list of nodes
 
-        //add new edges except the ones inside
+        //add new edges to the old list of edges except the ones inside newNode
         newNode.incoming.forEach(function(edge){
             if(newNode.data.children.indexOf(edge.data.source) < 0)
                 edges.push({data:{id: (edge.data.source + "_" + newNode.data.id), source: edge.data.source, target:newNode.data.id, edgeType: edge.data.edgeType}});
@@ -93,7 +83,7 @@ function groupTopology(cyElements){
 
 
 
-    //Make analogous and clique edges invisible
+    //Remove analogous and clique edges
     nodes.forEach(function(node){
         if(node.data.parent!=null) {
             node.incoming.forEach(function(edge){
@@ -110,7 +100,6 @@ function groupTopology(cyElements){
 
         }
     });
-
 
     var newEdges = [];
     edges.forEach(function(edge){

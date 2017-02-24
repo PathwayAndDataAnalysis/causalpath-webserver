@@ -121,11 +121,11 @@
 
 
 
-                if(node._private.data.sites){
+                if(node.data("sites")){
 
 
 
-                    node._private.data.sites.forEach(function(site){
+                    node.data("sites").forEach(function(site){
 
                         if(site.bbox) {
                             var siteWidth = site.bbox.w;

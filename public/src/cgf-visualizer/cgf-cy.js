@@ -3,6 +3,7 @@
  * Cytoscape functions for drawing causality graphs
  */
 
+// LOCAL FUNCTIONS
 
 /**
  * Codes edge types by color, line type etc.
@@ -78,107 +79,119 @@ function attributeMap(edgeType){
     return attributes;
 }
 
-var CgfStyleSheet = cytoscape.stylesheet()
-    .selector('node')
-    .css({
-        // 'border-width':'css(border-width)',
-        // 'border-color': 'css(border-color)',
-        //  'background-color':'white',
-        'shape': 'cgfNode',
-        'text-halign': 'center',
-        'text-valign':'center',
-        'background-color': 'white',
 
-        'width': function(ele){
-            var spacing =(ele.data('id').length +2) * 10;
-            return  Math.min(200,spacing);
-        },
-        'height':30,
-        'content': 'data(text)',
+/***
+ * Distribute sites around the node evenly
+ */
+function computeSitePositions(node){
 
-    })
-    .selector('node:selected')
-    .css({
-        'overlay-color': 'FFCC66',
-        'opacity': 1
-    })
-    .selector('edge')
-    .css({
-        'width': 'css(width)',
-        'line-color': function(ele){
-            return attributeMap(ele.data('edgeType')).color;
+    if(node.data("sites")) {
+        var siteLength = node.data("sites").length;
 
-        },
-        'line-style': function(ele){
-            return attributeMap(ele.data('edgeType')).lineStyle;
-        },
-        'curve-style': 'bezier',
+        for (var i = 0; i < siteLength; i++) {
+            var site = node.data("sites")[i];
+            var paddingCoef = 0.9 ;
 
-        'target-arrow-color': function(ele){
-            return attributeMap(ele.data('edgeType')).color;
-        },
-        'target-arrow-shape':'triangle',
-        //     function(ele) {
-        //     if (ele.data('edgeType') == "in-complex-with" || ele.data('edgeType') == "interacts-with" || //nondirected
-        //         ele.data('edgeType') == "neighbor-of" || ele.data('edgeType') == "reacts-with")
-        //         return 'none';
-        //     return 'cgfArrow';
-        // },
-        'arrow-size':5,
-        'opacity': 0.8
-    })
-    .selector('edge:selected')
-    .css({
-        'line-color': 'black',
-        'target-arrow-color': 'black',
-        'source-arrow-color': 'black',
-        'opacity': 1
-    })
+            var centerX = node.position("x");
+            var centerY = node.position("y");
+            var width = node.width() * paddingCoef;
+            var height = node.height();
+            var siteCenterX;
+            var siteCenterY;
 
-    .selector("node:parent")
-    .css({
-         'text-valign': 'bottom',
-         'content': 'data(edgeType)', //there is a label when there's a clique among the nodes inside the compound
-        'font-size': 8,
+            var siteWidth = 15;
+            var siteHeight = 15;
 
+            //Draw sites at the top of the node
+            if(i % 2 == 0){
+                siteCenterX = centerX - width / 2 + siteWidth / 2  + width * i /siteLength ;
+                siteCenterY = centerY - height /  2;
 
-    })
-    .selector("node:child")
-    .css({
+            }
+            else{ //Draw sites at the bottom of the node
+                siteCenterX = centerX - width / 2 + siteWidth / 2  + width * (i - 1) /siteLength ;
+                siteCenterY = centerY + height /  2;
 
-        'padding-top': '10px',
-        'padding-bottom': '10px',
-        'padding-left': '10px',
-        'padding-right': '10px',
+            }
 
+            //extend site information
+            node.data("sites")[i].bbox = {'x': siteCenterX, 'y': siteCenterY, 'w': siteWidth, 'h': siteHeight};
 
-    })
-    ;
+            //hack to update the bounding boxes of sites in the viewport
+            node.select();
+            node.unselect();
+        }
+
+    }
+}
 
 
 
+/***
+ * Find the site that the user clicked and set it as selected
+ * @param pos : mouse position
+ * @param node : selected node
+ * @returns selected site
+ */
+function selectAndReturnSite(pos,  node){
 
-function convertCgfToCytoscape(cgfJson, doTopologyGrouping){
+    if(!node.data("sites"))
+        return null;
+
+    for(var i = 0; i < node.data("sites").length; i++){
+        var site = node.data("sites")[i];
+        if(pos.x >= (site.bbox.x - site.bbox.w/2) && pos.x <= (site.bbox.x + site.bbox.w/2) &&
+            pos.y >= (site.bbox.y - site.bbox.h/2) && pos.y <= (site.bbox.y + site.bbox.h/2)){
+            site.selected = true;
+            return site;
+        }
+    }
+    return null;
+}
+
+/***
+ * Unselect all sites of a node
+ * @param node
+ */
+function unselectAllSites(node) {
+    if (!node.data("sites"))
+        return;
+
+    node.data("sites").forEach(function(site){
+        site.selected = false;
+    });
+}
+
+
+
+
+/***
+ * @param modelCy: Cy elements stored in the model as json objects
+ * @param doTopologyGrouping
+ * @returns model cy elements converted into cytoscape format with edge ids added
+ */
+module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGrouping){
 
 
     var nodes = [];
     var edges = [];
-    cgfJson.nodes.forEach(function(node) {
-        var nodeClone = _.clone(node);
-        nodes.push(nodeClone);
-    });
+
+    for(var obj in modelCy.nodes){
+        var node = modelCy.nodes[obj]
+            var nodeClone = _.clone(node);
+            nodes.push(nodeClone);
+    };
 
 
 
-    cgfJson.edges.forEach(function(edge){
-        var id = edge.data.source + "-" + edge.data.target;
+    for(var obj in modelCy.edges){
+        var edge = modelCy.edges[obj];
         var newEdge = _.clone(edge);
+        //need to set this explicitly otherwise cytoscape gives a random id
+        var id = edge.data.source + "-" + edge.data.target;
         newEdge.data.id = id;
-
         edges.push(newEdge);
-    });
-
-
+    };
 
     var cyElements = {nodes: nodes, edges: edges};
 
@@ -189,95 +202,7 @@ function convertCgfToCytoscape(cgfJson, doTopologyGrouping){
         return cyElements;
 
 }
-/***
- * Distribute sites around the node evenly
- */
-function computeSitePositions(node){
 
-
-
-        if(node._private.data.sites) {
-            var siteLength = node._private.data.sites.length;
-
-            for (var i = 0; i < siteLength; i++) {
-                var site = node._private.data.sites[i];
-                var paddingCoef = 0.9 ;
-
-                var centerX = node._private.position.x;
-                var centerY = node._private.position.y;
-                var width = node.width() * paddingCoef;
-                var height = node.height();
-                var siteCenterX;
-                var siteCenterY;
-
-                var siteWidth = 15;
-                var siteHeight = 15;
-
-
-
-                if(i % 2 == 0){
-                    siteCenterX = centerX - width / 2 + siteWidth / 2  + width * i /siteLength ;
-                    siteCenterY = centerY - height /  2;
-
-                }
-                else{
-                    siteCenterX = centerX - width / 2 + siteWidth / 2  + width * (i - 1) /siteLength ;
-                    siteCenterY = centerY + height /  2;
-
-                }
-
-                //extend site information
-
-                node._private.data.sites[i].bbox = {'x': siteCenterX, 'y': siteCenterY, 'w': siteWidth, 'h': siteHeight};
-
-                node.select(); //to update the bounding boxes of sites in the viewport
-                node.unselect();
-            }
-
-        }
-
-
-
-
-
-}
-
-
-
-/***
- * Find the site that the user clicked and add it a selected parameter
- * @param pos : mouse position
- * @param node : selected node
- * @returns selected site
- */
-function selectAndReturnSite(pos,  node){
-
-    if(!node._private.data.sites)
-        return null;
-
-    for(var i = 0; i < node._private.data.sites.length; i++){
-        var site = node._private.data.sites[i];
-        if(pos.x >= (site.bbox.x - site.bbox.w/2) && pos.x <= (site.bbox.x + site.bbox.w/2) &&
-           pos.y >= (site.bbox.y - site.bbox.h/2) && pos.y <= (site.bbox.y + site.bbox.h/2)){
-            site.selected = true;
-            return site;
-        }
-    }
-    return null;
-}
-
-/***
- * Unselect the sites of node
- * @param node
- */
-function unselectAllSites(node) {
-    if (!node._private.data.sites)
-        return;
-
-    node._private.data.sites.forEach(function(site){
-        site.selected = false;
-    });
-}
 module.exports.runLayout = function(){
     var options =  {
         animate: false,
@@ -300,9 +225,11 @@ module.exports.runLayout = function(){
 
 }
 
-module.exports.createContainer = function(el, cgfJson, doTopologyGrouping, modelManager, callback) {
+module.exports.createContainer = function(el, doTopologyGrouping, modelManager, callback) {
 
-    var cyElements = convertCgfToCytoscape(cgfJson, doTopologyGrouping);
+    var modelCy = modelManager.getModelCy();
+
+    var cyElements = module.exports.convertModelJsonToCyElements(modelCy, doTopologyGrouping);
 
 
     var cy = window.cy = cytoscape({
@@ -345,19 +272,13 @@ module.exports.createContainer = function(el, cgfJson, doTopologyGrouping, model
 
             if(callback) callback();
 
-           // modelManager.initModelNodePositions(cy.nodes());
-
-            // cgfJson.nodes.forEach(function(node){
-            //     if(node.position)
-            //         cy.getElementById(node.data.id)._private.data.position = node.position;
-            // })
-
             cy.on('drag', 'node', function (e) {
                 computeSitePositions(this);
             });
 
             cy.on('select', 'node', function(e){
                 this.css('background-color', '#FFCC66');
+
             });
 
             cy.on('unselect', 'node', function(e){
@@ -406,8 +327,8 @@ module.exports.createContainer = function(el, cgfJson, doTopologyGrouping, model
                 }
                 else if (site.siteInfo) { //site is clicked and it has information to display
                     //Adjust the positions of qtip boxes
-                    var sitePosX = site.bbox.x - this._private.position.x;
-                    var sitePosY = site.bbox.y - this._private.position.y;
+                    var sitePosX = site.bbox.x - this.position("x");
+                    var sitePosY = site.bbox.y - this.position("y");
 
                     var my;
                     var at;
@@ -471,8 +392,7 @@ module.exports.createContainer = function(el, cgfJson, doTopologyGrouping, model
 
                 edge.qtip({
                     content: function () {
-                        var contentHtml = "<b style='text-align:center;font-size:16px;'>" + edge._private.data.edgeType + "</b>";
-                        return contentHtml;
+                        return "<b style='text-align:center;font-size:16px;'>" + edge.data("edgeType") + "</b>";
                     },
                     show: {
                         ready: true
@@ -499,14 +419,84 @@ module.exports.createContainer = function(el, cgfJson, doTopologyGrouping, model
     });
 
 
-    //update cgf states
-
-
-
 }
 
+/***
+ * Style sheet for causality graphs
+ */
+var CgfStyleSheet = cytoscape.stylesheet()
+        .selector('node')
+        .css({
+            // 'border-width':'css(border-width)',
+            // 'border-color': 'css(border-color)',
+            //  'background-color':'white',
+            'shape': 'cgfNode',
+            'text-halign': 'center',
+            'text-valign':'center',
+            'background-color': 'white',
 
-//
-// if (typeof module !== 'undefined' && module.exports) { // expose as a commonjs module
-//     module.exports = CgfCy;
-// }
+            'width': function(ele){
+                var spacing =(ele.data('id').length +2) * 10;
+                return  Math.min(200,spacing);
+            },
+            'height':30,
+            'content': 'data(text)',
+
+        })
+        .selector('node:selected')
+        .css({
+            'overlay-color': 'FFCC66',
+            'opacity': 1
+        })
+        .selector('edge')
+        .css({
+            'width': 'css(width)',
+            'line-color': function(ele){
+                return attributeMap(ele.data('edgeType')).color;
+
+            },
+            'line-style': function(ele){
+                return attributeMap(ele.data('edgeType')).lineStyle;
+            },
+            'curve-style': 'bezier',
+
+            'target-arrow-color': function(ele){
+                return attributeMap(ele.data('edgeType')).color;
+            },
+            'target-arrow-shape':'triangle',
+            //     function(ele) {
+            //     if (ele.data('edgeType') == "in-complex-with" || ele.data('edgeType') == "interacts-with" || //nondirected
+            //         ele.data('edgeType') == "neighbor-of" || ele.data('edgeType') == "reacts-with")
+            //         return 'none';
+            //     return 'cgfArrow';
+            // },
+            'arrow-size':5,
+            'opacity': 0.8
+        })
+        .selector('edge:selected')
+        .css({
+            'line-color': 'black',
+            'target-arrow-color': 'black',
+            'source-arrow-color': 'black',
+            'opacity': 1
+        })
+
+        .selector("node:parent")
+        .css({
+            'text-valign': 'bottom',
+            'content': 'data(edgeType)', //there is a label when there's a clique among the nodes inside the compound
+            'font-size': 8,
+
+
+        })
+        .selector("node:child")
+        .css({
+
+            'padding-top': '10px',
+            'padding-bottom': '10px',
+            'padding-left': '10px',
+            'padding-right': '10px',
+
+
+        })
+    ;
