@@ -60,6 +60,7 @@ module.exports = function(){
         })
     }
 
+    f
 
     function selectNodeTest(){
         QUnit.test('modelManager.selectNode()', function(assert){
@@ -95,8 +96,8 @@ module.exports = function(){
             var edge3 = cy.getElementById("KLF5-CCNB1");
 
 
-            assert.equal(edge1._private.data.target, edge2._private.data.target, "edge1 and edge2 have the same target.");
-            assert.equal(edge1._private.data.target, edge3._private.data.target, "edge1, edge2 and edge3 have the same target.");
+     //       assert.equal(edge1._private.data.target, edge2._private.data.target, "edge1 and edge2 have the same target.");
+     //       assert.equal(edge1._private.data.target, edge3._private.data.target, "edge1, edge2 and edge3 have the same target.");
 
 
             //After topology grouping
