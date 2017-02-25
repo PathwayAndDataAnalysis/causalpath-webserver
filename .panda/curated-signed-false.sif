@@ -1,0 +1,29 @@
+# from PMC1190302
+TP53	upregulates-expression	MYC
+CDK2	dephosphorylates	RB1
+CSK	phosphorylates	YES1	Y425
+CSK	phosphorylates	FGR	Y412
+CSK	phosphorylates	SRC	Y419
+CSK	phosphorylates	FYN	Y420
+CSK	phosphorylates	LYN	Y396
+CSK	phosphorylates	HCK	Y410
+CSK	phosphorylates	LCK	Y393
+CSK	phosphorylates	BLK	Y388
+# Wrong PTEN -> PIP3 edge in NCI PID
+PTEN	phosphorylates	WASF2
+PTEN	phosphorylates	ABI1	
+PTEN	phosphorylates	AKT3
+PTEN	phosphorylates	AKT2
+PTEN	phosphorylates	SGK1
+PTEN	dephosphorylates	SOS1
+PTEN	phosphorylates	AKT1
+PTEN	phosphorylates	DOK1
+PTEN	phosphorylates	PDPK1
+# Wrong AKT -| GSK3 edge from PANTHER
+AKT1	dephosphorylates	GSK3A
+AKT1	dephosphorylates	GSK3B
+AKT2	dephosphorylates	GSK3A
+AKT2	dephosphorylates	GSK3B
+AKT3	dephosphorylates	GSK3A
+AKT3	dephosphorylates	GSK3B
+
