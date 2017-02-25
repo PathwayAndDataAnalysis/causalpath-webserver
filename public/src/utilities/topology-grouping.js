@@ -13,9 +13,11 @@ function groupTopology(cyElements){
     var nodes =  [];
     var edges = [];
 
+   
     for(var i = 0; i < cyElements.nodes.length; i++){
         var nodeClone = _.clone(cyElements.nodes[i]);
         nodes.push(nodeClone);
+     
     }
 
     for(var i = 0; i < cyElements.edges.length; i++){
@@ -64,50 +66,47 @@ function groupTopology(cyElements){
         }
     }
 
-    //add new nodes and connected edges
-    newNodes.forEach(function(newNode){
-        nodes.push(newNode); //Add new nodes to the old list of nodes
 
-        //add new edges to the old list of edges except the ones inside newNode
-        newNode.incoming.forEach(function(edge){
-            if(newNode.data.children.indexOf(edge.data.source) < 0)
-                edges.push({data:{id: (edge.data.source + "_" + newNode.data.id), source: edge.data.source, target:newNode.data.id, edgeType: edge.data.edgeType}});
-        });
 
-        newNode.outgoing.forEach(function(edge){
-            if(newNode.data.children.indexOf(edge.data.target) < 0)
-                edges.push({data:{id: (newNode.data.id + "_" + edge.data.target) , source: newNode.data.id, target:edge.data.target, edgeType: edge.data.edgeType}});
-        });
-
+    //Add new nodes to the old list of nodes
+    newNodes.forEach(function(newNode) {
+        nodes.push(newNode);
     });
 
+    var nodeHash ={}; //use this to access nodes by id in constant time
+    nodes.forEach(function(node) {
+        nodeHash[node.data.id] = node;
+    });
 
+    //Add connected edges
+    var newEdges = [];
+    edges.forEach(function (edge) {
 
-    //Remove analogous and clique edges
-    nodes.forEach(function(node){
-        if(node.data.parent!=null) {
-            node.incoming.forEach(function(edge){
-                var ind = edges.indexOf(edge);
-                if(ind > -1)
-                    edges[ind].data.invisible = true;
-            });
+        if(nodeHash[edge.data.source].data.parent!=null) { //change the source
+            edge.data.invisible = true;
+            var newSource = nodeHash[edge.data.source].data.parent;
 
-            node.outgoing.forEach(function(edge){
-                var ind = edges.indexOf(edge);
-                if(ind > -1)
-                    edges[ind].data.invisible = true;
-            });
+            if(nodeHash[edge.data.target].data.parent!=null) {
+                var newTarget = nodeHash[edge.data.target].data.parent;
+                newEdges.push({data:{id: (newSource+ "_" + newTarget), source: newSource, target:newTarget, edgeType: edge.data.edgeType}});
+            }
+            else{
+                newEdges.push({data:{id: (newSource+ "_" + edge.data.target), source: newSource, target:edge.data.target, edgeType: edge.data.edgeType}});
+            }
+        }
+        else{
+            if(nodeHash[edge.data.target].data.parent!=null) {
+                edge.data.invisible = true;
+                var newTarget = nodeHash[edge.data.target].data.parent;
+                newEdges.push({data:{id: (edge.data.source+ "_" + newTarget), source: edge.data.source, target:newTarget, edgeType: edge.data.edgeType}});
+            }
+            else{
+                newEdges.push({data:{id: (edge.data.source+ "_" + edge.data.target), source: edge.data.source, target:edge.data.target, edgeType: edge.data.edgeType}});
+            }
 
         }
+
     });
-
-    var newEdges = [];
-    edges.forEach(function(edge){
-        if(!edge.data.invisible)
-            newEdges.push(edge);
-    });
-
-
 
 
     return{nodes:nodes, edges:newEdges};
