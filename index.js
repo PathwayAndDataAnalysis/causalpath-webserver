@@ -59,31 +59,35 @@ app.get('/:docId', function (page, model, arg, next) {
 
     var docPath = 'documents.' + arg.docId;
 
-    model.subscribe(docPath, 'cgfText', function(err){
-        if (err) {
-            return next(err);
-        }
-        model.setNull(docPath, { // create the empty new doc if it doesn't already exist
+
+    model.ref('_page.doc', ('documents.' + arg.docId));
+
+    model.subscribe(docPath, function (err) {
+        if (err) return next(err);
+
+        model.createNull(docPath, { // create the empty new doc if it doesn't already exist
             id: arg.docId
-
         });
-        // create a reference to the document
-        model.ref('_page.doc', 'documents.' + arg.docId);
+
+        var cgfTextPath =  model.at((docPath + '.cgfText'));
+        var cyPath =  model.at((docPath + '.cy'));
+
+        cgfTextPath.subscribe(function() {
+
+
+
+            cyPath.subscribe(function () {
+
+
+                model.set('_page.room', room);
+
+                page.render();
+            });
+        });
+
 
     });
 
-    model.subscribe(docPath, 'cy', function(err){
-        if (err) {
-            return next(err);
-        }
-
-    });
-
-
-    model.set('_page.room', room);
-
-
-    page.render();
 
 });
 
