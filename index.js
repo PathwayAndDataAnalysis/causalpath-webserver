@@ -135,6 +135,7 @@ app.proto.reloadGraph = function(){
  */
 app.proto.loadDemoGraph = function(){
 
+
     graphChoice = graphChoiceEnum.DEMO;
     this.model.set('_page.doc.cgfText', JSON.stringify(demoJson));
     this.createCyGraphFromCgf(demoJson);
@@ -252,9 +253,7 @@ app.proto.loadAnalysisDir = function(){
 
         }
     }
-
 }
-
 
 /***
  * Create cytoscape graph from cgfJson
@@ -272,12 +271,14 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
 
     if(cgfJson) {
+        this.modelManager.clearModel();
         this.modelManager.initModelFromJson(cgfJson);
 
 
         if (docReady){
 
             try{
+
 
                 cy.destroy();
 
@@ -287,10 +288,7 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
             }
         } //cytoscape is loaded
 
-
-
         this.showGraphContainer();
-
 
         var notyView = noty({type: "information", layout: "bottom",  text: "Drawing graph...Please wait."});
 
