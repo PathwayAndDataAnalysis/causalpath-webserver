@@ -6,6 +6,9 @@
 var app = module.exports = require('derby').createApp('cwc', __filename);
 
 
+let BackboneViews = require('./public/src/ui/backbone-views.js');
+let parametersView =  new BackboneViews.ParametersView({el: '#parameters-view'});
+
 app.loadViews(__dirname + '/views');
 //app.loadStyles(__dirname + '/styles');
 //app.serverUse(module, 'derby-stylus');
@@ -165,6 +168,17 @@ app.proto.loadGraphFile = function(){
     reader.readAsText($("#graph-file-input")[0].files[0]);
 }
 
+/***
+ * Load the page for  parameter form
+ */
+app.proto.loadParametersView = function(){
+
+    app.component(ParametersComponent);
+
+    app.get('/', function(page) {
+        page.render('parameters-component');
+    });
+}
 
 /***
  * Take the input files and transfer them to the server in analysisDir and run shell command
@@ -206,8 +220,6 @@ app.proto.loadAnalysisDir = function(){
 
     }
     else{
-
-
         var p1 = new Promise(function (resolve, reject) {
             for (var i = 0; i < fileCnt; i++) {
                 (function (file) {
@@ -376,13 +388,3 @@ function base64ToZipBlob(data){
 
 }
 
-
-/***
- * Run unit tests
- */
-app.proto.runUnitTests = function(){
-
-    require("./test/testsGraphCreation.js")();
-    require("./test/testOptions.js")(); //to print out results
-
-}

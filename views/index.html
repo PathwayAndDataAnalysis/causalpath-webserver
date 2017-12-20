@@ -1,3 +1,4 @@
+
 <Title:>
 
     CausalPath
@@ -124,6 +125,7 @@
                                 <i class="fa fa-upload"></i> Select
                             </label>
 
+
                             <div><input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDir()" value ={_page.analysisFiles} multiple ></div>
                         </div>
                     </td>
@@ -134,8 +136,23 @@
 
                     <td align = "center">
 
+                        <div  class="input-td" data-toggle="tooltip" data-placement="bottom" title="Select parameters manually">
+                            C. Enter parameters for analysis
+
+
+                            <div><input type="button" class = "btn"  on-click = "loadParametersView()" ></div>
+                        </div>
+                    </td>
+
+                    <td align = "center">
+                        OR
+                    </td>
+
+
+                    <td align = "center">
+
                         <div  class="input-td">
-                            C. Show demo graph
+                            D. Show demo graph
 
                             <label for="demo-file-button">
                                 <i class="fa fa-play"></i> Display
@@ -143,7 +160,6 @@
                             <div><input type="button" id="demo-file-button"  value = "Display" on-click = "loadDemoGraph()"  ></div>
                         </div>
                     </td>
-
 
                 </tr>
 
@@ -162,6 +178,8 @@
 
     </div>
 
+
+
     <script>
 
             $(document).ready(function(){
@@ -169,5 +187,23 @@
                 $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
+
+
+
+
+    <script type="text/template" id="parameters-template">
+        <table>
+            <tbody>
+            <tr>
+                <td class="header">
+                    <span class="sbgn-text"> <%= name %> </span>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </script>
+
+
 
 
