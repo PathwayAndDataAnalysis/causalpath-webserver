@@ -37,6 +37,15 @@ a:hover   {color:red; background-color:transparent; text-decoration:underline}
 a:active  {color:yellow; background-color:transparent; text-decoration:underline}
 
 
+/* Hide HTML5 Up and Down arrows. */
+/*input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {*/
+    /*-webkit-appearance: none;*/
+    /*margin: 0;*/
+/*}*/
+
+/*input[type="number"] {*/
+    /*-moz-appearance: textfield;*/
+/*}*/
 
 #input-container{
 
@@ -187,3 +196,16 @@ input[id = "download-button"]{
     /*height: auto;*/
     /*width: 0;*/
 /*}*/
+
+.parameters{
+    padding: 20px;
+    font-size:medium;
+
+}
+.close-button{
+    color: #1c94c4;
+    font-size: larger;
+}
+.parameters-input{
+    width: 50%;
+}

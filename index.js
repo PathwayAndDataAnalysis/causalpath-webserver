@@ -6,8 +6,6 @@
 var app = module.exports = require('derby').createApp('cwc', __filename);
 
 
-let BackboneViews = require('./public/src/ui/backbone-views.js');
-let parametersView =  new BackboneViews.ParametersView({el: '#parameters-view'});
 
 app.loadViews(__dirname + '/views');
 //app.loadStyles(__dirname + '/styles');
@@ -173,11 +171,11 @@ app.proto.loadGraphFile = function(){
  */
 app.proto.loadParametersView = function(){
 
-    app.component(ParametersComponent);
+    let BackboneViews = require('./public/src/ui/backbone-views.js');
+    let parametersView =  new BackboneViews.ParametersView();
 
-    app.get('/', function(page) {
-        page.render('parameters-component');
-    });
+    parametersView.render();
+
 }
 
 /***
