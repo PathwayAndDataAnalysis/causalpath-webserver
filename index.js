@@ -29,6 +29,50 @@ var graphChoiceEnum = {
 
 var graphChoice;
 
+let parameterList = [
+    {id: "proteomicsPlatformFile", title:"Proteomics platform file", type:"text", defaultValue: "PNNL-causality-formatted.txt" },
+    {id: "proteomicsValuesFile", title:"Proteomics values file", type:"text",  defaultValue: "PNNL-causality-formatted.txt" },
+    {id: "idColumn", title:"ID Column", type:"text",  defaultValue: "ID" },
+    {id: "symbolsColumn",  title:"Symbols column", type:"text",  defaultValue: "Symbols" },
+    {id: "sitesColumn", title:"Sites column", type:"text",  defaultValue: "Sites" },
+    {id: "effectColumn", title:"Effect column", type:"text",  defaultValue: "Effect" },
+    {id: "doLogTransform", title:"Do Log transform", type:"checkbox",  defaultValue: "false" },
+    {id: "thresholdForDataSignificance", title:"Threshold for data significance", type:"number", defaultValue: 0.05, step : 0.001 },
+    {id: "fdrThresholdForDataSignificance", title:"FDR threshold for data significance", type:"number",  defaultValue: 0.05, step : 0.001 },
+    {id: "poolProteomicsForFdrAdjustment", title:"Pool proteomics for Fdr adjustment", type:"checkbox",  defaultValue: "false" },
+    {id: "fdrThresholdForNetworkSignificance", title:"FDR threshold for network significance", type:"number", defaultValue: 0.05, step : 0.001 },
+    {id: "pValThresholdForCorrelation",  title:"P-value threshold for correlation", type:"number",  defaultValue: 0.05, step : 0.001 },
+    {id: "valueTransformation", title:"Value transformation", type:"select",  defaultValue: 0, options: ["arithmetic-mean", "geometric-mean", "max", "difference-of-means", "fold-change-of-mean",
+            "significant-change-of-mean", "correlation"]},
+    {id: "customResourceDirectory", title:"Custom resource directory:", type:"text", defaultValue: "" },
+    {id: "siteEffectProximityThreshold",  title:"Site effect proximity threshold", type:"number",  defaultValue: 0.05, step : 0.001 },
+    {id: "siteMatchProximityThreshold",  title:"Site match proximity threshold", type:"number",  defaultValue: 0.05, step : 0.001 },
+    {id: "defaultMissingValue",  title:"Default missing value", type:"number", defaultValue: 0 },
+    {id: "relationFilterType", title:"Relation filter type", type:"select", defaultValue: 0, options: ["no-filter", "phospho-only", "expression-only", "phospho-primary-expression-secondary"]},
+    {id: "geneFocus", title:"Gene focus", type:"text", defaultValue: "" },
+    {id: "calculateNetworkSignificance", title:"Calculate network significance", type:"checkbox",  defaultValue: "false" },
+    {id: "permutationsForSignificance",  title:"Permutations for significance", type:"integer",  defaultValue: 0 },
+    {id: "tcgaDirectory", title:"TCGA directory", type:"text", defaultValue: "" },
+    {id: "mutationEffectFile", title:"Mutation effect file", type:"text", defaultValue: "" },
+    {id: "colorSaturationValue", title:"Color saturation value", type:"number", defaultValue: 5, min: 0.0 },
+    {id: "doSiteMatching", title:"Do site matching", type:"checkbox", defaultValue: "false" },
+    {id: "showUnexplainedProteomicData", title:"Show unexplained proteomic data", type:"checkbox", defaultValue: "false" },
+    {id: "builtInNetworkResourceSelection", title:"Built-in network resources selection", type:"select", defaultValue: 0, options: ["PC", "REACH", "PhosphoNetworks", "IPTMNet", "TRRUST", "TFactS"]},
+    {id: "generateDataCentricGraph", title:"Generate data-centric graph", type:"checkbox", defaultValue: "false" },
+    {id: "correlationUpperThreshold", title:"Correlation upper threshold", type:"number", defaultValue: 1.0, max : 1.0, min : 0.0, step : 0.001 },
+    {id: "minimumSampleSize", title:"Minimum sample size", type:"integer", defaultValue: 3 , min: 3},
+    {id: "geneActivity", title:"Gene activity", type:"text", defaultValue: "" },
+    {id: "tfActivityFile", title:"Tf activity file", type:"text", defaultValue: "" },
+    {id: "useStrongestProteomicDataPerGene", title:"Use strongest proteomic data per gene", type:"check", defaultValue: "false" },
+    {id: "useNetworkSignificanceForCausalReasoning", title:"Use network significance for causal reasoning", type:"check", defaultValue: "false" },
+    {id: "minimumPotentialTargetsToConsiderForDownstreamSignificance", title:"Minimum potential targets to consider for downstream significance", type:"integer", defaultValue: 1, min: 1 },
+    {id: "showInsignificantProteomicData", title:"Show insignificant proteomic data", type:"check", defaultValue: "false" },
+    {id: "valueColumn", title:"Value column", type:"text", defaultValue: "" },
+    {id: "controlValueColumn", title:"Control Value column", type:"text", defaultValue: "" },
+    {id: "testValueColumn", title:"Test Value column", type:"text", defaultValue: "" }
+    ];
+
+
 app.get('/', function (page, model, params) {
     function getId() {
         return model.id();
@@ -72,17 +116,17 @@ app.get('/:docId', function (page, model, arg, next) {
 
         var cgfTextPath =  model.at((docPath + '.cgfText'));
         var cyPath =  model.at((docPath + '.cy'));
+        var parametersPath =  model.at((docPath + '.parameters'));
 
         cgfTextPath.subscribe(function() {
 
-
-
             cyPath.subscribe(function () {
+                parametersPath.subscribe(function(){
+                    model.set('_page.room', room);
 
+                    page.render();
+                })
 
-                model.set('_page.room', room);
-
-                page.render();
             });
         });
 
@@ -107,11 +151,62 @@ app.proto.create = function (model) {
 
     this.modelManager = require('./public/src/model/modelManager.js')(model, model.get('_page.room'), model.get('_session.userId'),name );
 
+
+    this.loadParameters(model);
     if(testMode)
         this.runUnitTests();
 
 
 };
+
+const camelToDash = str => str
+    .replace(/(^[A-Z])/, ([first]) => first.toLowerCase())
+    .replace(/([A-Z])/g, ([letter]) => `-${letter.toLowerCase()}`)
+
+app.proto.loadParameters = function(model){
+
+    if(model.get('_page.doc.parameters') == null)
+        model.set('_page.doc.parameters', parameterList);
+
+    for(let i = 0; i < parameterList.length; i++){
+        if(model.get('_page.doc.parameters.' + i + '.value') == null)
+            model.set('_page.doc.parameters.' + i + '.value', parameterList[i].defaultValue);
+    }
+};
+
+app.proto.resetToDefaultParameters= function(){
+    let self = this;
+    for(let i = 0; i < parameterList.length; i++){
+        self.model.set('_page.doc.parameters.' + i + '.value', parameterList[i].defaultValue);
+    }
+
+}
+//
+// app.proto.formatParameter = function(parameter){
+//     let paramStr = "";
+//     if(parameter.type === "select") {
+//         paramStr +=  parameter.title + ': <select id = ' + camelToDash(parameter.id) + '>';
+//
+//         for(let i = 0; i < parameter.options.length; i++){
+//             paramStr += '<option value = ' + i + '>' + parameter.options[i] + '</option>';
+//         }
+//     }
+//     else {
+//         paramStr +=  parameter.title + ': <input class = "parameters-input" id = ' + camelToDash(parameter.id) + ' type = ' + parameter.type;
+//         if(parameter.step)
+//             paramStr += 'step = ' + parameter.step;
+//         if(parameter.min)
+//             paramStr += 'min = ' + parameter.min;
+//         if(parameter.max)
+//             paramStr+= 'max = ' + parameter.max;
+//
+//         paramStr+= ' value = ' + parameter.value + '>';
+//
+//     }
+//
+//
+//     return paramStr;
+// }
 
 
 app.proto.runLayout = function(){
@@ -166,17 +261,6 @@ app.proto.loadGraphFile = function(){
     reader.readAsText($("#graph-file-input")[0].files[0]);
 }
 
-/***
- * Load the page for  parameter form
- */
-app.proto.loadParametersView = function(){
-
-    let BackboneViews = require('./public/src/ui/backbone-views.js');
-    let parametersView =  new BackboneViews.ParametersView();
-
-    parametersView.render();
-
-}
 
 /***
  * Take the input files and transfer them to the server in analysisDir and run shell command

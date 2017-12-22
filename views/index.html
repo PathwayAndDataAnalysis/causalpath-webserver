@@ -136,7 +136,7 @@
                     <td align = "center">
 
                         <div  class="input-td" data-toggle="tooltip" data-placement="bottom" title="Select parameters manually">
-                            C. <button class = "btn"  on-click = "loadParametersView()" onclick = "document.getElementById('parameters-table').style.display='block'">Enter parameters for analysis</button>
+                            C. <button class = "btn" onclick = "document.getElementById('parameters-table').style.display='block'">Enter parameters for analysis</button>
                         </div>
                     </td>
 
@@ -169,10 +169,31 @@
 
 
     <div id="parameters-table" class="w3-modal">
+        <div class="w3-modal-content">
+            <div class="w3-modal-container parameters">
+            <header class="w3-container w3-blue-gray"> <span onclick="document.getElementById('parameters-table').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
+                <h2>Parameters</h2> </header>
+                <p></p>
+                <table class = "parameter-content"><tbody>
+                {{each _page.doc.parameters as #parameter}}
+                    <tr><td>
+                        {{if #parameter.type !== 'select'}}
+                            {{#parameter.title}}: <input class = "parameters-input" id = {{#parameter.id}} type = {{#parameter.type}} value = {{#parameter.value}}>
+                        {{else}}
+                        {{#parameter.title}}: <select class = "parameters-select" id = {{#parameter.id}}>
+                            {{each #parameter.options as #option}}
+                                <option value = {{#option}}>{{#option}}</option>
+                             {{/each}}
+                    </select>
+                        {{/if}}
 
-
+                    </td></tr>
+                {{/each}}
+                </tbody></table>
+                <input type = "button" value = "Reset to default values" on-click = "resetToDefaultParameters()">
+            </div>
+        </div>
     </div>
-
 
 
     <div id = "graph-container">

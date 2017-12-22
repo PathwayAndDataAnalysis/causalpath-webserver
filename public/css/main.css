@@ -199,13 +199,29 @@ input[id = "download-button"]{
 
 .parameters{
     padding: 20px;
-    font-size:medium;
+    font-size:small;
+    overflow-y: auto;
 
 }
 .close-button{
     color: #1c94c4;
     font-size: larger;
 }
+input[type="text"]{
+    font-size: small;
+}
 .parameters-input{
     width: 50%;
+}
+.parameter-content{
+    font-size: small;
+
+}
+.parameters-select{
+    height:100%;
+
+}
+
+select, input, textarea{
+    margin: 5px;
 }
