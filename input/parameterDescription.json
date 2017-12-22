@@ -4,13 +4,13 @@
   {
     "id": "proteomicsPlatformFile",
     "title": "Proteomics platform file",
-    "type": "text",
+    "type": "file",
     "defaultValue": "PNNL-causality-formatted.txt"
   },
   {
     "id": "proteomicsValuesFile",
     "title": "Proteomics values file",
-    "type": "text",
+    "type": "file",
     "defaultValue": "PNNL-causality-formatted.txt"
   },
   {
@@ -157,7 +157,7 @@
   {
     "id": "mutationEffectFile",
     "title": "Mutation effect file",
-    "type": "text",
+    "type": "file",
     "defaultValue": ""
   },
   {
@@ -224,7 +224,7 @@
   {
     "id": "tfActivityFile",
     "title": "Tf activity file",
-    "type": "text",
+    "type": "file",
     "defaultValue": ""
   },
   {

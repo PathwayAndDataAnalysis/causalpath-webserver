@@ -175,10 +175,18 @@
                 <h2>Parameters</h2> </header>
                 <p></p>
                 <table class = "parameter-content"><tbody>
-                {{each _page.doc.parameters as #parameter}}
+                {{each _page.doc.parameters as #parameter,  #i}}
                     <tr><td>
                         {{if #parameter.type !== 'select'}}
-                            {{#parameter.title}}: <input class = "parameters-input" id = {{#parameter.id}} type = {{#parameter.type}} value = {{#parameter.value}}>
+                        {{#parameter.title}}:
+                            {{if #parameter.type === 'file'}}
+                                <label for= {{#parameter.id}} class = "fa fa-upload parameters-input"> Select
+                                </label>
+
+                            <input type="file" id={{#parameter.id}} accept=".txt" on-change = "loadFile($event, #i)" value ={_page.newFile} >
+                            {{else}}
+                             <input class = "parameters-input" id = {{#parameter.id}} type = {{#parameter.type}} value = {{#parameter.value}}>
+                            {{/if}}
                         {{else}}
                         {{#parameter.title}}: <select class = "parameters-select" id = {{#parameter.id}}>
                             {{each #parameter.options as #option}}
