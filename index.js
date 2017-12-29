@@ -120,6 +120,8 @@ app.proto.create = function (model) {
     });
 
     self.initSelectBoxes();
+    self.initCheckBoxes();
+
     if(testMode)
         this.runUnitTests();
 
@@ -136,8 +138,6 @@ app.proto.init = function (model) {
 
     let self = this;
 
-
-
     model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val){
         if(docReady) {
 
@@ -147,8 +147,11 @@ app.proto.init = function (model) {
 }
 
 
-
-
+/***
+ * Loads parameters from the input json file
+ * @param model
+ * @param json
+ */
 app.proto.loadParameters = function(model, json){
 
     let parameterList = json.Parameters;
@@ -175,7 +178,8 @@ app.proto.loadParameters = function(model, json){
                 model.set('_page.doc.parameters.' + i + '.domId.0.' + j, (param.ID + "-0-" + j));  //for multiple fields
         }
         if(model.get('_page.doc.parameters.' + i + '.value') == null) {
-            model.set('_page.doc.parameters.' + i + '.value.0', param.Default);
+            if(param.Default)
+                model.set('_page.doc.parameters.' + i + '.value', param.Default);
         }
     }
 
@@ -185,6 +189,7 @@ app.proto.loadParameters = function(model, json){
 
 
 /***
+ * Initializes html select boxes
  * These cannot be updated directly by handlebars
  */
 app.proto.initSelectBoxes = function(){
@@ -195,37 +200,95 @@ app.proto.initSelectBoxes = function(){
         parameterList.forEach(function (param) {
             param.cnt.forEach(function (cnt) {
                 for (let j = 0; j < param.EntryType.length; j++) {
-                    if (self.getEnum(param.EntryType[j])!= null && param.value != null && param.value[cnt] != null) {
+                    let enumList = self.getEnum(param.EntryType[j]);
+                    if (enumList && param.value && param.value[cnt] && param.value[cnt][j]) {
+                        let selectedInd = enumList.indexOf(param.value[cnt][j])
+                        self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
+                    }
+                }
+            });
+        });
+    }
+}
 
+
+/***
+ * Initializes html check boxes
+ * These cannot be updated directly by handlebars
+ */
+app.proto.initCheckBoxes = function() {
+
+    let self = this;
+    let parameterList = self.model.get('_page.doc.parameters');
+
+    if(parameterList) {
+        parameterList.forEach(function (param) {
+            param.cnt.forEach(function (cnt) {
+                for (let j = 0; j < param.EntryType.length; j++) {
+                    if (param.EntryType[j] === "Boolean") {
                         let val = param.value[cnt][j];
-                        self.getDomElement(param, cnt, j).val(val);
+                        if(val === "true" || val === true)
+                            self.getDomElement(param, cnt, j).prop('checked', true);
+                        else
+                            self.getDomElement(param, cnt, j).prop('checked', false);
 
                     }
                 }
             });
         });
     }
-
-
-
 }
 
+
+app.proto.setParamValue = function(param, cnt, entryInd, val){
+    this.model.set('_page.doc.parameters.' + param.ind + '.value.' + cnt + '.' + entryInd , val);
+}
+
+/***
+ * Updates model when a new value is selected in the select box
+ * @param param
+ * @param cnt
+ * @param entryInd
+ */
 app.proto.updateSelected = function(param, cnt, entryInd){
-    let paramVal = this.getDomElement(param, cnt, entryInd).val();
+
+    let e =  this.getDomElement(param, cnt, entryInd)[0];
+    let paramVal = e.options[e.selectedIndex].text;
+
+    this.setParamValue(param, cnt, entryInd, paramVal );
 
 
-    this.model.set('_page.doc.parameters.' + param.ind + '.value.' + cnt + '.' + entryInd, paramVal );
 }
 
+/***
+ * Updates model when the check box is clicked
+ * @param param
+ * @param cnt
+ * @param entryInd
+ */
+app.proto.updateChecked = function(param, cnt, entryInd){
+
+    let paramVal = this.getDomElement(param, cnt, entryInd).prop('checked');
+
+    this.setParamValue(param, cnt, entryInd, paramVal );
+
+}
+
+/***
+ * Resets all parameters to default values
+ */
 app.proto.resetToDefaultParameters= function(){
     let self = this;
 
     let parameterList = self.model.get('_page.doc.parameters');
     for(let i = 0; i < parameterList.length; i++){
-        self.model.set('_page.doc.parameters.' + i + '.value', [parameterList[i].Default]);
+        self.model.set('_page.doc.parameters.' + i + '.value', parameterList[i].Default);
     }
 }
 
+/***
+ * Sends the parameters to the server to write into a text file
+ */
 app.proto.submitParameters = function () {
     let parameterList = this.model.get('_page.doc.parameters');
     let room  = this.model.get('_page.room');
@@ -237,6 +300,11 @@ app.proto.submitParameters = function () {
     });
 }
 
+/***
+ * Formats the content to write into parameters.txt
+ * @param parameterList
+ * @returns {string}
+ */
 var convertParameterListToFileContent = function(parameterList) {
 
     let content = "";
@@ -260,6 +328,11 @@ var convertParameterListToFileContent = function(parameterList) {
     return content;
 };
 
+/***
+ * Can a parameter be multiple?
+ * @param param
+ * @returns {*}
+ */
 app.proto.getMultiple = function(param) {
     if(param.CanBeMultiple === "true")
         return true;
@@ -267,6 +340,10 @@ app.proto.getMultiple = function(param) {
         return undefined;
 }
 
+/***
+ * Returns the values of the enum type
+ * @param type
+ */
 app.proto.getEnum = function(type){
     let enumList = this.model.get('_page.doc.enumerations');
 
@@ -280,22 +357,25 @@ app.proto.getEnum = function(type){
 
     }
 }
-
-
+/***
+ * Adds new input boxes when a new parameter is added
+ * @param param
+ */
 app.proto.addParameter = function(param){
 
     let self = this;
-    let currCnt = this.model.get('_page.doc.parameters.' + param.ind + '.cnt').length;
-    let newCnt = currCnt + 1;
+    let newCnt = this.model.get('_page.doc.parameters.' + param.ind + '.cnt').length;
 
     this.model.push('_page.doc.parameters.' + param.ind + '.cnt', newCnt);  //id of the html field
 
     for(let j =0 ; j < param.EntryType.length; j++)
-        self.model.set('_page.doc.parameters.' +  param.ind  + '.domId.' + newCnt +'.' + j , (param.ID + "-"+ newCnt +" -" + j));  //for multiple fields
-
+        self.model.set('_page.doc.parameters.' +  param.ind  + '.domId.' + newCnt +'.' + j , (param.ID + "-"+ newCnt + "-" + j));  //for multiple fields
 
 }
 
+/***
+ * Determines whether to show or hide DOM elements depending on parameter conditions
+ */
 app.proto.updateParameterVisibility = function(){
     let parameterList = this.model.get('_page.doc.parameters');
     let self = this;
@@ -323,6 +403,12 @@ app.proto.updateParameterVisibility = function(){
 
 }
 
+/***
+ * Checks conditions for parameter
+ * @param op
+ * @param conditions
+ * @returns {*}
+ */
 app.proto.satisfiesConditions = function(op, conditions){
 
     let self = this;
@@ -364,6 +450,10 @@ app.proto.satisfiesConditions = function(op, conditions){
 
 }
 
+/***
+ * parameters are stored in an array, so traverse the array for a matching id
+ * @param id
+ */
 app.proto.findParameterFromId = function(id){
     let parameterList = this.model.get('_page.doc.parameters');
     let self = this;
@@ -374,9 +464,16 @@ app.proto.findParameterFromId = function(id){
     }
 }
 
+/***
+ * Tests whether the condition holds, i.e. a parameter's value is equal to the given value
+ * TODO: Assumes that conditions are specified only for the first element for parameters that can be multiple
+ * @param param
+ * @param value
+ * @returns {boolean}
+ */
 app.proto.conditionResult = function(param, value){
 
-    let paramVal = this.model.get('_page.doc.parameters.' + param.ind + '.value.0.0'); //TODO: will be value.0
+    let paramVal = this.model.get('_page.doc.parameters.' + param.ind + '.value.0');
 
     return (paramVal === value);
 }
@@ -402,6 +499,13 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
 
 }
 
+/***
+ * Returns the element given the parameter and its indices
+ * @param param
+ * @param cnt
+ * @param entryInd
+ * @returns {*|jQuery|HTMLElement}
+ */
 app.proto.getDomElement = function(param, cnt, entryInd){
     return $('#' + param.domId[cnt][entryInd]);
 }

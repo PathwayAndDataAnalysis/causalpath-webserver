@@ -18,7 +18,7 @@
     "Title" : "ID column in data file",
     "Description" : "The name of the ID column in platform and values files.",
     "EntryType" : [ "String" ],
-    "Default" : [ "ID" ],
+    "Default" : [ [ "ID" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -26,7 +26,7 @@
     "Title" : "Symbols column in data file",
     "Description" : "The name of the symbols column in platform file.",
     "EntryType" : [ "String" ],
-    "Default" : [ "Symbols" ],
+    "Default" : [ [ "Symbols" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -34,7 +34,7 @@
     "Title" : "Sites column in data file",
     "Description" : "The name of the sites column.",
     "EntryType" : [ "String" ],
-    "Default" : [ "Sites" ],
+    "Default" : [ [ "Sites" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -42,7 +42,7 @@
     "Title" : "Site effect column in data file",
     "Description" : "The name of the effect column.",
     "EntryType" : [ "String" ],
-    "Default" : [ "Effect" ],
+    "Default" : [ [ "Effect" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -63,16 +63,16 @@
       "Operator" : "OR",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "arithmetic-mean"
+        "Value" : [ "arithmetic-mean" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "geometric-mean"
+        "Value" : [ "geometric-mean" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "max"
+        "Value" : [ "max" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       } ]
     }
   }, {
@@ -86,13 +86,13 @@
       "Operator" : "OR",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "difference-of-means"
+        "Value" : [ "difference-of-means" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "fold-change-of-mean"
+        "Value" : [ "fold-change-of-mean" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "significant-change-of-mean"
+        "Value" : [ "significant-change-of-mean" ]
       } ]
     }
   }, {
@@ -106,13 +106,13 @@
       "Operator" : "OR",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "difference-of-means"
+        "Value" : [ "difference-of-means" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "fold-change-of-mean"
+        "Value" : [ "fold-change-of-mean" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "significant-change-of-mean"
+        "Value" : [ "significant-change-of-mean" ]
       } ]
     }
   }, {
@@ -120,7 +120,7 @@
     "Title" : "Log transform data values",
     "Description" : "Whether the proteomic values should be log transformed for the analysis. Possible values are 'true' and 'false'.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "false" ],
+    "Default" : [ [ "false" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -136,7 +136,7 @@
         "Operator" : "NOT",
         "Conditions" : [ {
           "Parameter" : "value-transformation",
-          "Value" : "correlation"
+          "Value" : [ "correlation" ]
         } ]
       }, {
         "Parameter" : "fdr-threshold-for-data-significance",
@@ -156,7 +156,7 @@
         "Operator" : "NOT",
         "Conditions" : [ {
           "Parameter" : "value-transformation",
-          "Value" : "correlation"
+          "Value" : [ "correlation" ]
         } ]
       }, {
         "Parameter" : "threshold-for-data-significance",
@@ -168,7 +168,7 @@
     "Title" : "Pool proteomics data for FDR adjustment",
     "Description" : "Whether to consider proteomic and phosphoproteomic data as a single dataset during FDR adjustment. This is typically the case with RPPA data, and typically not the case with mass spectrometry data. Can be 'true' or 'false'. Default is false.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "true" ],
+    "Default" : [ [ "true" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
@@ -183,7 +183,7 @@
     "Title" : "Calculate network significance",
     "Description" : "Whether to calculate significances of the properties of the graph. When turned on, a p-value for network size, and also downstream activity enrichment p-values for each gene on the graph are calculated.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "false" ],
+    "Default" : [ [ "false" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -191,38 +191,38 @@
     "Title" : "Number of permutations for calculating network significance",
     "Description" : "We will do data randomization to see if the result network is large, or any protein's downstream is enriched. This parameter indicates the number of randomizations we should perform. It should be reasonable high, such as 1000, but not too high.",
     "EntryType" : [ "Integer" ],
-    "Default" : [ "1000" ],
+    "Default" : [ [ "1000" ] ],
     "Mandatory" : "true",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Parameter" : "calculate-network-significance",
-      "Value" : "true"
+      "Value" : [ "true" ]
     }
   }, {
     "ID" : "fdr-threshold-for-network-significance",
     "Title" : "FDR threshold for network significance",
     "Description" : "The false discovery rate for network significance calculations for the downstream activity enrichment of genes.",
     "EntryType" : [ "Double" ],
-    "Default" : [ "0.1" ],
+    "Default" : [ [ "0.1" ] ],
     "Mandatory" : "true",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Parameter" : "calculate-network-significance",
-      "Value" : "true"
+      "Value" : [ "true" ]
     }
   }, {
     "ID" : "pval-threshold-for-correlation",
     "Title" : "P-value threshold for correlation",
     "Description" : "A p-value threshold for correlation in a correlation-based causality. This parameter should only be used when FDR control is performed outside of CausalPath.",
     "EntryType" : [ "Double" ],
-    "Default" : [ "0.01" ],
+    "Default" : [ [ "0.01" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Operator" : "AND",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       }, {
         "Parameter" : "fdr-threshold-for-correlation",
         "Value" : null
@@ -233,14 +233,14 @@
     "Title" : "FDR threshold for correlation",
     "Description" : "False discovery rate threshold for the correlations in a correlation-based analysis.",
     "EntryType" : [ "Double" ],
-    "Default" : [ "0.01" ],
+    "Default" : [ [ "0.01" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Operator" : "AND",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       }, {
         "Parameter" : "pval-threshold-for-correlation",
         "Value" : null
@@ -251,7 +251,7 @@
     "Title" : "Site-effect proximity threshold",
     "Description" : "CausalPath has a database of phosphorylation site effects. When not set, this parameter is 0 by default, which means exact usage of site effects. But sometimes we may see a site with unknown effect is modified, which is very close to another site with a known effect. This parameter let's us to assume those changing sites with unknown effect has the same effect with the neighbor site with known effect. Use responsibly.",
     "EntryType" : [ "Double" ],
-    "Default" : [ "0" ],
+    "Default" : [ [ "0" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -259,7 +259,7 @@
     "Title" : "Do site matching",
     "Description" : "Whether to force site matching in causality analysis. True by default.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "true" ],
+    "Default" : [ [ "true" ] ],
     "Mandatory" : "true",
     "CanBeMultiple" : "false"
   }, {
@@ -267,12 +267,12 @@
     "Title" : "Site-match proximity threshold",
     "Description" : "Phosphorylation relations many times know the target sites. When we observe a change in a site of the target protein which is not targeted by the relation, but the site is very close to a known target site of the relation, this parameter let's us to assume that the relation also applies to those close-by sites.",
     "EntryType" : [ "Double" ],
-    "Default" : [ "0" ],
+    "Default" : [ [ "0" ] ],
     "Mandatory" : "true",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Parameter" : "do-site-matching",
-      "Value" : "true"
+      "Value" : [ "true" ]
     }
   }, {
     "ID" : "default-missing-value",
@@ -286,7 +286,7 @@
     "Title" : "Network relation-type filter",
     "Description" : "Use this parameter to limit the results with a specific type of relation. Possible values are below.\n\tno-filter: The graph is used with all inferred relations.\n\tphospho-only: Only phosphorylation relations are desired.\n\texpression-only: Only expression relations are desired.\n\tphospho-primary-expression-secondary: All phosphorylation relations are desired. Expression relations are desired only as supplemental, i.e., they have to involve at least one protein that exists in phospho graph.\n",
     "EntryType" : [ "RelationFilterType" ],
-    "Default" : [ "no-filter" ],
+    "Default" : [ [ "no-filter" ] ],
     "Mandatory" : "true",
     "CanBeMultiple" : "false"
   }, {
@@ -308,14 +308,14 @@
     "Title" : "Node color saturation value",
     "Description" : "Specifies the value where node colors reach most intense color. Has to be a positive value, and used symmetrically.",
     "EntryType" : [ "Double" ],
-    "Default" : [ "1" ],
+    "Default" : [ [ "1" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Operator" : "NOT",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       } ]
     }
   }, {
@@ -323,14 +323,14 @@
     "Title" : "Show unexplained proteomic data",
     "Description" : "CausalPath generates a result graph, but what about all other significant changes that could not make into the network? CausalPath puts those genes as disconnected nodes in the graph when the analysis is not correlation based. This is true by default but can be turned off by setting to false.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "true" ],
+    "Default" : [ [ "true" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Operator" : "NOT",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       } ]
     }
   }, {
@@ -338,7 +338,7 @@
     "Title" : "Built-in network resources to use",
     "Description" : "Determines which network resource to use during the analysis. Multiple network resource should be mentioned together, separated with a space or comma. Possible values are below.\n\tPC: Pathway Commons v9 for all kinds of relations.\n\tREACH: Network derived from REACH NLP extraction results for phosphorylation relations.\n\tPhosphoNetworks: The PhosphoNetworks database for phosphorylations.\n\tIPTMNet: The IPTMNet database for phosphorylations.\n\tTRRUST: The TRRUST database for expression relations.\n\tTFactS: The TFactS database for expression relations.\n",
     "EntryType" : [ "ResourceType" ],
-    "Default" : [ "PC" ],
+    "Default" : [ [ "PC" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "true"
   }, {
@@ -346,7 +346,7 @@
     "Title" : "Generate a data-centric view as well",
     "Description" : "An alternative to the gene-centric graph of CausalPath is a data-centric graph where nodes are not genes but the data. This parameter forces to generate this type of result as well. False by default.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "false" ],
+    "Default" : [ [ "false" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -358,24 +358,24 @@
     "CanBeMultiple" : "false",
     "Condition" : {
       "Parameter" : "value-transformation",
-      "Value" : "correlation"
+      "Value" : [ "correlation" ]
     }
   }, {
     "ID" : "minimum-sample-size",
     "Title" : "Minimum sample size",
     "Description" : "When there are missing values in proteomic file, the comparisons can have different sample sizes for controls and tests. This parameter sets the minimum sample size of the control and test sets.",
     "EntryType" : [ "Integer" ],
-    "Default" : [ "3" ],
+    "Default" : [ [ "3" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Operator" : "OR",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       }, {
         "Parameter" : "value-transformation",
-        "Value" : "significant-change-of-mean"
+        "Value" : [ "significant-change-of-mean" ]
       } ]
     }
   }, {
@@ -389,7 +389,7 @@
       "Operator" : "NOT",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       } ]
     }
   }, {
@@ -403,7 +403,7 @@
       "Operator" : "NOT",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       } ]
     }
   }, {
@@ -411,7 +411,7 @@
     "Title" : "Use strongest proteomic data per gene",
     "Description" : "When a proteomic experiment outputs too many phosphorylation sites with lots of changes, many proteins have evidences for both activation and inhibition. This produces networks hard to read. A complexity management technique is to turn on this parameter to use only the strongest proteomic feature at the upstream of relations. This is false by default.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "false" ],
+    "Default" : [ [ "false" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
@@ -419,14 +419,14 @@
     "Title" : "Use network significance for causal reasoning",
     "Description" : "After calculation of network significances in a non-correlation-based analysis, this option introduces the detected active and inactive proteins as data to be used in the analysis. This applies only to the proteins that already have a changed data on them, and have no previous activity data associated.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "false" ],
+    "Default" : [ [ "false" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Operator" : "NOT",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       } ]
     }
   }, {
@@ -434,26 +434,26 @@
     "Title" : "Minimum potential targets to calculate network significance",
     "Description" : "While calculating downstream significance for each source gene, we may not like to include those genes with already few qualifying targets to reduce noise in data and reduce the number of tested hypotheses.",
     "EntryType" : [ "Integer" ],
-    "Default" : [ "3" ],
+    "Default" : [ [ "3" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Parameter" : "calculate-network-significance",
-      "Value" : "true"
+      "Value" : [ "true" ]
     }
   }, {
     "ID" : "show-insignificant-proteomic-data",
     "Title" : "Show insignificant proteomic data on the graph",
     "Description" : "Option to make the insignificant protein data on the result graph visible. Seeing these is good for seeing what is being measured, but when they are too much, turning off generates a a better view.",
     "EntryType" : [ "Boolean" ],
-    "Default" : [ "false" ],
+    "Default" : [ [ "false" ] ],
     "Mandatory" : "false",
     "CanBeMultiple" : "false",
     "Condition" : {
       "Operator" : "NOT",
       "Conditions" : [ {
         "Parameter" : "value-transformation",
-        "Value" : "correlation"
+        "Value" : [ "correlation" ]
       } ]
     }
   } ],
