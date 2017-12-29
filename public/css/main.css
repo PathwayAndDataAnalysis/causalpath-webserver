@@ -211,7 +211,7 @@ input[type="text"]{
     font-size: small;
 }
 .parameters-input{
-    width: 50%;
+    /*width: 100%;*/
 }
 .parameter-content{
     font-size: small;
@@ -219,9 +219,10 @@ input[type="text"]{
 }
 .parameters-select{
     height:100%;
-
+    /*width: 100px;*/
 }
 
 select, input, textarea{
-    margin: 5px;
+    margin-top: 10px;
 }
+

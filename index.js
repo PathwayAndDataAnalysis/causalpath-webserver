@@ -72,15 +72,20 @@ app.get('/:docId', function (page, model, arg, next) {
         var cgfTextPath =  model.at((docPath + '.cgfText'));
         var cyPath =  model.at((docPath + '.cy'));
         var parametersPath =  model.at((docPath + '.parameters'));
+        var enumerationsPath =  model.at((docPath + '.enumerations'));
 
         cgfTextPath.subscribe(function() {
 
             cyPath.subscribe(function () {
                 parametersPath.subscribe(function(){
-                    model.set('_page.room', room);
+                    enumerationsPath.subscribe(function(){
+                        model.set('_page.room', room);
 
-                    page.render();
-                })
+
+                        // console.log(model.get('_page.doc.parameters'));
+                        page.render();
+                    });
+                });
 
             });
         });
@@ -92,7 +97,7 @@ app.get('/:docId', function (page, model, arg, next) {
 
 app.proto.create = function (model) {
 
-    docReady = true;
+
     cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
 
 
@@ -106,92 +111,301 @@ app.proto.create = function (model) {
 
     let self = this;
     socket.on('parameterDescription', function(fileContent){
+
         let json = JSON.parse(fileContent);
+
         self.loadParameters(model, json);
+
+        docReady = true;
     });
 
-
-
+    self.initSelectBoxes();
     if(testMode)
         this.runUnitTests();
 
 
-
 };
 
-const camelToDash = str => str
-    .replace(/(^[A-Z])/, ([first]) => first.toLowerCase())
-    .replace(/([A-Z])/g, ([letter]) => `-${letter.toLowerCase()}`)
+
+/***
+ * Called after document is loaded.
+ * Listeners are called here.
+ * @param model
+ */
+app.proto.init = function (model) {
+
+    let self = this;
+
+
+
+    model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val){
+        if(docReady) {
+
+            self.updateParameterVisibility();
+        }
+    });
+}
+
+
+
 
 app.proto.loadParameters = function(model, json){
 
-    let parameterList = json.parameters;
+    let parameterList = json.Parameters;
+    let enumerationList = json.Enumerations;
+
+    //call before parameters because we will set parameter types accordingly
+    if(model.get('_page.doc.enumerations') == null)
+        model.set('_page.doc.enumerations', enumerationList);
 
     if(model.get('_page.doc.parameters') == null)
         model.set('_page.doc.parameters', parameterList);
 
+
     for(let i = 0; i < parameterList.length; i++){
-        if(model.get('_page.doc.parameters.' + i + '.value') == null)
-            model.set('_page.doc.parameters.' + i + '.value', parameterList[i].defaultValue);
+        let param = parameterList[i];
+        model.set('_page.doc.parameters.' + i + '.ind', i);  //index of a certain parameter
+        model.set('_page.doc.parameters.' + i + '.isVisible', true);  //visibility is on by default
+
+
+        if(model.get('_page.doc.parameters.' + i + '.cnt') == null) {
+            model.push('_page.doc.parameters.' + i + '.cnt', 0);  //for multiple fields
+
+            for (let j = 0; j < param.EntryType.length; j++)
+                model.set('_page.doc.parameters.' + i + '.domId.0.' + j, (param.ID + "-0-" + j));  //for multiple fields
+        }
+        if(model.get('_page.doc.parameters.' + i + '.value') == null) {
+            model.set('_page.doc.parameters.' + i + '.value.0', param.Default);
+        }
     }
+
+
+    this.updateParameterVisibility();
 };
+
+
+/***
+ * These cannot be updated directly by handlebars
+ */
+app.proto.initSelectBoxes = function(){
+    let self = this;
+    let parameterList = self.model.get('_page.doc.parameters');
+
+    if(parameterList) {
+        parameterList.forEach(function (param) {
+            param.cnt.forEach(function (cnt) {
+                for (let j = 0; j < param.EntryType.length; j++) {
+                    if (self.getEnum(param.EntryType[j])!= null && param.value != null && param.value[cnt] != null) {
+
+                        let val = param.value[cnt][j];
+                        self.getDomElement(param, cnt, j).val(val);
+
+                    }
+                }
+            });
+        });
+    }
+
+
+
+}
+
+app.proto.updateSelected = function(param, cnt, entryInd){
+    let paramVal = this.getDomElement(param, cnt, entryInd).val();
+
+
+    this.model.set('_page.doc.parameters.' + param.ind + '.value.' + cnt + '.' + entryInd, paramVal );
+}
 
 app.proto.resetToDefaultParameters= function(){
     let self = this;
+
+    let parameterList = self.model.get('_page.doc.parameters');
     for(let i = 0; i < parameterList.length; i++){
-        self.model.set('_page.doc.parameters.' + i + '.value', parameterList[i].defaultValue);
+        self.model.set('_page.doc.parameters.' + i + '.value', [parameterList[i].Default]);
+    }
+}
+
+app.proto.submitParameters = function () {
+    let parameterList = this.model.get('_page.doc.parameters');
+    let room  = this.model.get('_page.room');
+
+    let fileContent = convertParameterListToFileContent(parameterList);
+
+    socket.emit("writeParametersToFile", room, fileContent, 'parameters.txt', function(){
+        console.log("success");
+    });
+}
+
+var convertParameterListToFileContent = function(parameterList) {
+
+    let content = "";
+    parameterList.forEach(function(parameter){
+
+        if(parameter.value) {
+            parameter.value.forEach(function (val) {
+                if(val) {
+                    content += parameter.ID + " = ";
+
+
+                    for(let i = 0; i < val.length; i++){
+                        content += val[i] + " ";
+                    }
+                    content += '\n';
+                }
+            });
+        }
+    });
+
+    return content;
+};
+
+app.proto.getMultiple = function(param) {
+    if(param.CanBeMultiple === "true")
+        return true;
+    else
+        return undefined;
+}
+
+app.proto.getEnum = function(type){
+    let enumList = this.model.get('_page.doc.enumerations');
+
+    // console.log("getting enumerations");
+    // console.log(enumList);
+    for(var i = 0; i < enumList.length; i++){
+
+        if(enumList[i].name === type) {
+            return enumList[i].values;
+        }
+
+    }
+}
+
+
+app.proto.addParameter = function(param){
+
+    let self = this;
+    let currCnt = this.model.get('_page.doc.parameters.' + param.ind + '.cnt').length;
+    let newCnt = currCnt + 1;
+
+    this.model.push('_page.doc.parameters.' + param.ind + '.cnt', newCnt);  //id of the html field
+
+    for(let j =0 ; j < param.EntryType.length; j++)
+        self.model.set('_page.doc.parameters.' +  param.ind  + '.domId.' + newCnt +'.' + j , (param.ID + "-"+ newCnt +" -" + j));  //for multiple fields
+
+
+}
+
+app.proto.updateParameterVisibility = function(){
+    let parameterList = this.model.get('_page.doc.parameters');
+    let self = this;
+
+    parameterList.forEach(function(param){
+        if(param.Condition) {
+            let condition = param.Condition;
+
+            if(!condition.Operator) { //a single condition
+
+                if (self.conditionResult(condition.Parameter, condition.Value))
+                    self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
+
+                else
+                    self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', false);
+            }
+            else{
+                if (self.satisfiesConditions(condition.Operator, condition.Conditions))
+                    self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
+                else
+                    self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', false);
+            }
+        }
+    });
+
+}
+
+app.proto.satisfiesConditions = function(op, conditions){
+
+    let self = this;
+    let results = [];
+    for(let i = 0 ; i < conditions.length; i++){
+        let condition = conditions[i];
+
+        if(condition.Parameter && condition.Value){ //if it is not composite
+            let param = self.findParameterFromId(condition.Parameter);
+            results.push(self.conditionResult(param, condition.Value));
+
+        }
+        else if(condition.Operator) {
+            results.push(self.satisfiesConditions(condition.Operator, condition.Conditions));
+        }
+    }
+
+    if(op === 'AND'){
+        for(let i = 0 ; i < results.length; i++){
+            if(!results[i])
+                return false;
+        }
+        return true;
+    }
+    else if(op === 'OR'){
+        for(let i = 0 ; i < results.length; i++){
+            if(results[i])
+                return true;
+        }
+        return false;
+    }
+    else if(op === 'NOT'){
+        return !results[0];
+
+    }
+    else if(!op){
+        return results[0];
     }
 
 }
-//
-// app.proto.formatParameter = function(parameter){
-//     let paramStr = "";
-//     if(parameter.type === "select") {
-//         paramStr +=  parameter.title + ': <select id = ' + camelToDash(parameter.id) + '>';
-//
-//         for(let i = 0; i < parameter.options.length; i++){
-//             paramStr += '<option value = ' + i + '>' + parameter.options[i] + '</option>';
-//         }
-//     }
-//     else {
-//         paramStr +=  parameter.title + ': <input class = "parameters-input" id = ' + camelToDash(parameter.id) + ' type = ' + parameter.type;
-//         if(parameter.step)
-//             paramStr += 'step = ' + parameter.step;
-//         if(parameter.min)
-//             paramStr += 'min = ' + parameter.min;
-//         if(parameter.max)
-//             paramStr+= 'max = ' + parameter.max;
-//
-//         paramStr+= ' value = ' + parameter.value + '>';
-//
-//     }
-//
-//
-//     return paramStr;
-// }
+
+app.proto.findParameterFromId = function(id){
+    let parameterList = this.model.get('_page.doc.parameters');
+    let self = this;
+
+    for(let i = 0; i < parameterList.length; i++){
+        if(parameterList[i].ID === id)
+            return parameterList[i];
+    }
+}
+
+app.proto.conditionResult = function(param, value){
+
+    let paramVal = this.model.get('_page.doc.parameters.' + param.ind + '.value.0.0'); //TODO: will be value.0
+
+    return (paramVal === value);
+}
 
 /***
  * Load file specified in the parameters
  */
-app.proto.loadFile = function(e, paramInd){
+app.proto.loadFile = function(e, param, cnt, entryInd){
 
     var self = this;
-    let id = self.model.get('_page.doc.parameters.' + paramInd + '.id');
+    let id = self.model.get('_page.doc.parameters.' + param.ind + '.domId.' + cnt + '.' + entryInd);
 
     var reader = new FileReader();
 
 
-    let file = $(('#' + id))[0].files[0];
-    console.log(id);
+    let file = this.getDomElement(param, cnt, entryInd)[0].files[0];
 
     reader.onload = function (event) {
-        self.model.set('_page.doc.parameters.' + paramInd + '.file', file.name);
+        self.model.set('_page.doc.parameters.' + param.ind + '.file', file.name);
 
-        console.log(file);
     };
     reader.readAsText(file);
 
 }
+
+app.proto.getDomElement = function(param, cnt, entryInd){
+    return $('#' + param.domId[cnt][entryInd]);
+}
+
 app.proto.runLayout = function(){
     if(docReady)
         cgfCy.runLayout();
