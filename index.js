@@ -94,7 +94,6 @@ app.get('/:docId', function (page, model, arg, next) {
 });
 
 
-
 app.proto.create = function (model) {
 
 
@@ -102,6 +101,8 @@ app.proto.create = function (model) {
 
 
     socket = io();
+
+
 
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
@@ -117,17 +118,18 @@ app.proto.create = function (model) {
         self.loadParameters(model, json);
 
         docReady = true;
+
+        self.initSelectBoxes();
+        self.initCheckBoxes();
+
     });
 
-    self.initSelectBoxes();
-    self.initCheckBoxes();
+
 
     if(testMode)
         this.runUnitTests();
 
-
 };
-
 
 /***
  * Called after document is loaded.
@@ -196,14 +198,22 @@ app.proto.initSelectBoxes = function(){
     let self = this;
     let parameterList = self.model.get('_page.doc.parameters');
 
+
     if(parameterList) {
         parameterList.forEach(function (param) {
             param.cnt.forEach(function (cnt) {
                 for (let j = 0; j < param.EntryType.length; j++) {
                     let enumList = self.getEnum(param.EntryType[j]);
-                    if (enumList && param.value && param.value[cnt] && param.value[cnt][j]) {
-                        let selectedInd = enumList.indexOf(param.value[cnt][j])
-                        self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
+
+                    if(enumList) {
+
+                        if (param.value && param.value[cnt] && param.value[cnt][j]) {
+                            let selectedInd = enumList.indexOf(param.value[cnt][j])
+                            self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
+                        }
+                        else{ //no value assigned
+                            self.getDomElement(param, cnt, j)[0].selectedIndex = -1;
+                        }
                     }
                 }
             });
@@ -291,13 +301,59 @@ app.proto.resetToDefaultParameters= function(){
  */
 app.proto.submitParameters = function () {
     let parameterList = this.model.get('_page.doc.parameters');
-    let room  = this.model.get('_page.room');
 
-    let fileContent = convertParameterListToFileContent(parameterList);
+    let isSuccessful = this.checkParameters();
+    if(isSuccessful) { //means all the parameters are assigned proper values
 
-    socket.emit("writeParametersToFile", room, fileContent, 'parameters.txt', function(){
-        console.log("success");
-    });
+        let room = this.model.get('_page.room');
+
+        let fileContent = convertParameterListToFileContent(parameterList);
+
+
+        socket.emit("writeParametersToFile", room, fileContent, 'parameters.txt', function () {
+            console.log("success");
+            document.getElementById('parameters-table').style.display='none';
+        });
+    }
+
+}
+/***
+ * Make sure the mandatory parameters are not null
+ * @returns {boolean}
+ */
+app.proto.checkParameters = function(){
+    let parameterList = this.model.get('_page.doc.parameters');
+    let isSuccessful = true;
+
+    function isValueMissing(arr){
+
+        if(!arr)
+            return true;
+        for(let i = 0; i < arr.length; i++){
+            if(!arr[i])
+                return true;
+            for(let j = 0; j < arr[i].length; j++){
+                if(!arr[i][j])
+                    return true;
+            }
+        }
+        return false;
+    }
+
+
+    let missingValues = "";
+    for(let i = 0; i < parameterList.length; i++){
+        if(parameterList[i].isVisible && parameterList[i].Mandatory === "true" && isValueMissing(parameterList[i].value)){
+            isSuccessful = false;
+            missingValues += "-" + parameterList[i].Title + "\n";
+        }
+    }
+
+
+    if(missingValues !== "")
+        alert("Please enter:\n" + missingValues);
+
+    return isSuccessful;
 }
 
 /***
@@ -313,14 +369,22 @@ var convertParameterListToFileContent = function(parameterList) {
         if(parameter.value) {
             parameter.value.forEach(function (val) {
                 if(val) {
-                    content += parameter.ID + " = ";
 
 
-                    for(let i = 0; i < val.length; i++){
-                        content += val[i] + " ";
+                    let valContent = "";
+                    for(let i = 0; i < val.length; i++) {
+                        if (!val[i] || val[i]=="") {  //don't write the file if a value is missing
+                            valContent = "";
+                            break;
+                        }
+                        else
+                            valContent += val[i] + " ";
                     }
-                    content += '\n';
-                }
+                    if(valContent !== "")
+                        content += parameter.ID + " = " + valContent + "\n";
+
+                    }
+
             });
         }
     });
@@ -492,7 +556,7 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
     let file = this.getDomElement(param, cnt, entryInd)[0].files[0];
 
     reader.onload = function (event) {
-        self.model.set('_page.doc.parameters.' + param.ind + '.file', file.name);
+        self.model.set('_page.doc.parameters.' + param.ind + '.value', [[file.name]]);
 
     };
     reader.readAsText(file);

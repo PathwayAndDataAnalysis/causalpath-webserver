@@ -111,7 +111,7 @@
                                 <i class="fa fa-upload"></i> Select
                             </label>
 
-                            <div><input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)" value ={_page.newFile} ></div>
+                            <div><input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)"  ></div>
                         </div>
                     </td>
                     <td align = "center">
@@ -125,7 +125,7 @@
                                 <i class="fa fa-upload"></i> Select
                             </label>
 
-                            <div><input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDir()" value ={_page.analysisFiles} multiple ></div>
+                            <div><input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDir()"  multiple ></div>
                         </div>
                     </td>
 
@@ -188,11 +188,10 @@
                                 </td>
 
                                 {{each #parameter.EntryType as #type,  #entryInd}}
-
                                     {{if  #type === 'File'}}
                                         <td>
-                                            <label for= {{#parameter.domId[#cnt][#entryInd]}} class = "fa fa-upload parameters-input"> Select</label>
-                                            <input type="file" id= {{#parameter.domId[#cnt][#entryInd]}} accept=".txt" on-change = "loadFile($event, #parameter, #cnt, #entryInd)" value ={_page.newFile}>
+                                            <label for= {{#parameter.domId[#cnt][#entryInd]}} class = "fa fa-file-text-o parameters-input"> Select {{#parameter.value[#cnt][#entryInd]}} </label>
+                                            <input type="file" id= {{#parameter.domId[#cnt][#entryInd]}} accept=".txt" on-change = "loadFile($event, #parameter, #cnt, #entryInd)">
                                         </td>
                                     {{else if #type === 'Double'}}
                                         <td>
@@ -240,9 +239,12 @@
                         {{/if}} <!--isVisible-->
                     {{/each}} <!--each parameter-->
                 </tbody></table>
-                <input type = "button" value = "Reset to default values" on-click = "resetToDefaultParameters()">
-
-                <input type = "button" value = "Submit" on-click = "submitParameters()">
+                <table><tbody>
+                    <tr>
+                        <td><input type = "button" value = "Reset to default values" on-click = "resetToDefaultParameters()"></td>
+                        <td><input type = "button" value = "Submit" on-click = "submitParameters()"></td>
+                    </tr>
+                </tbody></table>
             </div>
         </div>
     </div>
