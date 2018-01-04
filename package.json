@@ -4,12 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "prestart": "mongod --dbpath data --fork --logpath /dev/null",
     "start": "node server.js",
-    "poststop": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
-    "pretest": "mongod --dbpath data --fork --logpath /dev/null",
-    "test": "mocha test",
-    "posttest": "mongo admin --eval 'db.shutdownServer()' > /dev/null"
+    "test": "cypress run"
   },
   "repository": {
     "type": "git",
@@ -41,6 +37,8 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "qunitjs": "^2.0.0-rc1"
+    "qunitjs": "^2.0.0-rc1",
+    "@cypress/releaser": "0.2.1",
+    "cypress": "^0.20.3"
   }
 }

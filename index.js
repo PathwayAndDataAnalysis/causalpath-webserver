@@ -125,6 +125,7 @@ app.proto.create = function (model) {
     });
 
 
+    window.testApp = this;
 
     if(testMode)
         this.runUnitTests();
