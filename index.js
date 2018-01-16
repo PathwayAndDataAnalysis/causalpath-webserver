@@ -449,11 +449,9 @@ app.proto.updateParameterVisibility = function(){
         if(param.Condition) {
             let condition = param.Condition;
 
-            if(!condition.Operator) { //a single condition
-
+            if(!condition.Operator) { //a single condition without an operator
                 if (self.conditionResult(condition.Parameter, condition.Value))
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
-
                 else
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', false);
             }
@@ -540,7 +538,8 @@ app.proto.conditionResult = function(param, value){
 
     let paramVal = this.model.get('_page.doc.parameters.' + param.ind + '.value.0');
 
-    return (paramVal === value);
+    if(paramVal )
+        return (paramVal[0] === value[0]); //TODO: look at this
 }
 
 /***

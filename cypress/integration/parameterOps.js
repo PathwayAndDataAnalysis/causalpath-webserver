@@ -7,11 +7,11 @@
 describe('Parameter Operations Test', function () {
 
 
-    function initParameter( id) {
+    function updataParameterVisibility( id) {
 
 
 
-        it("app.initParameter", function () {
+        it("app.updataParameterVisibility", function () {
             cy.window().should(function (window) {
 
                 let app =window.testApp;

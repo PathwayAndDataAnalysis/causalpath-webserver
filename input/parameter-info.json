@@ -1,10 +1,10 @@
 {
   "Parameters" : [ {
-    "ID" : "proteomics-platform-file",
-    "Title" : "Proteomics platform file",
-    "Description" : "Name of the proteomics platform file. Each row should belong to either a gene's total protein measurement, or a site specific measurement. This file should contain ID, gene symbols, modification sites, and known site effects. Platform file and values file can be the same file.",
-    "EntryType" : [ "File" ],
-    "Mandatory" : "false",
+      "ID" : "proteomics-platform-file",
+      "Title" : "Proteomics platform file",
+      "Description" : "Name of the proteomics platform file. Each row should belong to either a gene's total protein measurement, or a site specific measurement. This file should contain ID, gene symbols, modification sites, and known site effects. Platform file and values file can be the same file.",
+      "EntryType" : [ "File" ],
+      "Mandatory" : "false",
     "CanBeMultiple" : "false"
   }, {
     "ID" : "proteomics-values-file",
