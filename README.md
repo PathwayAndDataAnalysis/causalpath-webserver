@@ -5,7 +5,7 @@ A Web Server for [CausalPath](https://github.com/PathwayAndDataAnalysis/causalpa
 Installation
 ------------
 
-Install node.js, mongodb and redis servers first.
+Install node.js and mongodb servers first.
 
 Node:
 
@@ -14,23 +14,6 @@ Node:
 >| sudo -E bash -
 
 >sudo apt-get install -y nodejs
-
-Redis:
-
->sudo apt-get update
-
->sudo apt-get install build-essential
-
->sudo apt-get install tcl8.5
-
-wget
-[*http://download.redis.io/releases/redis-stable.tar.gz*](http://download.redis.io/releases/redis-stable.tar.gz)
-
->tar xzf redis-stable.tar.gz
-
->cd redis-stable
-
->make
 
 Mongo:
 
