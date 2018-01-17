@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.biopax.paxtools:pattern:5.1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/pattern/5.1.0-SNAPSHOT/pattern-5.1.0-20180111.215946-20.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/pattern/5.1.0-SNAPSHOT/pattern-5.1.0-20180111.215946-20-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/pattern/5.1.0-SNAPSHOT/pattern-5.1.0-20180111.215946-20-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

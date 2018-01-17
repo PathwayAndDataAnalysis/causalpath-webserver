@@ -195,7 +195,7 @@
                                         </td>
                                     {{else if #type === 'Double'}}
                                         <td>
-                                            <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'number' value = {{#parameter.value[#cnt][#entryInd]}}  step = 0.001 >
+                                            <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'number' value = {{#parameter.value[#cnt][#entryInd]}}  step = 0.01 >
                                             {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}
                                             <img src='img/add.png' on-click = "addParameter(#parameter)"/>
                                             {{/if}}

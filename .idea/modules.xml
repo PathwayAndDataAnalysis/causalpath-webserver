@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/jar/causalpath/causalpath.iml" filepath="$PROJECT_DIR$/jar/causalpath/causalpath.iml" />
       <module fileurl="file://$PROJECT_DIR$/causalpath-webserver.iml" filepath="$PROJECT_DIR$/causalpath-webserver.iml" />
     </modules>
   </component>

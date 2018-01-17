@@ -301,20 +301,42 @@ app.proto.resetToDefaultParameters= function(){
  * Sends the parameters to the server to write into a text file
  */
 app.proto.submitParameters = function () {
+    let self = this;
     let parameterList = this.model.get('_page.doc.parameters');
 
     let isSuccessful = this.checkParameters();
     if(isSuccessful) { //means all the parameters are assigned proper values
 
-        let room = this.model.get('_page.room');
+
+        let room = self.model.get('_page.room');
 
         let fileContent = convertParameterListToFileContent(parameterList);
 
+        //send files first
 
-        socket.emit("writeParametersToFile", room, fileContent, 'parameters.txt', function () {
-            console.log("success");
+        var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
+
+        socket.emit("writeFileOnServerSide", room, fileContent, 'parameters.txt', function (data) {
             document.getElementById('parameters-table').style.display='none';
+
+            if(data.indexOf("Error") == 0){
+                notyView.close();
+                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+
+            }
+            else{
+
+                notyView.setText( "Analyzing results...Please wait.");
+
+                self.createCyGraphFromCgf(JSON.parse(data), function () {
+                    notyView.close();
+                });
+
+                self.model.set('_page.doc.cgfText', data);
+            }
+
         });
+
     }
 
 }
@@ -328,13 +350,13 @@ app.proto.checkParameters = function(){
 
     function isValueMissing(arr){
 
-        if(!arr)
+        if(arr === undefined)
             return true;
         for(let i = 0; i < arr.length; i++){
-            if(!arr[i])
+            if(arr[i] === undefined)
                 return true;
             for(let j = 0; j < arr[i].length; j++){
-                if(!arr[i][j])
+                if(arr[i][j] === undefined)
                     return true;
             }
         }
@@ -558,6 +580,12 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
     reader.onload = function (event) {
         self.model.set('_page.doc.parameters.' + param.ind + '.value', [[file.name]]);
 
+        let room = self.model.get('_page.room');
+
+        //also send to server
+        socket.emit("writeFileOnServerSide", room, event.target.result, file.name, function () {
+            console.log("success");
+        });
     };
     reader.readAsText(file);
 
