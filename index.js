@@ -186,7 +186,6 @@ app.proto.loadParameters = function(model, json){
         }
     }
 
-
     this.updateParameterVisibility();
 };
 
@@ -437,13 +436,12 @@ app.proto.getEnum = function(type){
     // console.log("getting enumerations");
     // console.log(enumList);
     for(var i = 0; i < enumList.length; i++){
-
         if(enumList[i].name === type) {
             return enumList[i].values;
         }
-
     }
 }
+
 /***
  * Adds new input boxes when a new parameter is added
  * @param param
@@ -485,7 +483,6 @@ app.proto.updateParameterVisibility = function(){
             }
         }
     });
-
 }
 
 /***
@@ -501,10 +498,18 @@ app.proto.satisfiesConditions = function(op, conditions){
     for(let i = 0 ; i < conditions.length; i++){
         let condition = conditions[i];
 
-        if(condition.Parameter && condition.Value){ //if it is not composite
-            let param = self.findParameterFromId(condition.Parameter);
-            results.push(self.conditionResult(param, condition.Value));
 
+
+        if(condition.Parameter !== undefined && condition.Value !== undefined){ //if it is not composite
+
+            let param = self.findParameterFromId(condition.Parameter);
+
+
+            let result = self.conditionResult(param, condition.Value);
+            results.push(result);
+
+            if(condition.Parameter == "fdr-threshold-for-network-significance")
+                console.log(result);
         }
         else if(condition.Operator) {
             results.push(self.satisfiesConditions(condition.Operator, condition.Conditions));
@@ -560,8 +565,13 @@ app.proto.conditionResult = function(param, value){
 
     let paramVal = this.model.get('_page.doc.parameters.' + param.ind + '.value.0');
 
-    if(paramVal )
+
+    if(paramVal)
         return (paramVal[0] === value[0]); //TODO: look at this
+    else
+        if (value[0] == null)
+            return true;
+        return false;
 }
 
 /***

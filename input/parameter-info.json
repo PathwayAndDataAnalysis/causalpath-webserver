@@ -140,7 +140,7 @@
         } ]
       }, {
         "Parameter" : "fdr-threshold-for-data-significance",
-        "Value" : null
+        "Value" : [null]
       } ]
     }
   }, {
@@ -160,7 +160,7 @@
         } ]
       }, {
         "Parameter" : "threshold-for-data-significance",
-        "Value" : null
+        "Value" : [null]
       } ]
     }
   }, {
@@ -175,7 +175,7 @@
       "Operator" : "NOT",
       "Conditions" : [ {
         "Parameter" : "fdr-threshold-for-data-significance",
-        "Value" : null
+        "Value" : [null]
       } ]
     }
   }, {
@@ -225,7 +225,7 @@
         "Value" : [ "correlation" ]
       }, {
         "Parameter" : "fdr-threshold-for-correlation",
-        "Value" : null
+        "Value" : [null]
       } ]
     }
   }, {
@@ -243,7 +243,7 @@
         "Value" : [ "correlation" ]
       }, {
         "Parameter" : "pval-threshold-for-correlation",
-        "Value" : null
+        "Value" : [null]
       } ]
     }
   }, {
