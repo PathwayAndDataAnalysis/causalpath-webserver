@@ -141,10 +141,18 @@ app.proto.init = function (model) {
 
     let self = this;
 
-    model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val){
+    model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
         if(docReady) {
 
             self.updateParameterVisibility();
+
+            console.log(ind);
+            console.log(op);
+            console.log(val);
+            console.log(prev);
+            console.log(passed);
+            let param = self.model.get('_page.doc.parameters.' + ind);
+            console.log(param);
         }
     });
 }
@@ -321,6 +329,7 @@ app.proto.submitParameters = function () {
             if(data.indexOf("Error") == 0){
                 notyView.close();
                 notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+                console.log(data);
 
             }
             else{
@@ -388,7 +397,8 @@ var convertParameterListToFileContent = function(parameterList) {
     let content = "";
     parameterList.forEach(function(parameter){
 
-        if(parameter.value) {
+
+        if(parameter.isVisible && parameter.value) {
             parameter.value.forEach(function (val) {
                 if(val) {
 
@@ -732,6 +742,7 @@ app.proto.loadAnalysisDir = function(){
                 if(data.indexOf("Error") == 0){
                     notyView.close();
                     notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+                    console.log(data);
 
                 }
                 else {
