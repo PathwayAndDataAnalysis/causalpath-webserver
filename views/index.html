@@ -188,52 +188,63 @@
                                 </td>
 
                                 {{each #parameter.EntryType as #type,  #entryInd}}
-                                    {{if  #type === 'File'}}
-                                        <td>
+                                    <td>
+                                        {{if  #type === 'File'}}
                                             <label for= {{#parameter.domId[#cnt][#entryInd]}} class = "fa fa-file-text-o parameters-input"> Select {{#parameter.value[#cnt][#entryInd]}} </label>
                                             <input type="file" id= {{#parameter.domId[#cnt][#entryInd]}} accept=".txt" on-change = "loadFile($event, #parameter, #cnt, #entryInd)">
-                                        </td>
-                                    {{else if #type === 'Double'}}
-                                        <td>
+                                        {{else if #type === 'Double'}}
                                             <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'number' value = {{#parameter.value[#cnt][#entryInd]}}  step = 0.01 >
-                                            {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}
-                                            <img src='img/add.png' on-click = "addParameter(#parameter)"/>
-                                            {{/if}}
-                                        </td>
-                                    {{else if #type === 'Integer'}}
-                                        <td>
+
+                                        {{else if #type === 'Integer'}}
                                             <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'number' value = {{#parameter.value[#cnt][#entryInd]}} step = 1 >
-                                            {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 &&  #cnt === 0}}
-                                            <img src='img/add.png' on-click = "addParameter(#parameter)"/>
-                                            {{/if}}
-                                        </td>
-                                    {{else if #type === 'String'}}
-                                        <td>
+
+                                        {{else if #type === 'String'}}
                                             <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'text' value = {{#parameter.value[#cnt][#entryInd]}}  >
-                                            {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 &&  #cnt === 0}}
-                                            <img src='img/add.png' on-click = "addParameter(#parameter)"/>
-                                            {{/if}}
-                                        </td>
-                                    {{else if #type === 'Boolean'}}
-                                        <td>
+
+                                        {{else if #type === 'Boolean'}}
                                             <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'checkbox' on-click = "updateChecked(#parameter, #cnt, #entryInd)">
-                                            {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 &&  #cnt === 0}}
-                                            <img src='img/add.png' on-click = "addParameter(#parameter)"/>
-                                            {{/if}}
-                                        </td>
-                                    {{else}}
-                                        <td>
+
+                                        {{else}}
                                             <select id =  {{#parameter.domId[#cnt][#entryInd]}} class = "parameters-select" on-change = "updateSelected(#parameter, #cnt, #entryInd)">
                                             {{each getEnum(#type) as #option}}
                                                 <option name = {{#option}}>{{#option}}</option>
                                              {{/each}}
                                             </select>
-                                            {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 &&  #cnt === 0}}
-                                            <img src='img/add.png' on-click = "addParameter(#parameter)"/>
-                                            {{/if}}
-                                        </td>
+                                        {{/if}}
+
+                                        <!--{{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}-->
+                                        <!--<img src='img/add.png' on-click = "addParameter(#parameter)"/>-->
+                                        <!--{{/if}}-->
+                                    </td>
+
+
+
+                                    {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}
+                                    <td class = "img-td"><img src='img/add.png' on-click = "addParameter(#parameter)"/></td>
+
+                                    <td>
+                                        <button class = "btn" onclick = "document.getElementById('batch-modal').style.display='block'">Batch</button>
+
+                                        <div id="batch-modal" class="w3-modal">
+                                            <div class="w3-modal-content">
+                                                <div class="w3-modal-container parameters">
+                                                    <header class="w3-container "> <span onclick="document.getElementById('batch-modal').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
+                                                    *Separate multiple columns by space</header>
+                                                    <p></p>
+
+                                                    <textarea id =  {{#parameter.batchDomId}} rows = "30" cols = "100"></textarea>
+
+                                                    <p></p>
+                                                    <button on-click = "updateBatch(#parameter, #cnt)" onclick="document.getElementById('batch-modal').style.display='none'">Submit</button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
                                     {{/if}}
                                 {{/each}} <!--each entrytype-->
+
                                 </tr>
                             {{/each}} <!--each cnt-->
                         {{/if}} <!--isVisible-->

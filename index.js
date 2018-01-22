@@ -143,16 +143,7 @@ app.proto.init = function (model) {
 
     model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
         if(docReady) {
-
             self.updateParameterVisibility();
-
-            console.log(ind);
-            console.log(op);
-            console.log(val);
-            console.log(prev);
-            console.log(passed);
-            let param = self.model.get('_page.doc.parameters.' + ind);
-            console.log(param);
         }
     });
 }
@@ -187,6 +178,10 @@ app.proto.loadParameters = function(model, json){
 
             for (let j = 0; j < param.EntryType.length; j++)
                 model.set('_page.doc.parameters.' + i + '.domId.0.' + j, (param.ID + "-0-" + j));  //for multiple fields
+
+            // if(param.CanBeMultiple === "true")
+                model.set('_page.doc.parameters.' + i + '.batchDomId.', (param.ID + "-batch"));  //for batch values
+
         }
         if(model.get('_page.doc.parameters.' + i + '.value') == null) {
             if(param.Default)
@@ -291,6 +286,33 @@ app.proto.updateChecked = function(param, cnt, entryInd){
     this.setParamValue(param, cnt, entryInd, paramVal );
 
 }
+
+
+/***
+ * Updates model when the submit button for batch values is clicked
+ * @param param
+ * @param cnt
+ */
+app.proto.updateBatch = function(param, cnt, entryInd){
+
+
+    let valStr =  $('#' + param.batchDomId).val();
+
+    let vals = valStr.split("\n");
+
+    for(let i = cnt; i < (vals.length + cnt); i++ ) {
+        let valEntry = vals[i].split(" ");
+
+        for(let entryInd  =0; entryInd < valEntry.length; entryInd++) {
+
+            console.log(entryInd + " " + valEntry[entryInd]);
+            this.setParamValue(param, i, entryInd, valEntry[entryInd]);
+        }
+    }
+
+
+}
+
 
 /***
  * Resets all parameters to default values

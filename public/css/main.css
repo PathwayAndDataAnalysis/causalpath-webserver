@@ -222,7 +222,32 @@ input[type="text"]{
     /*width: 100px;*/
 }
 
-select, input, textarea{
-    margin-top: 10px;
+select, input, textarea, label{
+    /*margin-top: 10px;*/
+    /*margin-left: 10px;*/
+    width: 200px;
+    margin: 5px !important;
+
+    /*margin-top: 5px !important;*/
 }
 
+
+#batch-input{
+    width: 500px;
+}
+
+.parameter-content tr td{
+    border: 1px solid #ececec;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.img-td{
+    padding: 2px !important;
+    width: 10px;
+}
+/*table[class = "parameter-content"], tr, td {*/
+    /*border: 1px solid black;*/
+/*}*/
