@@ -180,7 +180,8 @@ app.proto.loadParameters = function(model, json){
                 model.set('_page.doc.parameters.' + i + '.domId.0.' + j, (param.ID + "-0-" + j));  //for multiple fields
 
             // if(param.CanBeMultiple === "true")
-                model.set('_page.doc.parameters.' + i + '.batchDomId.', (param.ID + "-batch"));  //for batch values
+                model.set('_page.doc.parameters.' + i + '.batchDomId', (param.ID + "-batch"));  //for batch values
+                model.set('_page.doc.parameters.' + i + '.batchModalDomId', (param.ID + "-batchModal"));  //for batch values
 
         }
         if(model.get('_page.doc.parameters.' + i + '.value') == null) {
@@ -293,7 +294,7 @@ app.proto.updateChecked = function(param, cnt, entryInd){
  * @param param
  * @param cnt
  */
-app.proto.updateBatch = function(param, cnt, entryInd){
+app.proto.updateBatch = function(param, cnt){
 
 
     let valStr =  $('#' + param.batchDomId).val();
@@ -305,7 +306,6 @@ app.proto.updateBatch = function(param, cnt, entryInd){
 
         for(let entryInd  =0; entryInd < valEntry.length; entryInd++) {
 
-            console.log(entryInd + " " + valEntry[entryInd]);
             this.setParamValue(param, i, entryInd, valEntry[entryInd]);
         }
     }

@@ -223,19 +223,19 @@
                                     <td class = "img-td"><img src='img/add.png' on-click = "addParameter(#parameter)"/></td>
 
                                     <td>
-                                        <button class = "btn" onclick = "document.getElementById('batch-modal').style.display='block'">Batch</button>
+                                        <button class = "btn" onclick = "document.getElementById('{{#parameter.batchModalDomId}}').style.display='block'">Batch</button>
 
-                                        <div id="batch-modal" class="w3-modal">
+                                        <div id=  {{#parameter.batchModalDomId}}  class="w3-modal">
                                             <div class="w3-modal-content">
                                                 <div class="w3-modal-container parameters">
-                                                    <header class="w3-container "> <span onclick="document.getElementById('batch-modal').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
+                                                    <header class="w3-container "> <span onclick="document.getElementById('{{#parameter.batchModalDomId}}').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
                                                     *Separate multiple columns by space</header>
                                                     <p></p>
 
                                                     <textarea id =  {{#parameter.batchDomId}} rows = "30" cols = "100"></textarea>
 
                                                     <p></p>
-                                                    <button on-click = "updateBatch(#parameter, #cnt)" onclick="document.getElementById('batch-modal').style.display='none'">Submit</button>
+                                                    <button on-click = "updateBatch(#parameter, #cnt)" onclick="document.getElementById('{{#parameter.batchModalDomId}}').style.display='none'">Submit</button>
 
                                                 </div>
                                             </div>
