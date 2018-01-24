@@ -248,6 +248,13 @@ select, input, textarea, label{
     padding: 2px !important;
     width: 10px;
 }
+
+#pc-query-table{
+    width:250px;
+    height:20px;
+    position: absolute;
+
+}
 /*table[class = "parameter-content"], tr, td {*/
     /*border: 1px solid black;*/
 /*}*/

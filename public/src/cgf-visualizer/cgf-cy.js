@@ -10,6 +10,7 @@
  * @param edgeType
  * @returns {{color:'', linestyle:}}
  */
+
 function attributeMap(edgeType){
     var attributes = {color: 'gray', lineStyle: 'solid'};
 
@@ -231,6 +232,9 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
     var cyElements = module.exports.convertModelJsonToCyElements(modelCy, doTopologyGrouping);
 
+    let contextMenu;
+
+
 
     var cy = window.cy = cytoscape({
         container: el,
@@ -263,6 +267,68 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
         ready: function () {
 
 
+            contextMenu = cy.contextMenus({
+                // List of initial menu items
+                menuItems: [
+                    {
+                        id: 'show-pc-query', // ID of menu item
+                        content: 'Click to open PC query', // Display content of menu item
+                        tooltipText: 'Click to open PC query', // Tooltip text for menu item
+                        // If the selector is not truthy no elements will have this menu item on cxttap
+                        selector: 'edge',
+                        onClickFunction: function (event) { // The function to be executed on click
+                            let edge = event.target || event.cyTarget;
+
+
+                            let links = edge.data("pcLinks");
+                            let uriStr = "";
+                            if(links && links.length > 0) {
+                                uriStr = links[0]
+                                for(let i = 1; i < links.length; i++)
+                                    uriStr += '&' + links[i];
+                            }
+                            var loc = "http://web.newteditor.org/?URI=";
+                            if (loc[loc.length - 1] === "#") {
+                                loc = loc.slice(0, -1);
+                            }
+                            var w = window.open((loc + uriStr), function () {
+
+                            });
+
+                            // $.ajax({
+                            //     uri: uriStr,
+                            //     format:'SBGN',
+                            //     type:'GET',
+                            //     success: function(data, status) {
+                            //         var loc = "http://web.newteditor.org/?URI=";
+                            //         if (loc[loc.length - 1] === "#") {
+                            //             loc = loc.slice(0, -1);
+                            //         }
+                            //         var w = window.open((loc + uriStr), function () {
+                            //
+                            //         });
+                            //         //
+                            //         // // //because window opening takes a while
+                            //         // setTimeout(function () {
+                            //         //
+                            //         //     var json = chise.convertSbgnmlTextToJson(data.graph);
+                            //         //     w.postMessage(JSON.stringify(json), "*");
+                            //         // }, 2000);
+                            //     }
+                            // });
+
+
+
+
+                        },
+                        disabled: false, // Whether the item will be created as disabled
+                        hasTrailingDivider: true, // Whether the item will have a trailing divider
+                        coreAsWell: true // Whether core instance have this item on cxttap
+                    }
+                ]
+            });
+
+
             cy.on('layoutstop', function() {
                 cy.nodes().forEach(function (node) {
                     computeSitePositions(node);
@@ -280,6 +346,8 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 this.css('background-color', '#FFCC66');
 
             });
+
+
 
             cy.on('unselect', 'node', function(e){
                 //get original background color
@@ -391,8 +459,9 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 var edge = this;
 
                 edge.qtip({
-                    content: function () {
-                        return "<b style='text-align:center;font-size:16px;'>" + edge.data("edgeType") + "</b>";
+                    content: {
+                        text: "<b style='text-align:center;font-size:16px;'>" + edge.data("edgeType") + "</b>",
+
                     },
                     show: {
                         ready: true
@@ -412,14 +481,20 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                         }
                     }
                 });
-            });
-        }
+              
 
+            });
+
+
+        }
 
     });
 
 
+
 }
+
+
 
 /***
  * Style sheet for causality graphs
@@ -498,5 +573,4 @@ var CgfStyleSheet = cytoscape.stylesheet()
             'padding-right': '10px',
 
 
-        })
-    ;
+        });

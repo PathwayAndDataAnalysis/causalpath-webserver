@@ -82,30 +82,35 @@ function groupTopology(cyElements){
     var newEdges = [];
     edges.forEach(function (edge) {
 
+        let newEdge;
         if(nodeHash[edge.data.source].data.parent!=null) { //change the source
             edge.data.invisible = true;
             var newSource = nodeHash[edge.data.source].data.parent;
 
+
             if(nodeHash[edge.data.target].data.parent!=null) {
                 var newTarget = nodeHash[edge.data.target].data.parent;
-                newEdges.push({data:{id: (newSource+ "_" + newTarget), source: newSource, target:newTarget, edgeType: edge.data.edgeType}});
+                newEdge = {data:{id: (newSource+ "_" + newTarget), source: newSource, target:newTarget, edgeType: edge.data.edgeType}};
+
             }
             else{
-                newEdges.push({data:{id: (newSource+ "_" + edge.data.target), source: newSource, target:edge.data.target, edgeType: edge.data.edgeType}});
+                newEdge = {data:{id: (newSource+ "_" + edge.data.target), source: newSource, target:edge.data.target, edgeType: edge.data.edgeType}};
             }
         }
         else{
             if(nodeHash[edge.data.target].data.parent!=null) {
                 edge.data.invisible = true;
                 var newTarget = nodeHash[edge.data.target].data.parent;
-                newEdges.push({data:{id: (edge.data.source+ "_" + newTarget), source: edge.data.source, target:newTarget, edgeType: edge.data.edgeType}});
+                newEdge = {data:{id: (edge.data.source+ "_" + newTarget), source: edge.data.source, target:newTarget, edgeType: edge.data.edgeType}};
             }
             else{
-                newEdges.push({data:{id: (edge.data.source+ "_" + edge.data.target), source: edge.data.source, target:edge.data.target, edgeType: edge.data.edgeType}});
+                newEdge = {data:{id: (edge.data.source+ "_" + edge.data.target), source: edge.data.source, target:edge.data.target, edgeType: edge.data.edgeType}};
             }
 
         }
 
+        newEdge.data.pcLinks = edge.data.pcLinks;
+        newEdges.push(newEdge);
     });
 
 
