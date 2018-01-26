@@ -8,10 +8,6 @@ var app = module.exports = require('derby').createApp('cwc', __filename);
 
 
 app.loadViews(__dirname + '/views');
-//app.loadStyles(__dirname + '/styles');
-//app.serverUse(module, 'derby-stylus');
-
-let testMode = false;
 
 var docReady = false;
 
@@ -44,9 +40,7 @@ app.get('/', function (page, model, params) {
         docId = getId();
     }
 
-     if( testMode ){ // use qunit testing doc if we're testing so we don't disrupt real docs
-         docId = 'qunit';
-     }
+
 
     return page.redirect('/' + docId);
 });
@@ -59,15 +53,19 @@ app.get('/:docId', function (page, model, arg, next) {
 
     var docPath = 'documents.' + arg.docId;
 
+    if(arg.docId === 'test' && model.get('documents.test'))
+        model.set('documents.test', null);
 
     model.ref('_page.doc', ('documents.' + arg.docId));
 
     model.subscribe(docPath, function (err) {
         if (err) return next(err);
 
+
         model.createNull(docPath, { // create the empty new doc if it doesn't already exist
             id: arg.docId
         });
+
 
         var cgfTextPath =  model.at((docPath + '.cgfText'));
         var cyPath =  model.at((docPath + '.cy'));
@@ -82,6 +80,19 @@ app.get('/:docId', function (page, model, arg, next) {
                         model.set('_page.room', room);
 
 
+                        if(arg.docId === 'test') { //clear everything and start from scratch if this is test mode
+;
+
+                            // if(cgfTextPath.get())
+                            //     model.set(docPath + '.cgfText', null);
+                            // if(cyPath.get())
+                            //     model.set(docPath + '.cy', null);
+                            // if(parametersPath.get())
+                            //     model.set(docPath + '.parameters', null);
+                            // if(enumerationsPath.get())
+                            //     model.set(docPath + '.enumerations', null);
+
+                        };
                         // console.log(model.get('_page.doc.parameters'));
                         page.render();
                     });
@@ -106,10 +117,11 @@ app.proto.create = function (model) {
 
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
-
-    this.modelManager = require('./public/src/model/modelManager.js')(model, model.get('_page.room'), model.get('_session.userId'),name );
-
-
+    let room = model.get('_page.room');
+    //
+    this.modelManager = require('./public/src/model/modelManager.js')(model, room, model.get('_session.userId'),name );
+    //
+    //
     let self = this;
     socket.on('parameterDescription', function(fileContent){
 
@@ -122,13 +134,15 @@ app.proto.create = function (model) {
         self.initSelectBoxes();
         self.initCheckBoxes();
 
+
+        //it can only run after the parameters are run
+        window.testApp = this;
+
+        console.log("Parameters acquired from the server");
+
     });
 
-
-
-    window.testApp = this;
-
-    if(testMode)
+    if(room === 'test')
         this.runUnitTests();
 
 };
@@ -145,10 +159,19 @@ app.proto.init = function (model) {
     model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
         if(docReady) {
             self.updateParameterVisibility();
+            setTimeout(function(){
+                self.initSelectBoxes();
+                self.initSelectBoxes();
+            }, 100); //wait a little while so that dom elements are updated
+
         }
     });
 }
 
+app.proto.runUnitTests = function(){
+    require("./test/testsGraphCreation.js")();
+    require("./test/testOptions.js")(); //to print out results
+}
 
 /***
  * Loads parameters from the input json file
@@ -159,6 +182,7 @@ app.proto.loadParameters = function(model, json){
 
     let parameterList = json.Parameters;
     let enumerationList = json.Enumerations;
+
 
     //call before parameters because we will set parameter types accordingly
     if(model.get('_page.doc.enumerations') == null)
@@ -171,7 +195,9 @@ app.proto.loadParameters = function(model, json){
     for(let i = 0; i < parameterList.length; i++){
         let param = parameterList[i];
         model.set('_page.doc.parameters.' + i + '.ind', i);  //index of a certain parameter
+
         model.set('_page.doc.parameters.' + i + '.isVisible', true);  //visibility is on by default
+
 
 
         if(model.get('_page.doc.parameters.' + i + '.cnt') == null) {
@@ -206,22 +232,24 @@ app.proto.initSelectBoxes = function(){
 
     if(parameterList) {
         parameterList.forEach(function (param) {
-            param.cnt.forEach(function (cnt) {
-                for (let j = 0; j < param.EntryType.length; j++) {
-                    let enumList = self.getEnum(param.EntryType[j]);
+            if(param.isVisible) { //otherwise dom elements will not have been created yet
+                param.cnt.forEach(function (cnt) {
+                    for (let j = 0; j < param.EntryType.length; j++) {
+                        let enumList = self.getEnum(param.EntryType[j]);
 
-                    if(enumList) {
+                        if (enumList) {
 
-                        if (param.value && param.value[cnt] && param.value[cnt][j]) {
-                            let selectedInd = enumList.indexOf(param.value[cnt][j])
-                            self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
-                        }
-                        else{ //no value assigned
-                            self.getDomElement(param, cnt, j)[0].selectedIndex = -1;
+                            if (param.value && param.value[cnt] && param.value[cnt][j]) {
+                                let selectedInd = enumList.indexOf(param.value[cnt][j])
+                                self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
+                            }
+                            else { //no value assigned
+                                self.getDomElement(param, cnt, j)[0].selectedIndex = -1;
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         });
     }
 }
@@ -238,18 +266,20 @@ app.proto.initCheckBoxes = function() {
 
     if(parameterList) {
         parameterList.forEach(function (param) {
-            param.cnt.forEach(function (cnt) {
-                for (let j = 0; j < param.EntryType.length; j++) {
-                    if (param.EntryType[j] === "Boolean") {
-                        let val = param.value[cnt][j];
-                        if(val === "true" || val === true)
-                            self.getDomElement(param, cnt, j).prop('checked', true);
-                        else
-                            self.getDomElement(param, cnt, j).prop('checked', false);
+            if(param.isVisible) {
+                param.cnt.forEach(function (cnt) {
+                    for (let j = 0; j < param.EntryType.length; j++) {
+                        if (param.EntryType[j] === "Boolean") {
+                            let val = param.value[cnt][j];
+                            if (val === "true" || val === true)
+                                self.getDomElement(param, cnt, j).prop('checked', true);
+                            else
+                                self.getDomElement(param, cnt, j).prop('checked', false);
 
+                        }
                     }
-                }
-            });
+                });
+            }
         });
     }
 }
@@ -347,7 +377,7 @@ app.proto.submitParameters = function () {
         var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
 
         socket.emit("writeFileOnServerSide", room, fileContent, 'parameters.txt', function (data) {
-            document.getElementById('parameters-table').style.display='none';
+            // document.getElementById('parameters-table').style.display='none';
 
             if(data.indexOf("Error") == 0){
                 notyView.close();
@@ -503,16 +533,49 @@ app.proto.updateParameterVisibility = function(){
             let condition = param.Condition;
 
             if(!condition.Operator) { //a single condition without an operator
-                if (self.conditionResult(condition.Parameter, condition.Value))
+                if (self.conditionResult(condition.Parameter, condition.Value)){
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
-                else
+
+                        // param.cnt.forEach(function(cnt) {
+                        //     for (let entryInd = 0; entryInd < param.EntryType.length; entryInd++) {
+                        //         let enumList = self.getEnum(param.EntryType[entryInd]);
+                        //         if(enumList){
+                        //             if()
+                        //             self.updateSelected(param, cnt, entryInd);
+                        //             }
+                        //
+                        //         else if (param.EntryType[entryInd] === "Boolean")
+                        //             self.updateChecked(param, cnt, entryInd);
+                        //     }
+                        // });
+                }
+                else{
+
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', false);
+
+            }
             }
             else{
-                if (self.satisfiesConditions(condition.Operator, condition.Conditions))
+                if (self.satisfiesConditions(condition.Operator, condition.Conditions)) {
+
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
-                else
+
+                    // param.cnt.forEach(function(cnt) {
+                    //     for (let entryInd = 0; entryInd < param.EntryType.length; entryInd++) {
+                    //         let enumList = self.getEnum(param.EntryType[entryInd]);
+                    //         if(enumList)
+                    //             self.updateSelected(param, cnt, entryInd);
+                    //         else if (param.EntryType[entryInd] === "Boolean")
+                    //             self.updateChecked(param, cnt, entryInd);
+                    //     }
+                    // });
+                }
+                else {
+
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', false);
+
+
+                }
             }
         }
     });

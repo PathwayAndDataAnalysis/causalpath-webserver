@@ -295,30 +295,6 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
                             });
 
-                            // $.ajax({
-                            //     uri: uriStr,
-                            //     format:'SBGN',
-                            //     type:'GET',
-                            //     success: function(data, status) {
-                            //         var loc = "http://web.newteditor.org/?URI=";
-                            //         if (loc[loc.length - 1] === "#") {
-                            //             loc = loc.slice(0, -1);
-                            //         }
-                            //         var w = window.open((loc + uriStr), function () {
-                            //
-                            //         });
-                            //         //
-                            //         // // //because window opening takes a while
-                            //         // setTimeout(function () {
-                            //         //
-                            //         //     var json = chise.convertSbgnmlTextToJson(data.graph);
-                            //         //     w.postMessage(JSON.stringify(json), "*");
-                            //         // }, 2000);
-                            //     }
-                            // });
-
-
-
 
                         },
                         disabled: false, // Whether the item will be created as disabled

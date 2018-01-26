@@ -49,12 +49,10 @@ module.exports = function(){
     QUnit.module( "Cytoscape Tests" );
     function createCyTest(callback){
         QUnit.test('createCyContainer', function(assert){
-            var done = assert.async();
             var cgfCy = require('../public/src/cgf-visualizer/cgf-cy.js');
             assert.ok(cgfCy,"Cytoscape visualizer accessed.");
             var cont = new cgfCy.createContainer($('#graph-container'),  false, ModelManager, function () {
                 assert.ok(cy,"Cytoscape container created successfully.");
-                done();
                 if(callback) callback(); //call cy-related tests after container is created
             });
 
@@ -62,12 +60,12 @@ module.exports = function(){
         })
     }
 
-    function selectNodeTest(nodeId, colorStr){
+    function selectNodeTest(){
         QUnit.test('modelManager.selectNode()', function(assert){
 
-            var id = nodeId;
+            var id = "CDK1";
             var color = ModelManager.getModelNodeAttribute(id, 'css.backgroundColor');
-            assert.equal(color, colorStr, "Node background color is initially correct.");
+            assert.equal(color, "rgb(255,196,183)", "Node background color is initially correct.");
 
             var nodeCy = cy.getElementById(id);
             assert.ok(nodeCy, "Node " + id + " exists.");
@@ -107,8 +105,6 @@ module.exports = function(){
             var node2 = cy.getElementById("LIN9");
             var node3 = cy.getElementById("KLF5");
 
-
-
             assert.equal(node1._private.data.parent, node2._private.data.parent, "node1 and node2 grouped correctly.");
             assert.equal(node1._private.data.parent, node3._private.data.parent, "node1, node2 and node3 are grouped correctly.");
 
@@ -124,17 +120,17 @@ module.exports = function(){
 
 
 
+    clearModel();
     initModelFromJsonTest(demoJson);
 
     createCyTest(function() {
         //call cy-related tests after container is created
-        selectNodeTest("CD4", "rgb(255,189,173)");
+        selectNodeTest();
 
         topologyGroupingTest();
     });
-    //
-    //
-    // clearModel();
+
+
 
 
 };

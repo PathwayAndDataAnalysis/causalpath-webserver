@@ -84,9 +84,8 @@ function groupTopology(cyElements){
 
         let newEdge;
         if(nodeHash[edge.data.source].data.parent!=null) { //change the source
-            edge.data.invisible = true;
+            // edge.data.invisible = true;
             var newSource = nodeHash[edge.data.source].data.parent;
-
 
             if(nodeHash[edge.data.target].data.parent!=null) {
                 var newTarget = nodeHash[edge.data.target].data.parent;
@@ -99,7 +98,7 @@ function groupTopology(cyElements){
         }
         else{
             if(nodeHash[edge.data.target].data.parent!=null) {
-                edge.data.invisible = true;
+                // edge.data.invisible = true;
                 var newTarget = nodeHash[edge.data.target].data.parent;
                 newEdge = {data:{id: (edge.data.source+ "_" + newTarget), source: edge.data.source, target:newTarget, edgeType: edge.data.edgeType}};
             }
@@ -110,8 +109,18 @@ function groupTopology(cyElements){
         }
 
         newEdge.data.pcLinks = edge.data.pcLinks;
-        newEdges.push(newEdge);
+
+        let exists = false;
+        newEdges.forEach(function(e){
+            if (e.data.id === newEdge.data.id) { //already added
+                e.data.pcLinks.push(newEdge.data.pcLinks);
+                exists = true;
+            }
+        })
+        if(!exists)
+            newEdges.push(newEdge);
     });
+
 
 
     return{nodes:nodes, edges:newEdges};

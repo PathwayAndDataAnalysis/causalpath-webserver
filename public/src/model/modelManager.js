@@ -70,6 +70,7 @@ module.exports =  function(model, docId, userId, userName) {
          */
         clearModel: function(){
 
+
             model.del('_page.doc.cy.nodes');
             model.del('_page.doc.cy.edges');
             model.del('_page.doc.cy');

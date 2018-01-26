@@ -223,12 +223,9 @@ input[type="text"]{
 }
 
 select, input, textarea, label{
-    /*margin-top: 10px;*/
-    /*margin-left: 10px;*/
-    width: 200px;
+    width: 200px; !important;
     margin: 5px !important;
-
-    /*margin-top: 5px !important;*/
+   /*margin-top: 5px !important;*/
 }
 
 
@@ -236,12 +233,12 @@ select, input, textarea, label{
     width: 500px;
 }
 
-.parameter-content tr td{
-    border: 1px solid #ececec;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
+.parameter-content tr td {
+    border: 1px solid #ececec; !important;
+    padding-top: 5px; !important;
+    padding-bottom: 5px; !important;
+    padding-left: 5px; !important;
+    padding-right: 5px; !important;
 }
 
 .img-td{

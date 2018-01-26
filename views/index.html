@@ -178,8 +178,13 @@
                 <p></p>
                 <table class = "parameter-content"><tbody>
                     {{each _page.doc.parameters as #parameter,  #i}}
-                        {{if #parameter.isVisible === true}}
+
                             {{each #parameter.cnt as #cnt}} <!--multiple number of the same parameter-->
+                                {{if #parameter.isVisible === true}}
+                                        <!--<span style = "display:{{#parameter.display}}; width:200px ;margin:5px;">-->
+
+                                    <!--{{else}}-->
+                                        <!--<span style = "display: none">-->
                                 <tr>
                                 <td  data-toggle="tooltip" data-placement="right" title={{#parameter.Description}}>
                                     {{if #parameter.Mandatory === "true"}}
@@ -214,9 +219,7 @@
                                             </select>
                                         {{/if}}
 
-                                        <!--{{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}-->
-                                        <!--<img src='img/add.png' on-click = "addParameter(#parameter)"/>-->
-                                        <!--{{/if}}-->
+
                                     </td>
 
 
@@ -248,8 +251,11 @@
                                 {{/each}} <!--each entrytype-->
 
                                 </tr>
+
+                                <!--</span>-->
+                    {{/if}} <!--isVisible-->
                             {{/each}} <!--each cnt-->
-                        {{/if}} <!--isVisible-->
+
                     {{/each}} <!--each parameter-->
                 </tbody></table>
                 <table><tbody>
@@ -267,8 +273,6 @@
 
 
     </div>
-
-
 
 
     <script>
