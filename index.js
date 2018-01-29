@@ -376,8 +376,8 @@ app.proto.submitParameters = function () {
 
         var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
 
-        socket.emit("writeFileOnServerSide", room, fileContent, 'parameters.txt', function (data) {
-            // document.getElementById('parameters-table').style.display='none';
+        socket.emit("writeFileOnServerSide", room, fileContent, 'parameters.txt', true,function (data) {
+            document.getElementById('parameters-table').style.display='none';
 
             if(data.indexOf("Error") == 0){
                 notyView.close();
@@ -689,7 +689,7 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
         let room = self.model.get('_page.room');
 
         //also send to server
-        socket.emit("writeFileOnServerSide", room, event.target.result, file.name, function () {
+        socket.emit("writeFileOnServerSide", room, event.target.result, file.name, false, function () {
             console.log("success");
         });
     };
