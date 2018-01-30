@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "cypress run --config videoRecording=false"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -41,8 +40,6 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "@cypress/releaser": "0.2.1",
-    "cypress": "^0.20.3",
     "qunitjs": "^2.4.1"
   }
 }

@@ -62,7 +62,7 @@
 
         This web service runs <a href="https://github.com/PathwayAndDataAnalysis/causalpath" >CausalPath</a> analysis on proteomics and phosphoproteomics datasets and/or renders analysis results. For a new analysis, please prepare your input files according to the <a href="https://github.com/PathwayAndDataAnalysis/causalpath/blob/master/wiki/InputFormat.md">guidelines</a>. If you already have results, please visualize the result network by uploading the related .json file. Source code of this web server resides at <a href="https://github.com/PathwayAndDataAnalysis/causalpath-webserver">its own project</a>.
         <p></p>
-        Select one of the following options.
+        Select one of the following options to start.
     </div>
     <div id  = "graph-options-container">
         <table align= "top" cellpadding="10px" >
@@ -104,12 +104,12 @@
 
                 <tr align="left">
 
-                    <td>
-                        A. Upload json file for visualization:
-                    </td>
+                    <!--<td>-->
+                        <!--A. Upload json file for visualization:-->
+                    <!--</td>-->
                     <td>
                         <label for="graph-file-input">
-                            <i class="fa fa-upload"></i> Select
+                            <div class = 'input-label'> A. Upload json file for visualization  <i class="fa fa-upload"></i> </div>
                         </label>
                         <input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)">
                     </td>
@@ -117,34 +117,37 @@
                 </tr>
 
                 <tr>
+                    <!--<td>-->
+                        <!--B. Upload input files for analysis:-->
+                        <!--</div>-->
+                    <!--</td>-->
                     <td>
-                        <div data-toggle="tooltip" data-placement="right" title="Enter multiple input files or a zip file of input files">
-                        B. Upload input files for analysis:
-                        </div>
-                    </td>
-                    <td>
+                        <div data-toggle="tooltip" data-placement="bottom" title="Enter multiple input files or a zip file of input files">
+
                         <label for="analysis-directory-input">
-                            <i class="fa fa-upload"></i> Select
+                            <div class = 'input-label'> B. Upload input files for analysis <i class="fa fa-upload"></i></div>
                         </label>
                         <input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDir()"  multiple >
+                        </div>
                     </td>
 
                 </tr>
                 <tr>
-                    <td align = "left">
-                        <div data-toggle="tooltip" data-placement="right" title="Select parameters manually">
-                            C. <button class = "btn" onclick = "document.getElementById('parameters-table').style.display='block'">Enter parameters for analysis</button>
+                    <td>
+                        <div data-toggle="tooltip" data-placement="bottom" title="Select parameters manually">
+                            <label for="parameters-button">
+                                <div class = 'input-label'>
+                                    C. Enter parameters for analysis <i class="fa fa-table"></i> </div></label>
+                            <input  type = "button" id = "parameters-button" onclick = "document.getElementById('parameters-table').style.display='block'">
                         </div>
                     </td>
                 </tr>
 
                 <tr>
-                    <td align = "left">
-                        D. Show demo graph:
-                    </td>
+
                     <td>
                         <label for="demo-file-button">
-                            <i class="fa fa-play"></i> Display
+                            <div class = 'input-label'> D. Display demo graph <i class="fa fa-play">  </i></div>
                         </label>
                         <input type="button" id="demo-file-button"  value = "Display" on-click = "loadDemoGraph()"  >
                     </td>

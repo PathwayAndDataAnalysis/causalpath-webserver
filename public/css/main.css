@@ -33,37 +33,27 @@ body {
     padding: 5%;
     text-align: justify;
 }
-a:link    {color:blue; background-color:transparent; text-decoration:none}
+a:link    {color: #0077f8; background-color:transparent; text-decoration:none}
 a:visited {color:coral; background-color:transparent; text-decoration:none}
 a:hover   {color:red; background-color:transparent; text-decoration:underline}
 a:active  {color:yellow; background-color:transparent; text-decoration:underline}
 
 
-/* Hide HTML5 Up and Down arrows. */
-/*input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {*/
-    /*-webkit-appearance: none;*/
-    /*margin: 0;*/
-/*}*/
-
-/*input[type="number"] {*/
-    /*-moz-appearance: textfield;*/
-/*}*/
-
 #input-container{
 
     position: relative;
-    top: 30%;
-    /*width: 70%;*/
+    /*top: 10%;*/
+    /*width: 50%;*/
     /*left:10%;*/
     height: 30%;
     /*width: var(--input-width);*/
     padding: 10px;
     /*height: var(--total-height);*/
     margin: 5%; /*same as the padding of the info text */
-    margin-top: 50px;
+    margin-top: 20px;
 
     color: #444444;
-    background-color: #0B9BCD;
+    /*background-color: #0B9BCD;*/
 
     font-size:larger;
     font-family: Verdana;
@@ -94,11 +84,11 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
 
 
 
-#graph-file-input{
+.input-label {
 
-    font-size:medium;
+    width: 500px;
+    font-size:larger; !important;
 }
-
 
 .input-text{
 
@@ -137,15 +127,27 @@ input[id = "download-button"]{
 /*One column of the initial input screen*/
 .main-input-content td{
     /*border: 1px solid #ccc;*/
-    display: inline-block;
+    /*display: inline-block;*/
     font-size: large;
     /*padding: 6px 12px;*/
     cursor: pointer;
     padding-top: 20px;
-    background-color: #0b9bcd;
-    color: floralwhite;
+    padding-bottom: 20px;
+    /*background-color: #e9f8ff;*/
+    /*color: floralwhite;*/
+    color: #3a3a3a;
     /*border-radius: 5px;*/
     /*width:calc( var(--input-width)/2);*/
+}
+.main-input-content tr:nth-child(even)
+{
+    background: #98c1d9
+    /*background: rgba(255,127,80, 0.3)*/
+}
+.main-input-content tr:nth-child(odd)
+{
+    /*background: rgba(21, 197, 223, 0.7)*/
+    background: #e9f8ff
 }
 
 .fa-file-text{
@@ -164,6 +166,12 @@ input[id = "download-button"]{
     font-size:small;
 }
 
+.main-input-content td:hover {
+    background-color: rgb(2, 122, 180);
+    color: floralwhite;
+    /*opacity: 0.2;*/
+}
+
 .instructions{
     color:floralwhite;
 }
@@ -175,15 +183,17 @@ input[id = "download-button"]{
 
 
 /* Tooltip on right */
-.tooltip.bottom > .tooltip-inner {
-    border-right: 5px solid black;
-    font-size: medium;
-}
+/*.tooltip.bottom > .tooltip-inner {*/
+    /*border-right: 5px solid black;*/
+    /*font-size: medium;*/
+/*}*/
 
 
 .tooltip {
     font-size:medium;
 }
+
+
 .parameters{
     padding: 20px;
     font-size:small;
@@ -196,6 +206,10 @@ input[id = "download-button"]{
 }
 input[type="text"]{
     font-size: small;
+}
+
+#parameters-button{
+    display: none;
 }
 .parameters-input{
     /*width: 100%;*/
