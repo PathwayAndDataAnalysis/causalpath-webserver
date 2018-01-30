@@ -10,6 +10,8 @@ body {
     --graph-width:99%;
     --margin-width: 10px;
     --total-height: 90%;
+    --margin-width-wide: 40px;
+
 }
 
 #banner{
@@ -57,7 +59,7 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     /*width: var(--input-width);*/
     padding: 10px;
     /*height: var(--total-height);*/
-    margin: var(--margin-width);
+    margin: 5%; /*same as the padding of the info text */
     margin-top: 50px;
 
     color: #444444;
@@ -133,13 +135,13 @@ input[id = "download-button"]{
 }
 
 /*One column of the initial input screen*/
-.input-td{
+.main-input-content td{
     /*border: 1px solid #ccc;*/
     display: inline-block;
     font-size: large;
     /*padding: 6px 12px;*/
     cursor: pointer;
-    padding-top: 5px;
+    padding-top: 20px;
     background-color: #0b9bcd;
     color: floralwhite;
     /*border-radius: 5px;*/
@@ -177,26 +179,11 @@ input[id = "download-button"]{
     border-right: 5px solid black;
     font-size: medium;
 }
-/*#progress_bar {*/
-    /*margin: 10px 0;*/
-    /*padding: 3px;*/
-    /*border: 1px solid #000;*/
-    /*font-size: 14px;*/
-    /*clear: both;*/
-    /*opacity: 0;*/
-    /*-moz-transition: opacity 1s linear;*/
-    /*-o-transition: opacity 1s linear;*/
-    /*-webkit-transition: opacity 1s linear;*/
-/*}*/
-/*#progress_bar.loading {*/
-    /*opacity: 1.0;*/
-/*}*/
-/*#progress_bar .percent {*/
-    /*background-color: #99ccff;*/
-    /*height: auto;*/
-    /*width: 0;*/
-/*}*/
 
+
+.tooltip {
+    font-size:medium;
+}
 .parameters{
     padding: 20px;
     font-size:small;
