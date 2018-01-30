@@ -3,7 +3,7 @@
  *  Event handlers of model updates
  *	Author: Funda Durupinar Babur<f.durupinar@gmail.com>
  */
-var app = module.exports = require('derby').createApp('cwc', __filename);
+var app = module.exports = require('derby').createApp('causalpath', __filename);
 
 
 
@@ -221,6 +221,8 @@ app.proto.loadParameters = function(model, json){
 };
 
 
+
+
 /***
  * Initializes html select boxes
  * These cannot be updated directly by handlebars
@@ -233,28 +235,32 @@ app.proto.initSelectBoxes = function(){
     if(parameterList) {
         parameterList.forEach(function (param) {
             if(param.isVisible) { //otherwise dom elements will not have been created yet
-                param.cnt.forEach(function (cnt) {
-                    for (let j = 0; j < param.EntryType.length; j++) {
-                        let enumList = self.getEnum(param.EntryType[j]);
 
-                        if (enumList) {
-
-                            if (param.value && param.value[cnt] && param.value[cnt][j]) {
-                                let selectedInd = enumList.indexOf(param.value[cnt][j])
-                                self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
-                            }
-                            else { //no value assigned
-                                self.getDomElement(param, cnt, j)[0].selectedIndex = -1;
-                            }
-                        }
-                    }
-                });
+                self.initParamSelectBox(param);
             }
         });
     }
 }
 
+app.proto.initParamSelectBox = function(param){
+    let self  = this;
+    param.cnt.forEach(function (cnt) {
+        for (let j = 0; j < param.EntryType.length; j++) {
+            let enumList = self.getEnum(param.EntryType[j]);
 
+            if (enumList) {
+
+                if (param.value && param.value[cnt] && param.value[cnt][j]) {
+                    let selectedInd = enumList.indexOf(param.value[cnt][j])
+                    self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
+                }
+                else { //no value assigned
+                    self.getDomElement(param, cnt, j)[0].selectedIndex = -1;
+                }
+            }
+        }
+    });
+}
 /***
  * Initializes html check boxes
  * These cannot be updated directly by handlebars
@@ -267,26 +273,38 @@ app.proto.initCheckBoxes = function() {
     if(parameterList) {
         parameterList.forEach(function (param) {
             if(param.isVisible) {
-                param.cnt.forEach(function (cnt) {
-                    for (let j = 0; j < param.EntryType.length; j++) {
-                        if (param.EntryType[j] === "Boolean") {
-                            let val = param.value[cnt][j];
-                            if (val === "true" || val === true)
-                                self.getDomElement(param, cnt, j).prop('checked', true);
-                            else
-                                self.getDomElement(param, cnt, j).prop('checked', false);
 
-                        }
-                    }
-                });
+                self.initParamCheckBox(param);
+
             }
         });
     }
 }
 
+app.proto.initParamCheckBox = function(param){
+    let self = this;
+
+    param.cnt.forEach(function (cnt) {
+        for (let j = 0; j < param.EntryType.length; j++) {
+            if (param.EntryType[j] === "Boolean") {
+                let val = param.value[cnt][j];
+                if (val === "true" || val === true)
+                    self.getDomElement(param, cnt, j).prop('checked', true);
+                else
+                    self.getDomElement(param, cnt, j).prop('checked', false);
+
+            }
+        }
+    });
+
+}
 
 app.proto.setParamValue = function(param, cnt, entryInd, val){
     this.model.set('_page.doc.parameters.' + param.ind + '.value.' + cnt + '.' + entryInd , val);
+}
+
+app.proto.getParamValue = function(param, cnt, entryInd,){
+    return this.model.get('_page.doc.parameters.' + param.ind + '.value.' + cnt + '.' + entryInd);
 }
 
 /***
@@ -321,28 +339,49 @@ app.proto.updateChecked = function(param, cnt, entryInd){
 
 
 /***
- * Updates model when the submit button for batch values is clicked
+ * Updates parameters when the submit button for batch values is clicked
+ * This should also update the ui for multiple parameters
  * @param param
- * @param cnt
+ * @param cnt : current parameter's count
+ * @param ind: parameter's idnex
  */
-app.proto.updateBatch = function(param, cnt){
+app.proto.updateBatch = function(param){
 
 
-    let valStr =  $('#' + param.batchDomId).val();
+    let self = this;
+
+     let cnt = self.model.get('_page.doc.parameters.' + param.ind  +'.cnt').length;
+
+    let valStr =  $('#' + param.batchDomId).val().trim();
+
 
     let vals = valStr.split("\n");
 
-    for(let i = cnt; i < (vals.length + cnt); i++ ) {
+    let newCnt = vals.length;
+
+
+
+
+    //first clear cnt array
+    for(let i = 0; i < cnt ; i++) {
+        self.model.pop('_page.doc.parameters.' + param.ind + '.cnt');
+    }
+    self.model.set('_page.doc.parameters.' + param.ind + '.domId', null );
+
+
+    //then add the input boxes back
+    for(let i = 0; i < newCnt; i++ ) {
+
         let valEntry = vals[i].split(" ");
-
-        for(let entryInd  =0; entryInd < valEntry.length; entryInd++) {
-
-            this.setParamValue(param, i, entryInd, valEntry[entryInd]);
+        for (let entryInd = 0; entryInd < valEntry.length; entryInd++) {
+            self.setParamValue(param, i, entryInd, valEntry[entryInd]);
         }
+        self.addParameterInput(param);
     }
 
 
 }
+
 
 
 /***
@@ -509,7 +548,7 @@ app.proto.getEnum = function(type){
  * Adds new input boxes when a new parameter is added
  * @param param
  */
-app.proto.addParameter = function(param){
+app.proto.addParameterInput = function(param){
 
     let self = this;
     let newCnt = this.model.get('_page.doc.parameters.' + param.ind + '.cnt').length;
@@ -519,7 +558,39 @@ app.proto.addParameter = function(param){
     for(let j =0 ; j < param.EntryType.length; j++)
         self.model.set('_page.doc.parameters.' +  param.ind  + '.domId.' + newCnt +'.' + j , (param.ID + "-"+ newCnt + "-" + j));  //for multiple fields
 
+    //update ui elements accordingly
+    self.initParamSelectBox(param);
+    self.initParamCheckBox(param);
+
 }
+
+/**
+ * Fills the batch text box with the already entered values when batch button is clicked
+ * @param param
+ */
+app.proto.updateBatchBox = function(param){
+    let cnt = this.model.get('_page.doc.parameters.' + param.ind + '.cnt').length;
+    //update the batch text box accordingly
+    let batchTxt = "";
+    for(let i = 0; i < cnt; i++) {
+        let line = "";
+        for (let j = 0; j < param.EntryType.length; j++) {
+            if(param.value) {
+                line += param.value[i][j]//self.getParamValue(param, i, j);
+                if (j < param.EntryType.length - 1)
+                    line += " ";
+                else
+                    line +='\n'
+            }
+        }
+
+        batchTxt += line;
+
+    }
+    $('#' + param.batchDomId).val(batchTxt);
+}
+
+
 
 /***
  * Determines whether to show or hide DOM elements depending on parameter conditions
@@ -535,46 +606,17 @@ app.proto.updateParameterVisibility = function(){
             if(!condition.Operator) { //a single condition without an operator
                 if (self.conditionResult(condition.Parameter, condition.Value)){
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
-
-                        // param.cnt.forEach(function(cnt) {
-                        //     for (let entryInd = 0; entryInd < param.EntryType.length; entryInd++) {
-                        //         let enumList = self.getEnum(param.EntryType[entryInd]);
-                        //         if(enumList){
-                        //             if()
-                        //             self.updateSelected(param, cnt, entryInd);
-                        //             }
-                        //
-                        //         else if (param.EntryType[entryInd] === "Boolean")
-                        //             self.updateChecked(param, cnt, entryInd);
-                        //     }
-                        // });
                 }
                 else{
-
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', false);
-
-            }
+                }
             }
             else{
                 if (self.satisfiesConditions(condition.Operator, condition.Conditions)) {
-
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
-
-                    // param.cnt.forEach(function(cnt) {
-                    //     for (let entryInd = 0; entryInd < param.EntryType.length; entryInd++) {
-                    //         let enumList = self.getEnum(param.EntryType[entryInd]);
-                    //         if(enumList)
-                    //             self.updateSelected(param, cnt, entryInd);
-                    //         else if (param.EntryType[entryInd] === "Boolean")
-                    //             self.updateChecked(param, cnt, entryInd);
-                    //     }
-                    // });
                 }
                 else {
-
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', false);
-
-
                 }
             }
         }
@@ -593,8 +635,6 @@ app.proto.satisfiesConditions = function(op, conditions){
     let results = [];
     for(let i = 0 ; i < conditions.length; i++){
         let condition = conditions[i];
-
-
 
         if(condition.Parameter !== undefined && condition.Value !== undefined){ //if it is not composite
 

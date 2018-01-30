@@ -108,7 +108,13 @@ function groupTopology(cyElements){
 
         }
 
-        newEdge.data.pcLinks = edge.data.pcLinks;
+
+
+        if(edge.data.pcLinks)
+            newEdge.data.pcLinks = edge.data.pcLinks;
+        else
+            newEdge.data.pcLinks = [];
+
 
         let exists = false;
         newEdges.forEach(function(e){
