@@ -912,10 +912,7 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
         if (docReady){
 
             try{
-
-
-                cy.destroy();
-
+               cy.destroy();
             }
             catch(error){
                 //console.log(error + " Cytoscape not created yet.");
@@ -971,8 +968,10 @@ app.proto.downloadResults = function(){
 
     var room = this.model.get('_page.room'); //each room will have its own folder
 
-    if(graphChoice == graphChoiceEnum.DEMO)
-        room = "demo"; //directly download
+    if(graphChoice == graphChoiceEnum.DEMO) {
+        console.log("No analysis results");
+        return;
+    }
 
     var notyView = noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
 
