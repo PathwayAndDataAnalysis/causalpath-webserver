@@ -1,4 +1,4 @@
-
+sudo git pull origin master
 cd jar
 cd causalpath
 sudo git pull origin master
@@ -11,4 +11,5 @@ sudo mkdir analysisOut
 cd analysisOut
 sudo mkdir demo
 cd ..
+sudo PORT=80 node server
 
