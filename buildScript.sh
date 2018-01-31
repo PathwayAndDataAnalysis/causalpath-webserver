@@ -1,3 +1,5 @@
+sudo apt-get update
+sudo apt-get install zip
 sudo git pull origin master
 cd jar
 cd causalpath

@@ -30,7 +30,10 @@ body {
 }
 
 #info-div{
-    padding: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 5%;
+    padding-bottom: 2%;
     text-align: justify;
 }
 a:link    {color: #0077f8; background-color:transparent; text-decoration:none}
@@ -39,25 +42,7 @@ a:hover   {color:red; background-color:transparent; text-decoration:underline}
 a:active  {color:yellow; background-color:transparent; text-decoration:underline}
 
 
-#input-container{
 
-    position: relative;
-    /*top: 10%;*/
-    /*width: 50%;*/
-    /*left:10%;*/
-    height: 30%;
-    /*width: var(--input-width);*/
-    padding: 10px;
-    /*height: var(--total-height);*/
-    margin: 5%; /*same as the padding of the info text */
-    margin-top: 20px;
-
-    color: #444444;
-    /*background-color: #0B9BCD;*/
-
-    font-size:larger;
-    font-family: Verdana;
-}
 
 #graph-options-container{
     /*position:absolute;*/
@@ -123,12 +108,36 @@ input[id = "demo-file-button"]{
 input[id = "download-button"]{
     display: none;
 }
+input[id = "parameters-button"]{
+    display: none;
+}
+
+
+#input-container{
+
+    position: relative;
+    /*top: 10%;*/
+    /*width: 50%;*/
+    /*left:10%;*/
+    /*height: 20%;*/
+    /*width: var(--input-width);*/
+
+    /*height: var(--total-height);*/
+    margin-left: 5%; /*same as the padding-left of the info text */
+    /*margin-top: 10px;*/
+
+    color: #444444;
+    /*background-color: #0B9BCD;*/
+
+    /*font-size:x-large;*/
+    font-family: Verdana;
+}
 
 /*One column of the initial input screen*/
 .main-input-content td{
     /*border: 1px solid #ccc;*/
     /*display: inline-block;*/
-    font-size: large;
+    /*font-size: xx-large;*/
     /*padding: 6px 12px;*/
     cursor: pointer;
     padding-top: 20px;
@@ -136,19 +145,33 @@ input[id = "download-button"]{
     /*background-color: #e9f8ff;*/
     /*color: floralwhite;*/
     color: #3a3a3a;
-    /*border-radius: 5px;*/
+    border-radius: 25px;
+    /*background: #e9f8ff;*/
+    /*border: 2px solid #d6e5ec;*/
+    /*border-color: #0e90d2;*/
+
     /*width:calc( var(--input-width)/2);*/
 }
-.main-input-content tr:nth-child(even)
-{
-    background: #98c1d9
-    /*background: rgba(255,127,80, 0.3)*/
-}
-.main-input-content tr:nth-child(odd)
-{
-    /*background: rgba(21, 197, 223, 0.7)*/
-    background: #e9f8ff
-}
+
+/*.main-input-content tr{*/
+    /*border: 2px solid #d6e5ec;*/
+    /*border-radius: 10px;*/
+
+/*!*border-color: #0e90d2;*!*/
+/*!*background: rgba(255,127,80, 0.3)*!*/
+/*}*/
+
+
+/*.main-input-content tr:nth-child(even)*/
+/*{*/
+    /*background: #98c1d9*/
+    /*!*background: rgba(255,127,80, 0.3)*!*/
+/*}*/
+/*.main-input-content tr:nth-child(odd)*/
+/*{*/
+    /*!*background: rgba(21, 197, 223, 0.7)*!*/
+    /*background: #e9f8ff*/
+/*}*/
 
 .fa-file-text{
     font-size: xx-large;
@@ -208,9 +231,6 @@ input[type="text"]{
     font-size: small;
 }
 
-#parameters-button{
-    display: none;
-}
 .parameters-input{
     /*width: 100%;*/
 }
