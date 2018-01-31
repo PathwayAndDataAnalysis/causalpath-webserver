@@ -162,16 +162,16 @@ input[id = "parameters-button"]{
 /*}*/
 
 
-/*.main-input-content tr:nth-child(even)*/
-/*{*/
-    /*background: #98c1d9*/
-    /*!*background: rgba(255,127,80, 0.3)*!*/
-/*}*/
-/*.main-input-content tr:nth-child(odd)*/
-/*{*/
-    /*!*background: rgba(21, 197, 223, 0.7)*!*/
-    /*background: #e9f8ff*/
-/*}*/
+.main-input-content tr:nth-child(even)
+{
+    background: #98c1d9
+    /*background: rgba(255,127,80, 0.3)*/
+}
+.main-input-content tr:nth-child(odd)
+{
+    /*background: rgba(21, 197, 223, 0.7)*/
+    background: #e9f8ff
+}
 
 .fa-file-text{
     font-size: xx-large;
@@ -190,7 +190,8 @@ input[id = "parameters-button"]{
 }
 
 .main-input-content td:hover {
-    background-color: rgb(2, 122, 180);
+    /*background-color: rgb(2, 122, 180);*/
+    background-color: coral;
     color: floralwhite;
     /*opacity: 0.2;*/
 }
