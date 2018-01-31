@@ -3,6 +3,7 @@ body {
     height: 100%;
     margin: 0px;
     padding: 0px;
+
 }
 
 :root {
@@ -20,12 +21,16 @@ body {
     /*width: 99%;*/
     /*width:var(--graph-width);*/
     /*width:  calc( var(--input-width) + var(--graph-width) + var(--margin-width));*/
-    background-color: #7d7d80;
+    /*background-color: #7d7d80;*/
     margin:var(--margin-width);
     padding: 10px;
-
+    overflow: hidden;
     text-align: center;
     font-size: xx-large;
+    /*color:floralwhite;*/
+}
+.custom-header{
+    background-color: #617d8a;
     color:floralwhite;
 }
 
@@ -54,6 +59,7 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     margin-right: 10px;
     border: 1px solid #ddd;
     display:none;
+    overflow:auto;
 }
 #graph-container{
 
@@ -111,6 +117,11 @@ input[id = "download-button"]{
 input[id = "parameters-button"]{
     display: none;
 }
+
+input[id = "run-layout-button"]{
+    display: none;
+}
+
 
 
 #input-container{
@@ -182,11 +193,21 @@ input[id = "parameters-button"]{
     font-size: xx-large;
 }
 
+.fa-play-circle{
+    font-size:xx-large;
+}
+#download-div .fa-download{
+    font-size:xx-large;
+}
+#sif-topology-grouping{
+    font-size:xx-large;
+}
+
 .graph-options-td{
 
     padding-left:20px;
     /*padding-top: 30px;*/
-    font-size:small;
+    font-size: inherit;
 }
 
 .main-input-content td:hover {
@@ -225,8 +246,9 @@ input[id = "parameters-button"]{
 
 }
 .close-button{
-    color: #1c94c4;
+    color: #617d8a;
     font-size: larger;
+    font-weight: bolder;
 }
 input[type="text"]{
     font-size: small;

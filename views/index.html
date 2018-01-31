@@ -54,7 +54,7 @@
 
     <!--Causality-related-->
 
-    <div id = "banner">
+    <div id = "banner" class = "custom-header">
         CausalPath: Causality Analysis of Proteomic Profiles
     </div>
 
@@ -76,11 +76,19 @@
                     <div> <input type="button" id = "back-button" display = "none" value = "Back" on-click = "showInputContainer()"> </div>
 
                 </td>
-            <td></td><td></td>
-                <td class = "graph-options-td"><input type="checkbox" id = "sif-topology-grouping" checked = "{{!_page.doc.noTopologyGrouping}}" on-change = "reloadGraph()" > Topology grouping</td>
-                <td></td><td></td>
-                <td class = "graph-options-td"><input type="button" id = "run-layout" value = "Run Layout" on-click = "runLayout()"> </td>
-                <td></td><td></td>
+
+                <td class = "graph-options-td">
+                    <input type="checkbox" id = "sif-topology-grouping" checked = "{{!_page.doc.noTopologyGrouping}}" on-change = "reloadGraph()">
+                     Topology grouping</td>
+
+                <td class = "graph-options-td">
+
+
+                    <label for="run-layout-button">
+                        <i class="fa fa-play-circle"></i> Run layout
+                    </label>
+                    <input type="button" id = "run-layout-button" value = "Run Layout" on-click = "runLayout()"> </td>
+
 
 
                 <td>
@@ -137,7 +145,7 @@
                         <div data-toggle="tooltip" data-placement="bottom" title="Select parameters manually">
                             <label for="parameters-button">
                                 <div class = 'input-label'>
-                                    C. Enter parameters for analysis <i class="fa fa-table"></i> </div></label>
+                                    C. Enter parameters for analysis <i class="fa fa-tasks"></i> </div></label>
                             <input  type = "button" id = "parameters-button" onclick = "document.getElementById('parameters-table').style.display='block'">
                         </div>
                     </td>
@@ -163,7 +171,7 @@
     <div id="parameters-table" class="w3-modal">
         <div class="w3-modal-content">
             <div class="w3-modal-container parameters">
-            <header class="w3-container w3-blue-gray"> <span onclick="document.getElementById('parameters-table').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
+            <header class="w3-container custom-header"> <span onclick="document.getElementById('parameters-table').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
                 <h2>Parameters</h2> </header>
                 <p></p>
                 <table class = "parameter-content"><tbody>
