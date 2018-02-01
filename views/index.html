@@ -119,54 +119,59 @@
             <table  class = "main-input-content" border="0"  width="100%" align="center" >
                 <tbody>
 
-                <tr align="left">
 
-                    <!--<td>-->
-                        <!--A. Upload json file for visualization:-->
-                    <!--</td>-->
+                <tr>
                     <td>
-                        <label for="graph-file-input">
-                            <div class = 'input-label'> A. Upload json file for visualization  <i class="fa fa-upload"></i> </div>
-                        </label>
-                        <input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)">
+                        <div data-toggle="tooltip" data-placement="bottom" title="Type-in the parameters">
+                            <label for="parameters-button">
+                                <div class = 'input-label'>
+                                    C. Load data and enter parameters for analysis <i class="fa fa-tasks"></i> </div></label>
+                            <input  type = "button" id = "parameters-button" onclick = "document.getElementById('parameters-table').style.display='block'">
+                        </div>
                     </td>
-
                 </tr>
-
                 <tr>
                     <!--<td>-->
                         <!--B. Upload input files for analysis:-->
                         <!--</div>-->
                     <!--</td>-->
                     <td>
-                        <div data-toggle="tooltip" data-placement="bottom" title="Enter multiple input files or a zip file of input files">
+                        <div data-toggle="tooltip" data-placement="bottom" title="Enter multiple input files (data and parameters.txt files at the minimum) or a zip file of input files">
 
                         <label for="analysis-directory-input">
-                            <div class = 'input-label'> B. Upload input files for analysis <i class="fa fa-upload"></i></div>
+                            <div class = 'input-label'> B. Upload all input files for analysis <i class="fa fa-upload"></i></div>
                         </label>
                         <input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDir()"  multiple >
                         </div>
                     </td>
 
                 </tr>
-                <tr>
+
+                <tr align="left">
+
+                    <!--<td>-->
+                    <!--A. Upload json file for visualization:-->
+                    <!--</td>-->
                     <td>
-                        <div data-toggle="tooltip" data-placement="bottom" title="Select parameters manually">
-                            <label for="parameters-button">
-                                <div class = 'input-label'>
-                                    C. Enter parameters for analysis <i class="fa fa-tasks"></i> </div></label>
-                            <input  type = "button" id = "parameters-button" onclick = "document.getElementById('parameters-table').style.display='block'">
+                        <div data-toggle="tooltip" data-placement="bottom" title="Load .json file">
+                            <label for="graph-file-input">
+                                <div class = 'input-label'> A. Visualize results from previous analysis  <i class="fa fa-upload"></i> </div>
+                            </label>
+                            <input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)">
                         </div>
                     </td>
+
                 </tr>
 
                 <tr>
 
                     <td>
+                        <div data-toggle="tooltip" data-placement="bottom" title="A sample result network for Immunoreactive subtype of ovarian cancer">
                         <label for="demo-file-button">
-                            <div class = 'input-label'> D. Display demo graph <i class="fa fa-play">  </i></div>
+                            <div class = 'input-label'> D. Display a sample result <i class="fa fa-play">  </i></div>
                         </label>
                         <input type="button" id="demo-file-button"  value = "Display" on-click = "loadDemoGraph()"  >
+                        </div>
                     </td>
                 </tr>
 
