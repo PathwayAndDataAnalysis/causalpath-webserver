@@ -197,22 +197,27 @@ module.exports = function(){
 
         QUnit.test('updateParamSelectBox', function (assert) {
 
-            let param = modelManager.findParameterFromId("threshold-for-data-significance");
+            let param = modelManager.findParameterFromId("relation-filter-type");
 
-            // modelManager.setParameterValue(param.ind, 0, 1, null);
-            app.initParamSelectBox(param);
+            // app.initParamSelectBox(param);
 
-            console.log(app.getDomElement(param, 0,1));
-            // assert.equal(app.getDomElement(param, 0,1)[0].selectedIndex, -1 , "selected index for threshold-for-data-significance is correct");
+            console.log(app.getDomElement(param, 0,0));
+            assert.equal(app.getDomElement(param, 0,0)[0].selectedIndex, 0 , "selected index for relation-filter-type is correct");
+
+
+            let param2 = modelManager.findParameterFromId("gene-activity");
+            assert.equal(app.getDomElement(param2, 0,1)[0].selectedIndex, -1 , "selected index for gene-activity is correct");
+
         });
     }
 
 
-    loadParametersTest();
+    setTimeout(function(){ //it takes a while before gui is updated
+        loadParametersTest();
+        parameterVisibilityTest();
 
-    parameterVisibilityTest();
-
-    // guiTest();
+        guiTest();
+    }, 200);
 
 
 };
