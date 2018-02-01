@@ -2,135 +2,217 @@ QUnit = require('qunitjs');
 module.exports = function(){
 
 
-    QUnit.module( "modelManager Tests" );
+    let app = window.testApp;
+    let modelManager = app.modelManager;
+    let json = app.parameterJson;
+    let modelParam = modelManager.getModelParameters();
+    let modelEnum = modelManager.getModelEnumerations();
 
-    // QUnit.test('modelManager.setName()', function(assert) {
-    //     ModelManager.setName("abc");
-    //       assert.equal(ModelManager.getName(), "abc", "User name is correctly set.");
-    // });
-    //
+    QUnit.module( "Parameter tests" );
 
-    function clearModel(){
-        QUnit.test('modelManager.clearModel()', function(assert) {
-            ModelManager.clearModel();
-            assert.notOk(ModelManager.getModelCy(), "Model successfully deleted.");
+
+    function loadParametersTest() {
+
+        QUnit.test("app.getEnum", function(assert){
+            let enumVals = app.getEnum("ValueTransformation");
+            assert.equal(enumVals.length, 7, "getEnum works correctly");
+            assert.equal(enumVals.indexOf("max"), 2, "getEnum works correctly");
+
+            enumVals = app.getEnum("String");
+            assert.notOk(enumVals, "getEnum works correctly for non-enum types");
+
+        });
+
+        QUnit.test("app.getMultiple", function(assert){
+
+            let param1 = modelManager.findParameterFromId("test-value-column");
+            assert.ok(app.getMultiple(param1), "getMultiple works correctly for test-value-column");
+
+            let param2 = modelManager.findParameterFromId("effect-column");
+            assert.notOk(app.getMultiple(param2), "getMultiple works correctly for effect-column");
+
 
 
         });
-    }
 
-    function initModelFromJsonTest(jsonObj){
-        QUnit.test('modelManager.initModelFromJson()', function(assert) {
+        QUnit.test('Enumeration equality', function (assert) {
 
-
-            ModelManager.initModelFromJson(jsonObj);
-
-            for(var i = 0; i < jsonObj.nodes.length; i++){
-
-                var modelNode = ModelManager.getModelNode(jsonObj.nodes[i].data.id);
-                assert.ok(modelNode, "Node exists. Id: " + jsonObj.nodes[i].data.id);
-                assert.propEqual(modelNode.data, jsonObj.nodes[i].data, "Node " + i + " data is correctly assigned.");
-                assert.propEqual(modelNode.css, jsonObj.nodes[i].css, "Node" + i + " css is correctly assigned.");
+            assert.equal(modelEnum.length, json.Enumerations.length, "Enumeration lists are the same size for model and json.");
+            //test if enumerations are equal in the model and in the json
+            for(let i = 0; i < modelEnum.length; i++){
+                assert.deepEqual(modelEnum[i], json.Enumerations[i], "Enumeration " + modelEnum[i].name + " are the same for model and json.")
             }
 
-            for(var i = 0; i < jsonObj.edges.length; i++){
+        });
 
-                //edgeId is not explicitly specified in jsonObj
-                var edgeId =  jsonObj.edges[i].data.source + "-" + jsonObj.edges[i].data.target;
-                var modelEdge = ModelManager.getModelEdge(edgeId);
-                assert.ok(modelEdge, "Edge exists. Id: " + edgeId);
-                assert.propEqual(modelEdge.data, jsonObj.edges[i].data, "Edge " + i + " data is correctly assigned.");
-                assert.propEqual(modelEdge.css, jsonObj.edges[i].css, "Edge" + i + " css is correctly assigned.");
+        QUnit.test('Parameter equality', function (assert) {
+            assert.equal(modelParam.length, json.Parameters.length, "Parameter lists are the same size for model and json.");
+
+            //test if parameters are equal in the model and in the json
+            for(let i = 0; i < modelParam.length; i++){
+                assert.equal(modelParam[i].ID, json.Parameters[i].ID, "Parameter " + modelParam[i].ID + " IDs are the same for model and json.")
+                assert.equal(modelParam[i].Title, json.Parameters[i].Title, "Parameter " + modelParam[i].ID + " Titles are the same for model and json.")
+                assert.equal(modelParam[i].Description, json.Parameters[i].Description, "Parameter " + modelParam[i].ID + " Descriptions are the same for model and json.")
+                assert.deepEqual(modelParam[i].EntryType, json.Parameters[i].EntryType, "Parameter " + modelParam[i].ID + " EntryTypes are the same for model and json.")
+                assert.equal(modelParam[i].Mandatory, json.Parameters[i].Mandatory, "Parameter " + modelParam[i].ID + " Mandatorys are the same for model and json.")
+                assert.equal(modelParam[i].CanBeMultiple, json.Parameters[i].CanBeMultiple, "Parameter " + modelParam[i].ID + " CanBeMultiples are the same for model and json.")
+                if(modelParam[i].Condition)
+                    assert.deepEqual(modelParam[i].Condition, json.Parameters[i].Condition, "Parameter " + modelParam[i].ID + " Conditions are the same for model and json.")
             }
+        });
 
+        QUnit.test('Other parameter values', function (assert) {
+            for(let i = 0; i < modelParam.length; i++){
+                assert.equal(modelParam[i].ind, i, "Parameter indices are correct in the model.");
+
+                for (let j = 0; j < modelParam[i].EntryType.length; j++) {
+
+                    assert.equal(modelParam[i].domId[0][j], (modelParam[i].ID + "-0-" + j), "Parameter " + modelParam[i].ID + " domId is correct in the model.");
+                }
+
+                assert.equal(modelParam[i].batchDomId,(modelParam[i].ID + "-batch") , "Parameter " + modelParam[i].ID + " batchDomId is correct in the model.");
+                assert.equal(modelParam[i].batchModalDomId,(modelParam[i].ID + "-batchModal") , "Parameter " + modelParam[i].ID  + " batchModalDomId is correct in the model.");
+
+                if(modelParam[i].Default)
+                    assert.deepEqual(modelParam[i].value, modelParam[i].Default , "Parameter "+ modelParam[i].ID + " initial value is correctly set to default.");
+
+            }
+        });
+
+    }
+
+    function parameterVisibilityTest(){
+        QUnit.test('modelManager.findParameterFromId', function (assert) {
+            let paramInd = modelManager.findParameterFromId("id-column").ind;
+            assert.equal(paramInd, 2 , "Finding parameter from id returns correct index.");
+
+        });
+
+
+        QUnit.test('app.conditionResult', function (assert) {
+            //set value of a parameter
+            modelManager.setParameterValue(2, 0, 0, "abc"); //id-column field
+            let condInd = modelManager.findParameterFromId("id-column").ind;
+            assert.ok(app.conditionResult(condInd, ["abc"]), "conditionResult for parameter id-column is correctly updated");
+
+            modelManager.setParameterValue(2, 0, 0, null); //id-column field
+
+            assert.ok(app.conditionResult(condInd, [null]), "conditionResult for parameter id-column is correctly updated");
+
+        });
+
+
+        QUnit.test('app.satisfiesConditions', function (assert) {
+            let conditionOR = {
+                "Operator" : "OR",
+                 "Conditions" : [ {
+                    "Parameter" : "value-transformation",
+                    "Value" : [ "arithmetic-mean" ]
+                }, {
+                    "Parameter" : "value-transformation",
+                    "Value" : [ "geometric-mean" ]
+                }, {
+                    "Parameter" : "value-transformation",
+                    "Value" : [ "max" ]
+                }, {
+                    "Parameter" : "value-transformation",
+                    "Value" : [ "correlation" ]
+                } ]
+            };
+
+            let conditionAND = {
+                "Operator" : "AND",
+                    "Conditions" : [ {
+                    "Parameter" : "value-transformation",
+                    "Value" : [ "max" ]
+                }, {
+                    "Parameter" : "threshold-for-data-significance",
+                    "Value" : [null]
+                } ]
+            };
+
+            let conditionNOT = {
+                "Operator" : "NOT",
+                "Conditions" : [ {
+                    "Parameter" : "value-transformation",
+                    "Value" : [ "correlation" ]
+                } ]
+            };
+
+            let ind1 = modelManager.findParameterFromId("value-transformation").ind;
+            modelManager.setParameterValue(ind1, 0, 0, "max");
+
+            let ind2 = modelManager.findParameterFromId("threshold-for-data-significance").ind;
+            modelManager.setParameterValue(ind2, 0, 0, null);
+
+            assert.ok(app.satisfiesConditions("OR", conditionOR.Conditions), "satisfiesConditions for parameter value-transformation is correct for OR");
+            assert.ok(app.satisfiesConditions("AND", conditionAND.Conditions), "satisfiesConditions for parameter value-transformation is correct for AND");
+            assert.ok(app.satisfiesConditions("NOT", conditionNOT.Conditions), "satisfiesConditions for parameter value-transformation is correct for NOT");
+
+
+        });
+
+        QUnit.test('app.visibility', function (assert) {
+            /*"Condition" : {
+                "Operator" : "AND",
+                    "Conditions" : [ {
+                    "Operator" : "NOT",
+                    "Conditions" : [ {
+                        "Parameter" : "value-transformation",
+                        "Value" : [ "correlation" ]
+                    } ]
+                }, {
+                    "Parameter" : "fdr-threshold-for-data-significance",
+                    "Value" : [null]
+                } ]
+            }*/
+
+
+            let ind1 = modelManager.findParameterFromId("value-transformation").ind;
+            modelManager.setParameterValue(ind1, 0, 0, "significant-change-of-mean");
+
+            let ind2 = modelManager.findParameterFromId("fdr-threshold-for-data-significance").ind;
+            modelManager.setParameterValue(ind2, 0, 0, null);
+
+            let param = modelManager.findParameterFromId("threshold-for-data-significance");
+
+            assert.ok(param.isVisible, "Parameter threshold-for-data-significance visibility correctly set to visible.");
+
+
+            modelManager.setParameterValue(ind1, 0, 0, "correlation");
+            assert.notOk(param.isVisible, "Parameter threshold-for-data-significance visibility correctly set to invisible.");
+
+        });
+
+    }
+    function guiTest(){
+        QUnit.test('app.getDomElement', function (assert) {
+
+            let param = modelManager.findParameterFromId("stdev-threshold-for-data");
+
+            assert.ok(app.getDomElement(param, 0,0), "stdev-threshold-for-data domElement 0 is correctly achieved.");
+            assert.ok(app.getDomElement(param, 0,1), "stdev-threshold-for-data domElement 1 is correctly achieved.");
+        });
+
+
+        QUnit.test('updateParamSelectBox', function (assert) {
+
+            let param = modelManager.findParameterFromId("threshold-for-data-significance");
+
+            // modelManager.setParameterValue(param.ind, 0, 1, null);
+            app.initParamSelectBox(param);
+
+            console.log(app.getDomElement(param, 0,1));
+            // assert.equal(app.getDomElement(param, 0,1)[0].selectedIndex, -1 , "selected index for threshold-for-data-significance is correct");
         });
     }
 
-    QUnit.module( "Cytoscape Tests" );
-    function createCyTest(callback){
-        QUnit.test('createCyContainer', function(assert){
-            var cgfCy = require('../public/src/cgf-visualizer/cgf-cy.js');
-            assert.ok(cgfCy,"Cytoscape visualizer accessed.");
-            var cont = new cgfCy.createContainer($('#graph-container'),  false, ModelManager, function () {
-                assert.ok(cy,"Cytoscape container created successfully.");
-                if(callback) callback(); //call cy-related tests after container is created
-            });
 
+    loadParametersTest();
 
-        })
-    }
+    parameterVisibilityTest();
 
-    function selectNodeTest(){
-        QUnit.test('modelManager.selectNode()', function(assert){
-
-            var id = "CDK1";
-            var color = ModelManager.getModelNodeAttribute(id, 'css.backgroundColor');
-            assert.equal(color, "rgb(255,196,183)", "Node background color is initially correct.");
-
-            var nodeCy = cy.getElementById(id);
-            assert.ok(nodeCy, "Node " + id + " exists.");
-            cy.getElementById(id).select();
-
-            //
-            color = cy.getElementById(id).css('background-color');
-        //     console.log(color);
-        //    assert.equal(color, "#FFCC66", "Node background color is correct when selected.");
-            // cy.getElementById(id).unselect();
-            // color = ModelManager.getModelNodeAttribute(id, 'css.backgroundColor');
-            // assert.equal(color, "rgb(255,149,125)", "Node background color is correct when unselected.");
-        });
-    }
-
-
-    function topologyGroupingTest() {
-        QUnit.test('topologyGrouping', function (assert) {
-            var modelCy = ModelManager.getModelCy();
-            var cgfCy = require('../public/src/cgf-visualizer/cgf-cy.js');
-
-
-            //Before grouping
-            var edge1 = cy.getElementById("RBBP4-CCNB1");
-            var edge2 = cy.getElementById("LIN9-CCNB1");
-            var edge3 = cy.getElementById("KLF5-CCNB1");
-
-
-     //       assert.equal(edge1._private.data.target, edge2._private.data.target, "edge1 and edge2 have the same target.");
-     //       assert.equal(edge1._private.data.target, edge3._private.data.target, "edge1, edge2 and edge3 have the same target.");
-
-
-            //After topology grouping
-            var cyElements = cgfCy.convertModelJsonToCyElements(modelCy, true);
-
-            var node1 = cy.getElementById("RBBP4");
-            var node2 = cy.getElementById("LIN9");
-            var node3 = cy.getElementById("KLF5");
-
-            assert.equal(node1._private.data.parent, node2._private.data.parent, "node1 and node2 grouped correctly.");
-            assert.equal(node1._private.data.parent, node3._private.data.parent, "node1, node2 and node3 are grouped correctly.");
-
-            var parentId = node1._private.data.parent;
-
-
-            var newEdge = cy.getElementById(parentId + "-" + "CCNB1");
-
-            assert.ok(newEdge, "New edge between parent and CCNB1 exists");
-
-        });
-    }
-
-
-
-    clearModel();
-    initModelFromJsonTest(demoJson);
-
-    createCyTest(function() {
-        //call cy-related tests after container is created
-        selectNodeTest();
-
-        topologyGroupingTest();
-    });
-
-
+    // guiTest();
 
 
 };

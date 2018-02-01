@@ -78,22 +78,17 @@ app.get('/:docId', function (page, model, arg, next) {
                 parametersPath.subscribe(function(){
                     enumerationsPath.subscribe(function(){
                         model.set('_page.room', room);
-
-
                         if(arg.docId === 'test') { //clear everything and start from scratch if this is test mode
-;
+                            if(cgfTextPath.get())
+                                model.set(docPath + '.cgfText', null);
+                            if(cyPath.get())
+                                model.set(docPath + '.cy', null);
+                            if(parametersPath.get())
+                                model.set(docPath + '.parameters', null);
+                            if(enumerationsPath.get())
+                                model.set(docPath + '.enumerations', null);
 
-                            // if(cgfTextPath.get())
-                            //     model.set(docPath + '.cgfText', null);
-                            // if(cyPath.get())
-                            //     model.set(docPath + '.cy', null);
-                            // if(parametersPath.get())
-                            //     model.set(docPath + '.parameters', null);
-                            // if(enumerationsPath.get())
-                            //     model.set(docPath + '.enumerations', null);
-
-                        };
-                        // console.log(model.get('_page.doc.parameters'));
+                        }
                         page.render();
                     });
                 });
@@ -107,13 +102,11 @@ app.get('/:docId', function (page, model, arg, next) {
 
 app.proto.create = function (model) {
 
-
+    let self = this;
     cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
 
 
     socket = io();
-
-
 
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
@@ -121,13 +114,12 @@ app.proto.create = function (model) {
     //
     this.modelManager = require('./public/src/model/modelManager.js')(model, room, model.get('_session.userId'),name );
     //
-    //
-    let self = this;
+
     socket.on('parameterDescription', function(fileContent){
 
-        let json = JSON.parse(fileContent);
+        self.parameterJson = JSON.parse(fileContent);
 
-        self.loadParameters(model, json);
+        self.initParameters(model, self.parameterJson);
 
         docReady = true;
 
@@ -136,14 +128,17 @@ app.proto.create = function (model) {
 
 
         //it can only run after the parameters are run
-        window.testApp = this;
+        window.testApp = self;
 
         console.log("Parameters acquired from the server");
 
+        //Run only after everything is ready
+        if(room === 'test')
+            self.runUnitTests();
+
     });
 
-    if(room === 'test')
-        this.runUnitTests();
+
 
 };
 
@@ -169,7 +164,8 @@ app.proto.init = function (model) {
 }
 
 app.proto.runUnitTests = function(){
-    require("./test/testsGraphCreation.js")();
+    // require("./test/testsGraphCreation.js")();
+    require("./test/testsParameters.js")();
     require("./test/testOptions.js")(); //to print out results
 }
 
@@ -178,49 +174,11 @@ app.proto.runUnitTests = function(){
  * @param model
  * @param json
  */
-app.proto.loadParameters = function(model, json){
+app.proto.initParameters = function(model, json){
 
-    let parameterList = json.Parameters;
-    let enumerationList = json.Enumerations;
-
-
-    //call before parameters because we will set parameter types accordingly
-    if(model.get('_page.doc.enumerations') == null)
-        model.set('_page.doc.enumerations', enumerationList);
-
-    if(model.get('_page.doc.parameters') == null)
-        model.set('_page.doc.parameters', parameterList);
-
-
-    for(let i = 0; i < parameterList.length; i++){
-        let param = parameterList[i];
-        model.set('_page.doc.parameters.' + i + '.ind', i);  //index of a certain parameter
-
-        model.set('_page.doc.parameters.' + i + '.isVisible', true);  //visibility is on by default
-
-
-
-        if(model.get('_page.doc.parameters.' + i + '.cnt') == null) {
-            model.push('_page.doc.parameters.' + i + '.cnt', 0);  //for multiple fields
-
-            for (let j = 0; j < param.EntryType.length; j++)
-                model.set('_page.doc.parameters.' + i + '.domId.0.' + j, (param.ID + "-0-" + j));  //for multiple fields
-
-            // if(param.CanBeMultiple === "true")
-                model.set('_page.doc.parameters.' + i + '.batchDomId', (param.ID + "-batch"));  //for batch values
-                model.set('_page.doc.parameters.' + i + '.batchModalDomId', (param.ID + "-batchModal"));  //for batch values
-
-        }
-        if(model.get('_page.doc.parameters.' + i + '.value') == null) {
-            if(param.Default)
-                model.set('_page.doc.parameters.' + i + '.value', param.Default);
-        }
-    }
-
+    this.modelManager.loadParameters(model,json)
     this.updateParameterVisibility();
 };
-
-
 
 
 /***
@@ -229,7 +187,7 @@ app.proto.loadParameters = function(model, json){
  */
 app.proto.initSelectBoxes = function(){
     let self = this;
-    let parameterList = self.model.get('_page.doc.parameters');
+    let parameterList = this.modelManager.getModelParameters();
 
 
     if(parameterList) {
@@ -268,7 +226,8 @@ app.proto.initParamSelectBox = function(param){
 app.proto.initCheckBoxes = function() {
 
     let self = this;
-    let parameterList = self.model.get('_page.doc.parameters');
+    let parameterList = this.modelManager.getModelParameters();
+
 
     if(parameterList) {
         parameterList.forEach(function (param) {
@@ -299,13 +258,6 @@ app.proto.initParamCheckBox = function(param){
 
 }
 
-app.proto.setParamValue = function(param, cnt, entryInd, val){
-    this.model.set('_page.doc.parameters.' + param.ind + '.value.' + cnt + '.' + entryInd , val);
-}
-
-app.proto.getParamValue = function(param, cnt, entryInd,){
-    return this.model.get('_page.doc.parameters.' + param.ind + '.value.' + cnt + '.' + entryInd);
-}
 
 /***
  * Updates model when a new value is selected in the select box
@@ -318,7 +270,7 @@ app.proto.updateSelected = function(param, cnt, entryInd){
     let e =  this.getDomElement(param, cnt, entryInd)[0];
     let paramVal = e.options[e.selectedIndex].text;
 
-    this.setParamValue(param, cnt, entryInd, paramVal );
+    this.modelManager.setParameterValue(param.ind, cnt, entryInd, paramVal );
 
 
 }
@@ -333,7 +285,7 @@ app.proto.updateChecked = function(param, cnt, entryInd){
 
     let paramVal = this.getDomElement(param, cnt, entryInd).prop('checked');
 
-    this.setParamValue(param, cnt, entryInd, paramVal );
+    this.modelManager.setParameterValue(param.ind, cnt, entryInd, paramVal );
 
 }
 
@@ -350,8 +302,7 @@ app.proto.updateBatch = function(param){
 
     let self = this;
 
-     let cnt = self.model.get('_page.doc.parameters.' + param.ind  +'.cnt').length;
-
+    let cnt = this.modelManager.getParameterCnt(param.ind);
     let valStr =  $('#' + param.batchDomId).val().trim();
 
 
@@ -361,11 +312,9 @@ app.proto.updateBatch = function(param){
 
 
 
-
     //first clear cnt array
-    for(let i = 0; i < cnt ; i++) {
-        self.model.pop('_page.doc.parameters.' + param.ind + '.cnt');
-    }
+    this.modelManager.emptyParameterCntArr(ind);
+
     self.model.set('_page.doc.parameters.' + param.ind + '.domId', null );
 
 
@@ -374,26 +323,21 @@ app.proto.updateBatch = function(param){
 
         let valEntry = vals[i].split(" ");
         for (let entryInd = 0; entryInd < valEntry.length; entryInd++) {
-            self.setParamValue(param, i, entryInd, valEntry[entryInd]);
+            self.modelManager.setParameterValue(param.ind, i, entryInd, valEntry[entryInd]);
         }
         self.addParameterInput(param);
     }
 
-
 }
-
 
 
 /***
  * Resets all parameters to default values
  */
 app.proto.resetToDefaultParameters= function(){
-    let self = this;
 
-    let parameterList = self.model.get('_page.doc.parameters');
-    for(let i = 0; i < parameterList.length; i++){
-        self.model.set('_page.doc.parameters.' + i + '.value', parameterList[i].Default);
-    }
+    this.modelManager.resetToDefaultParameters();
+
 }
 
 /***
@@ -401,7 +345,7 @@ app.proto.resetToDefaultParameters= function(){
  */
 app.proto.submitParameters = function () {
     let self = this;
-    let parameterList = this.model.get('_page.doc.parameters');
+    let parameterList = this.modelManager.getModelParameters();
 
     let isSuccessful = this.checkParameters();
     if(isSuccessful) { //means all the parameters are assigned proper values
@@ -445,7 +389,7 @@ app.proto.submitParameters = function () {
  * @returns {boolean}
  */
 app.proto.checkParameters = function(){
-    let parameterList = this.model.get('_page.doc.parameters');
+    let parameterList = this.modelManager.getModelParameters();
     let isSuccessful = true;
 
     function isValueMissing(arr){
@@ -522,6 +466,8 @@ var convertParameterListToFileContent = function(parameterList) {
  * @returns {*}
  */
 app.proto.getMultiple = function(param) {
+
+
     if(param.CanBeMultiple === "true")
         return true;
     else
@@ -533,10 +479,8 @@ app.proto.getMultiple = function(param) {
  * @param type
  */
 app.proto.getEnum = function(type){
-    let enumList = this.model.get('_page.doc.enumerations');
+    let enumList = this.modelManager.getModelEnumerations();
 
-    // console.log("getting enumerations");
-    // console.log(enumList);
     for(var i = 0; i < enumList.length; i++){
         if(enumList[i].name === type) {
             return enumList[i].values;
@@ -551,9 +495,11 @@ app.proto.getEnum = function(type){
 app.proto.addParameterInput = function(param){
 
     let self = this;
-    let newCnt = this.model.get('_page.doc.parameters.' + param.ind + '.cnt').length;
+    let newCnt = this.modelManager.getParameterCnt(param.ind);
 
-    this.model.push('_page.doc.parameters.' + param.ind + '.cnt', newCnt);  //id of the html field
+
+    this.modelManager.pushParameterCnt(param.ind, newCnt); //id of the html field
+
 
     for(let j =0 ; j < param.EntryType.length; j++)
         self.model.set('_page.doc.parameters.' +  param.ind  + '.domId.' + newCnt +'.' + j , (param.ID + "-"+ newCnt + "-" + j));  //for multiple fields
@@ -569,14 +515,14 @@ app.proto.addParameterInput = function(param){
  * @param param
  */
 app.proto.updateBatchBox = function(param){
-    let cnt = this.model.get('_page.doc.parameters.' + param.ind + '.cnt').length;
+    let cnt = this.modelManager.getParameterCnt(param.ind);
     //update the batch text box accordingly
     let batchTxt = "";
     for(let i = 0; i < cnt; i++) {
         let line = "";
         for (let j = 0; j < param.EntryType.length; j++) {
             if(param.value) {
-                line += param.value[i][j]//self.getParamValue(param, i, j);
+                line += param.value[i][j]
                 if (j < param.EntryType.length - 1)
                     line += " ";
                 else
@@ -596,7 +542,7 @@ app.proto.updateBatchBox = function(param){
  * Determines whether to show or hide DOM elements depending on parameter conditions
  */
 app.proto.updateParameterVisibility = function(){
-    let parameterList = this.model.get('_page.doc.parameters');
+    let parameterList = this.modelManager.getModelParameters();
     let self = this;
 
     parameterList.forEach(function(param){
@@ -604,7 +550,9 @@ app.proto.updateParameterVisibility = function(){
             let condition = param.Condition;
 
             if(!condition.Operator) { //a single condition without an operator
-                if (self.conditionResult(condition.Parameter, condition.Value)){
+                let condParam = self.modelManager.findParameterFromId(condition.Parameter);
+                if (self.conditionResult(condParam.ind, condition.Value)){
+
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
                 }
                 else{
@@ -638,10 +586,10 @@ app.proto.satisfiesConditions = function(op, conditions){
 
         if(condition.Parameter !== undefined && condition.Value !== undefined){ //if it is not composite
 
-            let param = self.findParameterFromId(condition.Parameter);
+            let condParam = self.modelManager.findParameterFromId(condition.Parameter);
 
 
-            let result = self.conditionResult(param, condition.Value);
+            let result = self.conditionResult(condParam.ind, condition.Value);
             results.push(result);
 
             if(condition.Parameter == "fdr-threshold-for-network-significance")
@@ -677,29 +625,15 @@ app.proto.satisfiesConditions = function(op, conditions){
 }
 
 /***
- * parameters are stored in an array, so traverse the array for a matching id
- * @param id
- */
-app.proto.findParameterFromId = function(id){
-    let parameterList = this.model.get('_page.doc.parameters');
-    let self = this;
-
-    for(let i = 0; i < parameterList.length; i++){
-        if(parameterList[i].ID === id)
-            return parameterList[i];
-    }
-}
-
-/***
  * Tests whether the condition holds, i.e. a parameter's value is equal to the given value
  * TODO: Assumes that conditions are specified only for the first element for parameters that can be multiple
- * @param param
+ * @param index of the parameter
  * @param value
  * @returns {boolean}
  */
-app.proto.conditionResult = function(param, value){
+app.proto.conditionResult = function(ind, value){
 
-    let paramVal = this.model.get('_page.doc.parameters.' + param.ind + '.value.0');
+    let paramVal =  this.modelManager.getParameterValue(ind, 0);
 
 
     if(paramVal)
@@ -769,7 +703,6 @@ app.proto.reloadGraph = function(){
  * Load demo graph from demoJson.js
  */
 app.proto.loadDemoGraph = function(){
-
 
     graphChoice = graphChoiceEnum.DEMO;
     this.model.set('_page.doc.cgfText', JSON.stringify(demoJson));

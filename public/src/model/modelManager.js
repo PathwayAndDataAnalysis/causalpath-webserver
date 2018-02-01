@@ -12,7 +12,7 @@ module.exports =  function(model, docId, userId, userName) {
 
     model.ref('_page.doc', 'documents.' + docId);
 
-    return ModelManager = { //global reference for testing
+    return { //global reference for testing
 
 
 
@@ -131,6 +131,123 @@ module.exports =  function(model, docId, userId, userName) {
         },
 
 
+        getModelParameters: function(){
+            return model.get('_page.doc.parameters');
+        },
+
+        getModelEnumerations: function(){
+            return model.get('_page.doc.enumerations');
+        },
+
+        getModelParameter: function(ind){
+            let parameterList = this.getModelParameters();
+            if(ind >=0 && ind < parameterList.length)
+                return parameterList[ind];
+            else {
+                console.log("Parameter index out of bounds");
+                return null;
+            }
+        },
+        /***
+         * parameters are stored in an array, so traverse the array for a matching id
+         * @param id
+         */
+
+        findParameterFromId: function(id){
+
+            let parameterList = this.getModelParameters();
+
+            for(let i = 0; i < parameterList.length; i++){
+                if(parameterList[i].ID === id)
+                    return parameterList[i];
+                }
+
+            console.log("Parameter with ID " + id + "not found.")
+        },
+
+        setParameterValue: function(ind, cnt, entryInd, val){
+            model.set('_page.doc.parameters.' + ind + '.value.' + cnt + '.' + entryInd , val);
+        },
+
+        /***
+         * Returns an array or the value of a specific entry
+         * @param ind
+         * @param cnt
+         * @param entryInd
+         */
+        getParameterValue: function(ind, cnt, entryInd){
+            if(!entryInd)
+                return model.get('_page.doc.parameters.' + ind + '.value.' + cnt);
+            else
+                return model.get('_page.doc.parameters.' + ind + '.value.' + cnt + '.' + entryInd);
+
+        },
+
+        getParameterCnt: function(ind){
+            this.getModelParameter(ind).cnt.length;
+
+        },
+        pushParameterCnt: function(ind, cnt){
+            model.push('_page.doc.parameters.' + ind + '.cnt', cnt);
+        },
+
+        emptyParameterCntArr: function(ind){
+            let cnt = this.getParameterCnt(ind);
+            for(let i = 0; i < cnt ; i++) {
+                model.pop('_page.doc.parameters.' + ind + '.cnt');
+            }
+        },
+
+        /***
+         * Loads parameters from the input json file
+         * @param model
+         * @param json
+         */
+        loadParameters: function(model, json){
+            let parameterList = json.Parameters;
+            let enumerationList = json.Enumerations;
+
+
+            //call before parameters because we will set parameter types accordingly
+            if(model.get('_page.doc.enumerations') == null)
+                model.set('_page.doc.enumerations', enumerationList);
+
+            if(model.get('_page.doc.parameters') == null)
+                model.set('_page.doc.parameters', parameterList);
+
+
+            for(let i = 0; i < parameterList.length; i++){
+                let param = parameterList[i];
+                model.set('_page.doc.parameters.' + i + '.ind', i);  //index of a certain parameter
+
+                model.set('_page.doc.parameters.' + i + '.isVisible', true);  //visibility is on by default
+
+                if(model.get('_page.doc.parameters.' + i + '.cnt') == null) {
+                    model.push('_page.doc.parameters.' + i + '.cnt', 0);  //for multiple fields
+
+                    for (let j = 0; j < param.EntryType.length; j++)
+                        model.set('_page.doc.parameters.' + i + '.domId.0.' + j, (param.ID + "-0-" + j));  //for multiple fields
+
+                    model.set('_page.doc.parameters.' + i + '.batchDomId', (param.ID + "-batch"));  //for batch values
+                    model.set('_page.doc.parameters.' + i + '.batchModalDomId', (param.ID + "-batchModal"));  //for batch values
+
+                }
+                if(model.get('_page.doc.parameters.' + i + '.value') == null) {
+                    if(param.Default)
+                        model.set('_page.doc.parameters.' + i + '.value', param.Default);
+                }
+            }
+
+        },
+
+        resetToDefaultParameters(){
+            let self = this;
+
+            let parameterList = this.getModelParameters();
+            for(let i = 0; i < parameterList.length; i++){
+                self.model.set('_page.doc.parameters.' + i + '.value', parameterList[i].Default);
+            }
+        }
 
     }
 }
