@@ -241,11 +241,10 @@ module.exports =  function(model, docId, userId, userName) {
         },
 
         resetToDefaultParameters(){
-            let self = this;
 
             let parameterList = this.getModelParameters();
             for(let i = 0; i < parameterList.length; i++){
-                self.model.set('_page.doc.parameters.' + i + '.value', parameterList[i].Default);
+               model.set('_page.doc.parameters.' + i + '.value', parameterList[i].Default);
             }
         }
 
