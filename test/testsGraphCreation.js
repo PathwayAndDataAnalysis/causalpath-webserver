@@ -4,11 +4,6 @@ module.exports = function(){
 
     QUnit.module( "modelManager Tests" );
 
-    // QUnit.test('modelManager.setName()', function(assert) {
-    //     modelManager.setName("abc");
-    //       assert.equal(modelManager.getName(), "abc", "User name is correctly set.");
-    // });
-    //
 
     function clearModel(){
         QUnit.test('modelManager.clearModel()', function(assert) {

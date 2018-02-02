@@ -5,6 +5,7 @@ module.exports = function() {
     });
 
     QUnit.log(function( details ) {
+
         console.log( "Log: ", details.result, details.message );
     });
 

@@ -23,17 +23,6 @@ module.exports = function(){
 
         });
 
-        QUnit.test("app.getMultiple", function(assert){
-
-            let param1 = modelManager.findParameterFromId("test-value-column");
-            assert.ok(app.getMultiple(param1), "getMultiple works correctly for test-value-column");
-
-            let param2 = modelManager.findParameterFromId("effect-column");
-            assert.notOk(app.getMultiple(param2), "getMultiple works correctly for effect-column");
-
-
-
-        });
 
         QUnit.test('Enumeration equality', function (assert) {
 
@@ -192,16 +181,19 @@ module.exports = function(){
 
             assert.ok(app.getDomElement(param, 0,0), "stdev-threshold-for-data domElement 0 is correctly achieved.");
             assert.ok(app.getDomElement(param, 0,1), "stdev-threshold-for-data domElement 1 is correctly achieved.");
+
+
+            let param2 = modelManager.findParameterFromId("pool-proteomics-for-fdr-adjustment");
+            assert.notOk(app.getDomElement(param2, 0, 0).prop("checked"), "pool-proteomics-for-fdr-adjustment DOM is not created yet");
         });
+
 
 
         QUnit.test('updateParamSelectBox', function (assert) {
 
             let param = modelManager.findParameterFromId("relation-filter-type");
 
-            // app.initParamSelectBox(param);
 
-            console.log(app.getDomElement(param, 0,0));
             assert.equal(app.getDomElement(param, 0,0)[0].selectedIndex, 0 , "selected index for relation-filter-type is correct");
 
 
@@ -209,14 +201,30 @@ module.exports = function(){
             assert.equal(app.getDomElement(param2, 0,1)[0].selectedIndex, -1 , "selected index for gene-activity is correct");
 
         });
+
+
+
+        QUnit.test('updateParamCheckBox', function (assert) {
+
+            let param = modelManager.findParameterFromId("do-site-matching");
+            assert.ok(app.getDomElement(param, 0, 0).prop("checked"), "check value for do-site-matching is correct");
+
+            let param2 = modelManager.findParameterFromId("do-log-transform");
+            assert.notOk(app.getDomElement(param2, 0, 0).prop("checked"), "check value for do-log-transform is correct");
+
+
+        });
+
+
+
     }
 
 
     setTimeout(function(){ //it takes a while before gui is updated
+        guiTest();
         loadParametersTest();
         parameterVisibilityTest();
 
-        guiTest();
     }, 200);
 
 

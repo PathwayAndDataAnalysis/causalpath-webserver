@@ -106,13 +106,15 @@ app.proto.create = function (model) {
     cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
 
 
-    socket = io();
+    socket = this.socket = io();
 
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
-    let room = model.get('_page.room');
+    this.room = model.get('_page.room');
     //
-    this.modelManager = require('./public/src/model/modelManager.js')(model, room, model.get('_session.userId'),name );
+
+
+    this.modelManager = require('./public/src/model/modelManager.js')(model, self.room, model.get('_session.userId'),name );
     //
 
     socket.on('parameterDescription', function(fileContent){
@@ -133,7 +135,7 @@ app.proto.create = function (model) {
         console.log("Parameters acquired from the server");
 
         //Run only after everything is ready
-        if(room === 'test')
+        if(self.room === 'test')
             self.runUnitTests();
 
     });
@@ -164,19 +166,25 @@ app.proto.init = function (model) {
 }
 
 app.proto.runUnitTests = function(){
-    // require("./test/testsGraphCreation.js")();
+
+    // require("./test/testsServerOperations.js")();
+
+    require("./test/testsGraphCreation.js")();
     require("./test/testsParameters.js")();
     require("./test/testOptions.js")(); //to print out results
 }
 
 /***
- * Loads parameters from the input json file
+ * Loads parameters from the input json file and updates visibility
  * @param model
  * @param json
  */
 app.proto.initParameters = function(model, json){
 
-    this.modelManager.loadParameters(model,json)
+    //Fill the model with json data
+    this.modelManager.loadParameters(model,json);
+
+    //update visibility in the model based on parameter conditions
     this.updateParameterVisibility();
 };
 
@@ -204,7 +212,9 @@ app.proto.initParamSelectBox = function(param){
     let self  = this;
     param.cnt.forEach(function (cnt) {
         for (let j = 0; j < param.EntryType.length; j++) {
+
             let enumList = self.getEnum(param.EntryType[j]);
+
 
             if (enumList) {
 
@@ -247,10 +257,7 @@ app.proto.initParamCheckBox = function(param){
         for (let j = 0; j < param.EntryType.length; j++) {
             if (param.EntryType[j] === "Boolean") {
                 let val = param.value[cnt][j];
-                if (val === "true" || val === true)
-                    self.getDomElement(param, cnt, j).prop('checked', true);
-                else
-                    self.getDomElement(param, cnt, j).prop('checked', false);
+                self.getDomElement(param, cnt, j).prop('checked', val);
 
             }
         }
@@ -343,15 +350,12 @@ app.proto.resetToDefaultParameters= function(){
 /***
  * Sends the parameters to the server to write into a text file
  */
-app.proto.submitParameters = function () {
+app.proto.submitParameters = function (callback) {
     let self = this;
     let parameterList = this.modelManager.getModelParameters();
 
     let isSuccessful = this.checkParameters();
     if(isSuccessful) { //means all the parameters are assigned proper values
-
-
-        let room = self.model.get('_page.room');
 
         let fileContent = convertParameterListToFileContent(parameterList);
 
@@ -359,14 +363,14 @@ app.proto.submitParameters = function () {
 
         var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
 
-        socket.emit("writeFileOnServerSide", room, fileContent, 'parameters.txt', true,function (data) {
+        socket.emit("writeFileOnServerSide", self.room, fileContent, 'parameters.txt', true,function (data) {
             document.getElementById('parameters-table').style.display='none';
 
             if(data.indexOf("Error") == 0){
                 notyView.close();
                 notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
                 console.log(data);
-
+                if(callback) callback("error");
             }
             else{
 
@@ -377,6 +381,8 @@ app.proto.submitParameters = function () {
                 });
 
                 self.model.set('_page.doc.cgfText', data);
+
+                if(callback) callback(data);
             }
 
         });
@@ -410,7 +416,7 @@ app.proto.checkParameters = function(){
 
     let missingValues = "";
     for(let i = 0; i < parameterList.length; i++){
-        if(parameterList[i].isVisible && parameterList[i].Mandatory === "true" && isValueMissing(parameterList[i].value)){
+        if(parameterList[i].isVisible && parameterList[i].Mandatory && isValueMissing(parameterList[i].value)){
             isSuccessful = false;
             missingValues += "-" + parameterList[i].Title + "\n";
         }
@@ -460,32 +466,23 @@ var convertParameterListToFileContent = function(parameterList) {
     return content;
 };
 
-/***
- * Can a parameter be multiple?
- * @param param
- * @returns {*}
- */
-app.proto.getMultiple = function(param) {
 
-
-    if(param.CanBeMultiple === "true")
-        return true;
-    else
-        return undefined;
-}
 
 /***
  * Returns the values of the enum type
  * @param type
  */
 app.proto.getEnum = function(type){
-    let enumList = this.modelManager.getModelEnumerations();
 
-    for(var i = 0; i < enumList.length; i++){
-        if(enumList[i].name === type) {
-            return enumList[i].values;
-        }
-    }
+ if(this.modelManager) {
+     let enumList = this.modelManager.getModelEnumerations();
+
+     for (var i = 0; i < enumList.length; i++) {
+         if (enumList[i].name === type) {
+             return enumList[i].values;
+         }
+     }
+ }
 }
 
 /***
@@ -660,10 +657,9 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
     reader.onload = function (event) {
         self.model.set('_page.doc.parameters.' + param.ind + '.value', [[file.name]]);
 
-        let room = self.model.get('_page.room');
 
         //also send to server
-        socket.emit("writeFileOnServerSide", room, event.target.result, file.name, false, function () {
+        socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function () {
             console.log("success");
         });
     };
@@ -746,7 +742,7 @@ app.proto.loadAnalysisDir = function(){
     var fileContents = [];
     var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
 
-    var room = this.model.get('_page.room');
+
     notyView.setText( "Reading files...Please wait.");
 
 
@@ -760,7 +756,7 @@ app.proto.loadAnalysisDir = function(){
         reader.onload = function (e) {
             fileContents.push({name: file.name, content: e.target.result});
             notyView.setText( "Analyzing results...Please wait.");
-            socket.emit('analysisZip', e.target.result, room, function(json){
+            socket.emit('analysisZip', e.target.result, self.room, function(json){
                 self.createCyGraphFromCgf(JSON.parse(json), function(){
                     notyView.close();
                 });
@@ -795,8 +791,8 @@ app.proto.loadAnalysisDir = function(){
         p1.then(function (content) {
 
             notyView.setText( "Analyzing results...Please wait.");
-            var room = self.model.get('_page.room'); //each room will have its own folder
-            socket.emit('analysisDir', fileContents, room, function(data){
+
+            socket.emit('analysisDir', fileContents, self.room, function(data){
 
                 if(data.indexOf("Error") == 0){
                     notyView.close();
@@ -899,7 +895,7 @@ app.proto.showInputContainer = function(){
  */
 app.proto.downloadResults = function(){
 
-    var room = this.model.get('_page.room'); //each room will have its own folder
+    let self = this;
 
     if(graphChoice == graphChoiceEnum.DEMO) {
         console.log("No analysis results");
@@ -908,12 +904,12 @@ app.proto.downloadResults = function(){
 
     var notyView = noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
 
-    socket.emit('downloadRequest', room, function(fileContent){
+    socket.emit('downloadRequest', self.room, function(fileContent){
         console.log("Zip file received.");
 
         var blob = base64ToZipBlob(fileContent);
 
-        saveAs(blob, (room + ".zip"));
+        saveAs(blob, (self.room + ".zip"));
 
         notyView.close();
 

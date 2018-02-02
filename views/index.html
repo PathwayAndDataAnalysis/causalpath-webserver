@@ -192,7 +192,7 @@
                                         <!--<span style = "display: none">-->
                                 <tr>
                                 <td  data-toggle="tooltip" data-placement="right" title={{#parameter.Description}}>
-                                    {{if #parameter.Mandatory === "true"}}
+                                    {{if #parameter.Mandatory }}
                                     {{#parameter.Title}} <span style ="color:red" >*</span>:
                                     {{else}}
                                     {{#parameter.Title}}:
@@ -229,7 +229,7 @@
 
 
 
-                                    {{if #parameter.CanBeMultiple === "true" && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}
+                                    {{if #parameter.CanBeMultiple && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}
                                         <td class = "img-td"><img src='img/add.png' on-click = "addParameterInput(#parameter)"/></td>
 
                                         <td>

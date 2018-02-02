@@ -70,10 +70,13 @@ module.exports =  function(model, docId, userId, userName) {
          */
         clearModel: function(){
 
-
-            model.del('_page.doc.cy.nodes');
-            model.del('_page.doc.cy.edges');
-            model.del('_page.doc.cy');
+            if(model.get('_page.doc.cy')) {
+                if(model.get('_page.doc.cy.nodes'))
+                    model.del('_page.doc.cy.nodes');
+                if(model.get('_page.doc.cy.edges'))
+                    model.del('_page.doc.cy.edges');
+                model.del('_page.doc.cy');
+            }
 
         },
 
@@ -233,8 +236,9 @@ module.exports =  function(model, docId, userId, userName) {
 
                 }
                 if(model.get('_page.doc.parameters.' + i + '.value') == null) {
-                    if(param.Default)
+                    if(param.Default) {
                         model.set('_page.doc.parameters.' + i + '.value', param.Default);
+                    }
                 }
             }
 
