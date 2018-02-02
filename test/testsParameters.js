@@ -215,6 +215,12 @@ module.exports = function(){
 
         });
 
+        //
+        // QUnit.test('app.addParameterInput', function (assert) {
+        //
+        //     // app.addParameterInput();
+        // });
+
 
 
     }

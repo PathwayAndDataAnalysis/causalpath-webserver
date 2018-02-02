@@ -191,7 +191,7 @@
                                     <!--{{else}}-->
                                         <!--<span style = "display: none">-->
                                 <tr>
-                                <td  data-toggle="tooltip" data-placement="right" title={{#parameter.Description}}>
+                                <td data-toggle="tooltip" data-placement="right" title={{#parameter.Description}}>
                                     {{if #parameter.Mandatory }}
                                     {{#parameter.Title}} <span style ="color:red" >*</span>:
                                     {{else}}
@@ -222,18 +222,30 @@
                                                 <option name = {{#option}}>{{#option}}</option>
                                              {{/each}}
                                             </select>
+
+
                                         {{/if}}
 
+
+                                        <!--{{if #parameter.CanBeMultiple && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}-->
+                                        <!--<img src='img/add.png' on-click = "addParameterInput(#parameter)"/>-->
+                                        <!--{{/if}}-->
 
                                     </td>
 
 
 
                                     {{if #parameter.CanBeMultiple && #entryInd === #parameter.EntryType.length-1 && #cnt === 0}}
-                                        <td class = "img-td"><img src='img/add.png' on-click = "addParameterInput(#parameter)"/></td>
-
-                                        <td>
-                                            <button class = "btn" on-click = "updateBatchBox(#parameter)" onclick = "document.getElementById('{{#parameter.batchModalDomId}}').style.display='block'">Batch</button>
+                                    <td >
+                                        <table class = "inner-table"> <tbody>
+                                            <tr>
+                                            <td>
+                                            <img src='img/add.png' on-click = "addParameterInput(#parameter)"/>
+                                            </td>
+                                            <td>
+                                            <button  on-click = "updateBatchBox(#parameter)" onclick = "document.getElementById('{{#parameter.batchModalDomId}}').style.display='block'">Batch</button>
+                                            </td></tr>
+                                        </tbody></table>
 
                                             <div id=  {{#parameter.batchModalDomId}}  class="w3-modal">
                                                 <div class="w3-modal-content">

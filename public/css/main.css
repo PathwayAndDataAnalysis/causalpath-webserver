@@ -260,6 +260,7 @@ input[type="text"]{
 .parameter-content{
     font-size: small;
 
+
 }
 .parameters-select{
     height:100%;
@@ -267,9 +268,8 @@ input[type="text"]{
 }
 
 select, input, textarea, label{
-    width: 200px; !important;
+    width: 150px; !important;
     margin: 5px !important;
-   /*margin-top: 5px !important;*/
 }
 
 
@@ -283,11 +283,22 @@ select, input, textarea, label{
     padding-bottom: 5px; !important;
     padding-left: 5px; !important;
     padding-right: 5px; !important;
+
 }
+
+.inner-table tr td{
+    border:none;
+}
+
+/*.parameter-content table td:nth-child(1){*/
+    /*width: 10px;*/
+/*}*/
+
 
 .img-td{
     padding: 2px !important;
-    width: 10px;
+    margin: 5px;
+    /*width: 50px; !important;*/
 }
 
 #pc-query-table{

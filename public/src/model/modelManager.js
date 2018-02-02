@@ -187,7 +187,7 @@ module.exports =  function(model, docId, userId, userName) {
         },
 
         getParameterCnt: function(ind){
-            this.getModelParameter(ind).cnt.length;
+            return this.getModelParameter(ind).cnt.length;
 
         },
         pushParameterCnt: function(ind, cnt){

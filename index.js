@@ -169,7 +169,7 @@ app.proto.runUnitTests = function(){
 
     // require("./test/testsServerOperations.js")();
 
-    require("./test/testsGraphCreation.js")();
+    // require("./test/testsGraphCreation.js")();
     require("./test/testsParameters.js")();
     require("./test/testOptions.js")(); //to print out results
 }
@@ -320,7 +320,7 @@ app.proto.updateBatch = function(param){
 
 
     //first clear cnt array
-    this.modelManager.emptyParameterCntArr(ind);
+    this.modelManager.emptyParameterCntArr(param.ind);
 
     self.model.set('_page.doc.parameters.' + param.ind + '.domId', null );
 
@@ -675,6 +675,7 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
  * @returns {*|jQuery|HTMLElement}
  */
 app.proto.getDomElement = function(param, cnt, entryInd){
+
     return $('#' + param.domId[cnt][entryInd]);
 }
 
