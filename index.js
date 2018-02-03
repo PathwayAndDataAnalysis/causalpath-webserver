@@ -224,6 +224,9 @@ app.proto.initParamSelectBox = function(param){
                 if (param.value && param.value[cnt] && param.value[cnt][j]) {
                     let selectedInd = enumList.indexOf(param.value[cnt][j])
                     self.getDomElement(param, cnt, j)[0].selectedIndex = selectedInd;
+
+
+
                 }
                 else { //no value assigned
                     self.getDomElement(param, cnt, j)[0].selectedIndex = -1;
@@ -231,6 +234,29 @@ app.proto.initParamSelectBox = function(param){
             }
         }
     });
+
+
+
+
+}
+
+
+app.proto.unselectParameter = function(param, cnt, entryInd){
+    if(param.value) {
+        // let currentValue = param.value[cnt][entryInd];
+
+        let currentInd = this.getDomElement(param, cnt, entryInd)[0].selectedIndex;
+
+        let selectedInd = this.getEnum(param.EntryType[entryInd]).indexOf(param.value[cnt][entryInd]);
+
+
+
+        if (currentInd === selectedInd && currentInd!= -1) { //double click
+            this.getDomElement(param, cnt, entryInd)[0].selectedIndex = -1; //unselect
+            //update the value too
+            this.modelManager.setModelParameterValue(param.ind, cnt, entryInd, undefined);
+        }
+    }
 }
 /***
  * Initializes html check boxes

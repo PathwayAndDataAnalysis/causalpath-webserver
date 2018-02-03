@@ -217,7 +217,7 @@
                                             <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'checkbox' on-click = "updateChecked(#parameter, #cnt, #entryInd)">
 
                                         {{else}}
-                                            <select id =  {{#parameter.domId[#cnt][#entryInd]}} class = "parameters-select" on-change = "updateSelected(#parameter, #cnt, #entryInd)">
+                                            <select id =  {{#parameter.domId[#cnt][#entryInd]}} class = "parameters-select" on-change = "updateSelected(#parameter, #cnt, #entryInd)" on-click = "unselectParameter(#parameter, #cnt , #entryInd)">
                                             {{each getEnum(#type) as #option}}
                                                 <option name = {{#option}}>{{#option}}</option>
                                              {{/each}}
