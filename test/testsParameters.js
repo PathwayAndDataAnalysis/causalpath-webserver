@@ -72,6 +72,21 @@ module.exports = function(){
             }
         });
 
+
+        QUnit.test('defaultValues', function(assert){
+            app.resetToDefaultParameters();
+
+            let param = modelManager.findModelParameterFromId("pool-proteomics-for-fdr-adjustment");
+
+            assert.equal(param.value[0][0], true);
+
+            param = modelManager.findModelParameterFromId("id-column");
+            assert.equal(param.value[0][0], "ID");
+
+
+
+        });
+
     }
 
     function parameterVisibilityTest(){
@@ -281,6 +296,7 @@ module.exports = function(){
         guiTest();
         loadParametersTest();
         parameterVisibilityTest();
+
 
     }, 200);
 
