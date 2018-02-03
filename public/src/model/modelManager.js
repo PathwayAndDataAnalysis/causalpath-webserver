@@ -156,7 +156,7 @@ module.exports =  function(model, docId, userId, userName) {
          * @param id
          */
 
-        findParameterFromId: function(id){
+        findModelParameterFromId: function(id){
 
             let parameterList = this.getModelParameters();
 
@@ -168,7 +168,7 @@ module.exports =  function(model, docId, userId, userName) {
             console.log("Parameter with ID " + id + "not found.")
         },
 
-        setParameterValue: function(ind, cnt, entryInd, val){
+        setModelParameterValue: function(ind, cnt, entryInd, val){
             model.set('_page.doc.parameters.' + ind + '.value.' + cnt + '.' + entryInd , val);
         },
 
@@ -178,7 +178,7 @@ module.exports =  function(model, docId, userId, userName) {
          * @param cnt
          * @param entryInd
          */
-        getParameterValue: function(ind, cnt, entryInd){
+        getModelParameterValue: function(ind, cnt, entryInd){
             if(!entryInd)
                 return model.get('_page.doc.parameters.' + ind + '.value.' + cnt);
             else
@@ -186,16 +186,16 @@ module.exports =  function(model, docId, userId, userName) {
 
         },
 
-        getParameterCnt: function(ind){
+        getModelParameterCnt: function(ind){
             return this.getModelParameter(ind).cnt.length;
 
         },
-        pushParameterCnt: function(ind, cnt){
+        pushModelParameterCnt: function(ind, cnt){
             model.push('_page.doc.parameters.' + ind + '.cnt', cnt);
         },
 
-        emptyParameterCntArr: function(ind){
-            let cnt = this.getParameterCnt(ind);
+        emptyModelParameterCntArr: function(ind){
+            let cnt = this.getModelParameterCnt(ind);
             for(let i = 0; i < cnt ; i++) {
                 model.pop('_page.doc.parameters.' + ind + '.cnt');
             }
@@ -206,7 +206,7 @@ module.exports =  function(model, docId, userId, userName) {
          * @param model
          * @param json
          */
-        loadParameters: function(model, json){
+        loadModelParameters: function(model, json){
             let parameterList = json.Parameters;
             let enumerationList = json.Enumerations;
 
@@ -244,7 +244,7 @@ module.exports =  function(model, docId, userId, userName) {
 
         },
 
-        resetToDefaultParameters(){
+        resetToDefaultModelParameters(){
 
             let parameterList = this.getModelParameters();
             for(let i = 0; i < parameterList.length; i++){

@@ -1,3 +1,7 @@
+/***
+ * Run by setting the document id to "test"
+ */
+
 QUnit = require('qunitjs');
 module.exports = function(){
 

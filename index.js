@@ -53,8 +53,8 @@ app.get('/:docId', function (page, model, arg, next) {
 
     var docPath = 'documents.' + arg.docId;
 
-    if(arg.docId === 'test' && model.get('documents.test'))
-        model.set('documents.test', null);
+    if(arg.docId.includes('test') && model.get('documents.' + arg.docId))
+        model.set('documents.' + arg.docId, null);
 
     model.ref('_page.doc', ('documents.' + arg.docId));
 
@@ -78,7 +78,7 @@ app.get('/:docId', function (page, model, arg, next) {
                 parametersPath.subscribe(function(){
                     enumerationsPath.subscribe(function(){
                         model.set('_page.room', room);
-                        if(arg.docId === 'test') { //clear everything and start from scratch if this is test mode
+                        if(arg.docId.includes('test')) { //clear everything and start from scratch if this is test mode
                             if(cgfTextPath.get())
                                 model.set(docPath + '.cgfText', null);
                             if(cyPath.get())
@@ -135,7 +135,7 @@ app.proto.create = function (model) {
         console.log("Parameters acquired from the server");
 
         //Run only after everything is ready
-        if(self.room === 'test')
+        if(self.room.includes('test'))
             self.runUnitTests();
 
     });
@@ -167,11 +167,14 @@ app.proto.init = function (model) {
 
 app.proto.runUnitTests = function(){
 
-    // require("./test/testsServerOperations.js")();
-
-    // require("./test/testsGraphCreation.js")();
-    require("./test/testsParameters.js")();
+    if(this.room === "test1")
+        require("./test/testsServerOperations.js")();
+    else {
+        require("./test/testsGraphCreation.js")();
+        require("./test/testsParameters.js")();
+    }
     require("./test/testOptions.js")(); //to print out results
+
 }
 
 /***
@@ -182,7 +185,7 @@ app.proto.runUnitTests = function(){
 app.proto.initParameters = function(model, json){
 
     //Fill the model with json data
-    this.modelManager.loadParameters(model,json);
+    this.modelManager.loadModelParameters(model,json);
 
     //update visibility in the model based on parameter conditions
     this.updateParameterVisibility();
@@ -277,7 +280,7 @@ app.proto.updateSelected = function(param, cnt, entryInd){
     let e =  this.getDomElement(param, cnt, entryInd)[0];
     let paramVal = e.options[e.selectedIndex].text;
 
-    this.modelManager.setParameterValue(param.ind, cnt, entryInd, paramVal );
+    this.modelManager.setModelParameterValue(param.ind, cnt, entryInd, paramVal );
 
 
 }
@@ -292,7 +295,7 @@ app.proto.updateChecked = function(param, cnt, entryInd){
 
     let paramVal = this.getDomElement(param, cnt, entryInd).prop('checked');
 
-    this.modelManager.setParameterValue(param.ind, cnt, entryInd, paramVal );
+    this.modelManager.setModelParameterValue(param.ind, cnt, entryInd, paramVal );
 
 }
 
@@ -309,7 +312,7 @@ app.proto.updateBatch = function(param){
 
     let self = this;
 
-    let cnt = this.modelManager.getParameterCnt(param.ind);
+    let cnt = this.modelManager.getModelParameterCnt(param.ind);
     let valStr =  $('#' + param.batchDomId).val().trim();
 
 
@@ -320,7 +323,7 @@ app.proto.updateBatch = function(param){
 
 
     //first clear cnt array
-    this.modelManager.emptyParameterCntArr(param.ind);
+    this.modelManager.emptyModelParameterCntArr(param.ind);
 
     self.model.set('_page.doc.parameters.' + param.ind + '.domId', null );
 
@@ -330,7 +333,7 @@ app.proto.updateBatch = function(param){
 
         let valEntry = vals[i].split(" ");
         for (let entryInd = 0; entryInd < valEntry.length; entryInd++) {
-            self.modelManager.setParameterValue(param.ind, i, entryInd, valEntry[entryInd]);
+            self.modelManager.setModelParameterValue(param.ind, i, entryInd, valEntry[entryInd]);
         }
         self.addParameterInput(param);
     }
@@ -343,7 +346,7 @@ app.proto.updateBatch = function(param){
  */
 app.proto.resetToDefaultParameters= function(){
 
-    this.modelManager.resetToDefaultParameters();
+    this.modelManager.resetToDefaultModelParameters();
 
 }
 
@@ -398,25 +401,11 @@ app.proto.checkParameters = function(){
     let parameterList = this.modelManager.getModelParameters();
     let isSuccessful = true;
 
-    function isValueMissing(arr){
-
-        if(arr === undefined)
-            return true;
-        for(let i = 0; i < arr.length; i++){
-            if(arr[i] === undefined)
-                return true;
-            for(let j = 0; j < arr[i].length; j++){
-                if(arr[i][j] === undefined)
-                    return true;
-            }
-        }
-        return false;
-    }
 
 
     let missingValues = "";
     for(let i = 0; i < parameterList.length; i++){
-        if(parameterList[i].isVisible && parameterList[i].Mandatory && isValueMissing(parameterList[i].value)){
+        if(parameterList[i].isVisible && parameterList[i].Mandatory && isValueMissing(parameterList[i].value, undefined)){
             isSuccessful = false;
             missingValues += "-" + parameterList[i].Title + "\n";
         }
@@ -492,10 +481,19 @@ app.proto.getEnum = function(type){
 app.proto.addParameterInput = function(param){
 
     let self = this;
-    let newCnt = this.modelManager.getParameterCnt(param.ind);
+
+    if(isValueMissing(param.value, null)){
+
+        alert("First enter missing values for " + param.Title);
+        return;
+
+    }
 
 
-    this.modelManager.pushParameterCnt(param.ind, newCnt); //id of the html field
+    let newCnt = this.modelManager.getModelParameterCnt(param.ind);
+
+
+    this.modelManager.pushModelParameterCnt(param.ind, newCnt); //id of the html field
 
 
     for(let j =0 ; j < param.EntryType.length; j++)
@@ -512,7 +510,7 @@ app.proto.addParameterInput = function(param){
  * @param param
  */
 app.proto.updateBatchBox = function(param){
-    let cnt = this.modelManager.getParameterCnt(param.ind);
+    let cnt = this.modelManager.getModelParameterCnt(param.ind);
     //update the batch text box accordingly
     let batchTxt = "";
     for(let i = 0; i < cnt; i++) {
@@ -547,7 +545,7 @@ app.proto.updateParameterVisibility = function(){
             let condition = param.Condition;
 
             if(!condition.Operator) { //a single condition without an operator
-                let condParam = self.modelManager.findParameterFromId(condition.Parameter);
+                let condParam = self.modelManager.findModelParameterFromId(condition.Parameter);
                 if (self.conditionResult(condParam.ind, condition.Value)){
 
                     self.model.set('_page.doc.parameters.' + param.ind + '.isVisible', true);
@@ -583,7 +581,7 @@ app.proto.satisfiesConditions = function(op, conditions){
 
         if(condition.Parameter !== undefined && condition.Value !== undefined){ //if it is not composite
 
-            let condParam = self.modelManager.findParameterFromId(condition.Parameter);
+            let condParam = self.modelManager.findModelParameterFromId(condition.Parameter);
 
 
             let result = self.conditionResult(condParam.ind, condition.Value);
@@ -630,7 +628,7 @@ app.proto.satisfiesConditions = function(op, conditions){
  */
 app.proto.conditionResult = function(ind, value){
 
-    let paramVal =  this.modelManager.getParameterValue(ind, 0);
+    let paramVal =  this.modelManager.getModelParameterValue(ind, 0);
 
 
     if(paramVal)
@@ -941,3 +939,23 @@ function base64ToZipBlob(data){
 
 }
 
+/***
+ *
+ * @param arr
+ * @param testAgainst : can be null or undefined
+ * @returns {boolean}
+ */
+function isValueMissing(arr, testAgainst){
+
+    if(arr === undefined)
+        return true;
+    for(let i = 0; i < arr.length; i++){
+        if(arr[i] === testAgainst)
+            return true;
+        for(let j = 0; j < arr[i].length; j++){
+            if(arr[i][j] === testAgainst)
+                return true;
+        }
+    }
+    return false;
+}

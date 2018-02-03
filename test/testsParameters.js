@@ -1,3 +1,7 @@
+/***
+ * Run by setting the document id to "test"
+ */
+
 QUnit = require('qunitjs');
 module.exports = function(){
 
@@ -71,8 +75,8 @@ module.exports = function(){
     }
 
     function parameterVisibilityTest(){
-        QUnit.test('modelManager.findParameterFromId', function (assert) {
-            let paramInd = modelManager.findParameterFromId("id-column").ind;
+        QUnit.test('modelManager.findModelParameterFromId', function (assert) {
+            let paramInd = modelManager.findModelParameterFromId("id-column").ind;
             assert.equal(paramInd, 2 , "Finding parameter from id returns correct index.");
 
         });
@@ -80,11 +84,11 @@ module.exports = function(){
 
         QUnit.test('app.conditionResult', function (assert) {
             //set value of a parameter
-            modelManager.setParameterValue(2, 0, 0, "abc"); //id-column field
-            let condInd = modelManager.findParameterFromId("id-column").ind;
+            modelManager.setModelParameterValue(2, 0, 0, "abc"); //id-column field
+            let condInd = modelManager.findModelParameterFromId("id-column").ind;
             assert.ok(app.conditionResult(condInd, ["abc"]), "conditionResult for parameter id-column is correctly updated");
 
-            modelManager.setParameterValue(2, 0, 0, null); //id-column field
+            modelManager.setModelParameterValue(2, 0, 0, null); //id-column field
 
             assert.ok(app.conditionResult(condInd, [null]), "conditionResult for parameter id-column is correctly updated");
 
@@ -128,11 +132,11 @@ module.exports = function(){
                 } ]
             };
 
-            let ind1 = modelManager.findParameterFromId("value-transformation").ind;
-            modelManager.setParameterValue(ind1, 0, 0, "max");
+            let ind1 = modelManager.findModelParameterFromId("value-transformation").ind;
+            modelManager.setModelParameterValue(ind1, 0, 0, "max");
 
-            let ind2 = modelManager.findParameterFromId("threshold-for-data-significance").ind;
-            modelManager.setParameterValue(ind2, 0, 0, null);
+            let ind2 = modelManager.findModelParameterFromId("threshold-for-data-significance").ind;
+            modelManager.setModelParameterValue(ind2, 0, 0, null);
 
             assert.ok(app.satisfiesConditions("OR", conditionOR.Conditions), "satisfiesConditions for parameter value-transformation is correct for OR");
             assert.ok(app.satisfiesConditions("AND", conditionAND.Conditions), "satisfiesConditions for parameter value-transformation is correct for AND");
@@ -157,18 +161,18 @@ module.exports = function(){
             }*/
 
 
-            let ind1 = modelManager.findParameterFromId("value-transformation").ind;
-            modelManager.setParameterValue(ind1, 0, 0, "significant-change-of-mean");
+            let ind1 = modelManager.findModelParameterFromId("value-transformation").ind;
+            modelManager.setModelParameterValue(ind1, 0, 0, "significant-change-of-mean");
 
-            let ind2 = modelManager.findParameterFromId("fdr-threshold-for-data-significance").ind;
-            modelManager.setParameterValue(ind2, 0, 0, null);
+            let ind2 = modelManager.findModelParameterFromId("fdr-threshold-for-data-significance").ind;
+            modelManager.setModelParameterValue(ind2, 0, 0, null);
 
-            let param = modelManager.findParameterFromId("threshold-for-data-significance");
+            let param = modelManager.findModelParameterFromId("threshold-for-data-significance");
 
             assert.ok(param.isVisible, "Parameter threshold-for-data-significance visibility correctly set to visible.");
 
 
-            modelManager.setParameterValue(ind1, 0, 0, "correlation");
+            modelManager.setModelParameterValue(ind1, 0, 0, "correlation");
             assert.notOk(param.isVisible, "Parameter threshold-for-data-significance visibility correctly set to invisible.");
 
         });
@@ -177,13 +181,13 @@ module.exports = function(){
     function guiTest(){
         QUnit.test('app.getDomElement', function (assert) {
 
-            let param = modelManager.findParameterFromId("stdev-threshold-for-data");
+            let param = modelManager.findModelParameterFromId("stdev-threshold-for-data");
 
             assert.ok(app.getDomElement(param, 0,0), "stdev-threshold-for-data domElement 0 is correctly achieved.");
             assert.ok(app.getDomElement(param, 0,1), "stdev-threshold-for-data domElement 1 is correctly achieved.");
 
 
-            let param2 = modelManager.findParameterFromId("pool-proteomics-for-fdr-adjustment");
+            let param2 = modelManager.findModelParameterFromId("pool-proteomics-for-fdr-adjustment");
             assert.notOk(app.getDomElement(param2, 0, 0).prop("checked"), "pool-proteomics-for-fdr-adjustment DOM is not created yet");
         });
 
@@ -191,13 +195,13 @@ module.exports = function(){
 
         QUnit.test('updateParamSelectBox', function (assert) {
 
-            let param = modelManager.findParameterFromId("relation-filter-type");
+            let param = modelManager.findModelParameterFromId("relation-filter-type");
 
 
             assert.equal(app.getDomElement(param, 0,0)[0].selectedIndex, 0 , "selected index for relation-filter-type is correct");
 
 
-            let param2 = modelManager.findParameterFromId("gene-activity");
+            let param2 = modelManager.findModelParameterFromId("gene-activity");
             assert.equal(app.getDomElement(param2, 0,1)[0].selectedIndex, -1 , "selected index for gene-activity is correct");
 
         });
@@ -206,20 +210,67 @@ module.exports = function(){
 
         QUnit.test('updateParamCheckBox', function (assert) {
 
-            let param = modelManager.findParameterFromId("do-site-matching");
+            let param = modelManager.findModelParameterFromId("do-site-matching");
             assert.ok(app.getDomElement(param, 0, 0).prop("checked"), "check value for do-site-matching is correct");
 
-            let param2 = modelManager.findParameterFromId("do-log-transform");
+            let param2 = modelManager.findModelParameterFromId("do-log-transform");
             assert.notOk(app.getDomElement(param2, 0, 0).prop("checked"), "check value for do-log-transform is correct");
 
 
         });
 
-        //
-        // QUnit.test('app.addParameterInput', function (assert) {
-        //
-        //     // app.addParameterInput();
-        // });
+
+        QUnit.test('app.addParameterInput', function (assert) {
+
+            let done = assert.async();
+            let param = modelManager.findModelParameterFromId("threshold-for-data-significance");
+            let paramCnt = modelManager.getModelParameterCnt(param.ind);
+
+
+
+            //set previous values as well so that program doesn't give an error
+            modelManager.setModelParameterValue(param.ind, 0, 0, 1);
+            modelManager.setModelParameterValue(param.ind, 0, 1, "protein");
+
+
+            //should specify values separately
+            modelManager.setModelParameterValue(param.ind, paramCnt, 0, 3);
+            modelManager.setModelParameterValue(param.ind, paramCnt, 1, "rna");
+
+
+            app.addParameterInput(param);
+
+
+
+
+
+            //should wait a while to make sure model is updated after dom
+            //
+            setTimeout(function() {
+                let paramUpdatedCnt = modelManager.getModelParameterCnt(param.ind);
+
+                assert.equal(paramUpdatedCnt, paramCnt + 1, "Parameter count increased successfully");
+
+
+                assert.equal(app.getDomElement(param, paramUpdatedCnt-1, 0)[0].value, 3, "Parameter entryInd  0 correctly set");
+
+
+                //index 2 for select box is rna
+                assert.equal(app.getDomElement(param, paramUpdatedCnt-1, 1)[0].selectedIndex, 2, "Parameter entryInd  1 correctly set");
+
+
+                let paramUpdated = modelManager.findModelParameterFromId("threshold-for-data-significance");
+
+                //test batch now
+                app.updateBatchBox(paramUpdated);
+                let batchTxt = $('#' + param.batchDomId).val();
+
+
+                assert.ok(batchTxt.includes("3 rna"), "Batch box updated correctly");
+
+                done();
+            }, 200);
+        });
 
 
 

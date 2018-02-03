@@ -1,3 +1,7 @@
+/***
+ * Run by setting the document id to "test1"
+ */
+
 QUnit = require('qunitjs');
 module.exports = function(){
 
@@ -8,7 +12,7 @@ module.exports = function(){
     QUnit.module( "Server operations tests" );
 
 
-    function sendFilesTest() {
+    function sendFilesTest(callback) {
 
         QUnit.test("app.createGraphFromParameters", function(assert){
 
@@ -16,22 +20,22 @@ module.exports = function(){
             let done2 = assert.async();
             //Set the parameters as follows and then wait for server response
 
-            let param = modelManager.findParameterFromId("value-column");
-            modelManager.setParameterValue(param.ind, 0,0, "Value");
+            let param = modelManager.findModelParameterFromId("value-column");
+            modelManager.setModelParameterValue(param.ind, 0,0, "Value");
 
-            param = modelManager.findParameterFromId("value-transformation");
-            modelManager.setParameterValue(param.ind, 0,0, "arithmetic-mean");
+            param = modelManager.findModelParameterFromId("value-transformation");
+            modelManager.setModelParameterValue(param.ind, 0,0, "arithmetic-mean");
 
 
-            param = modelManager.findParameterFromId("threshold-for-data-significance");
-            modelManager.setParameterValue(param.ind, 0,0, "1");
-            modelManager.setParameterValue(param.ind, 0,1, "phosphoprotein");
+            param = modelManager.findModelParameterFromId("threshold-for-data-significance");
+            modelManager.setModelParameterValue(param.ind, 0,0, "1");
+            modelManager.setModelParameterValue(param.ind, 0,1, "phosphoprotein");
 
-            param = modelManager.findParameterFromId("do-site-matching");
-            modelManager.setParameterValue(param.ind, 0,0, false);
+            param = modelManager.findModelParameterFromId("do-site-matching");
+            modelManager.setModelParameterValue(param.ind, 0,0, false);
 
-            param = modelManager.findParameterFromId("proteomics-values-file");
-            modelManager.setParameterValue(param.ind, 0,0, "dataMinimal.txt");
+            param = modelManager.findModelParameterFromId("proteomics-values-file");
+            modelManager.setModelParameterValue(param.ind, 0,0, "dataMinimal.txt");
 
             //because we can't call loadFile programatically, let's write its contents
 
@@ -54,6 +58,7 @@ module.exports = function(){
                     //test dom elements
                     assert.notEqual($('#graph-container')[0].style.display, "none", "Graph container shown correctly")
                     done2();
+
                 });
 
             });
