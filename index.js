@@ -522,8 +522,15 @@ app.proto.addParameterInput = function(param){
     this.modelManager.pushModelParameterCnt(param.ind, newCnt); //id of the html field
 
 
-    for(let j =0 ; j < param.EntryType.length; j++)
+    for(let j = 0 ; j < param.EntryType.length; j++)
         self.model.set('_page.doc.parameters.' +  param.ind  + '.domId.' + newCnt +'.' + j , (param.ID + "-"+ newCnt + "-" + j));  //for multiple fields
+
+    //assign values even if they are null
+
+    for(let j = 0 ; j < param.EntryType.length; j++) {
+        if(!param.value || !param.value[newCnt] || !param.value[newCnt][j])
+            self.model.set('_page.doc.parameters.' + param.ind + '.value.' + newCnt + '.' + j, null);  //for multiple fields
+    }
 
     //update ui elements accordingly
     self.initParamSelectBox(param);
@@ -976,10 +983,10 @@ function isValueMissing(arr, testAgainst){
     if(arr === undefined)
         return true;
     for(let i = 0; i < arr.length; i++){
-        if(arr[i] === testAgainst)
+        if(arr[i] == testAgainst)
             return true;
         for(let j = 0; j < arr[i].length; j++){
-            if(arr[i][j] === testAgainst)
+            if(arr[i][j] == testAgainst)
                 return true;
         }
     }

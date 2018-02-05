@@ -88,34 +88,38 @@ module.exports =  function(model, docId, userId, userName) {
         initModelFromJson: function(jsonObj){
 
             //Keep a hash of nodes by their ids as keys
-            for(var i = 0; i < jsonObj.nodes.length; i++){
+            if(jsonObj.nodes) {
+                for (var i = 0; i < jsonObj.nodes.length; i++) {
 
-                var node = jsonObj.nodes[i];
+                    var node = jsonObj.nodes[i];
 
-                model.set('_page.doc.cy.nodes.' + node.data.id + '.id', node.data.id);
-                model.set('_page.doc.cy.nodes.' + node.data.id  + '.data' , node.data);
-                model.set('_page.doc.cy.nodes.' + node.data.id  + '.css' , node.css);
+                    model.set('_page.doc.cy.nodes.' + node.data.id + '.id', node.data.id);
+                    model.set('_page.doc.cy.nodes.' + node.data.id + '.data', node.data);
+                    model.set('_page.doc.cy.nodes.' + node.data.id + '.css', node.css);
 
-            };
-
-
-
-            //Keep a hash of edges by their ids as keys
-            for(var i = 0; i < jsonObj.edges.length; i++){
-
-                var edge = jsonObj.edges[i];
-
-                //Edge.data.id may not have been explicitly defined in the json file
-                var edgeId = edge.data.id;
-                if(!edgeId)
-                    edgeId = edge.data.source + "-" + edge.data.target;
-
-                model.set('_page.doc.cy.edges.' + edgeId + '.id', edgeId);
-                model.set('_page.doc.cy.edges.' + edgeId + '.data', edge.data);
-                model.set('_page.doc.cy.edges.' + edgeId + '.css', edge.css);
+                }
+            }
 
 
-            };
+
+            if(jsonObj.edges) {
+                //Keep a hash of edges by their ids as keys
+                for (var i = 0; i < jsonObj.edges.length; i++) {
+
+                    var edge = jsonObj.edges[i];
+
+                    //Edge.data.id may not have been explicitly defined in the json file
+                    var edgeId = edge.data.id;
+                    if (!edgeId)
+                        edgeId = edge.data.source + "-" + edge.data.target;
+
+                    model.set('_page.doc.cy.edges.' + edgeId + '.id', edgeId);
+                    model.set('_page.doc.cy.edges.' + edgeId + '.data', edge.data);
+                    model.set('_page.doc.cy.edges.' + edgeId + '.css', edge.css);
+
+
+                }
+            }
 
 
         },

@@ -104,16 +104,21 @@ function computeSitePositions(node){
             var siteHeight = 15;
 
             //Draw sites at the top of the node
-            if(i % 2 == 0){
-                siteCenterX = centerX - width / 2 + siteWidth / 2  + width * i /siteLength ;
-                siteCenterY = centerY - height /  2;
+            // if(i % 2 == 0){
+            //     siteCenterX = centerX - width / 2 + siteWidth / 2  + width * i /siteLength ;
+            //     siteCenterY = centerY - height /  2;
+            //
+            // }
+            // else{ //Draw sites at the bottom of the node
+            //     siteCenterX = centerX - width / 2 + siteWidth / 2  + width * (i - 1) /siteLength ;
+            //     siteCenterY = centerY + height /  2;
+            //
+            // }
 
-            }
-            else{ //Draw sites at the bottom of the node
-                siteCenterX = centerX - width / 2 + siteWidth / 2  + width * (i - 1) /siteLength ;
-                siteCenterY = centerY + height /  2;
+                siteCenterY = centerY;
+                siteCenterX = centerX  + width / 2;  //+ width * i /siteLength ;;
 
-            }
+
 
             //extend site information
             node.data("sites")[i].bbox = {'x': siteCenterX, 'y': siteCenterY, 'w': siteWidth, 'h': siteHeight};
