@@ -35,6 +35,8 @@ body {
 }
 
 img.cp-logo{
+    margin-top: -5px;
+    margin-bottom : 0px;
    width:5%;
 }
 
