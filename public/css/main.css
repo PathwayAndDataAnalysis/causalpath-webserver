@@ -25,13 +25,17 @@ body {
     margin:var(--margin-width);
     padding: 10px;
     overflow: hidden;
-    text-align: center;
+    text-align: left;
     font-size: xx-large;
     /*color:floralwhite;*/
 }
 .custom-header{
     background-color: #617d8a;
     color:floralwhite;
+}
+
+img.cp-logo{
+   width:5%;
 }
 
 #info-div{
