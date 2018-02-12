@@ -397,8 +397,8 @@ app.proto.submitParameters = function (callback) {
 
             if(data != undefined && data != null && data.indexOf("Error") == 0){
                 notyView.close();
-                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.\n" + data)});
-
+                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+                alert("The error message is:\n" + data);
                 if(callback) callback("error");
             }
             else{
@@ -693,7 +693,9 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
         socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function (data) {
             if(data != undefined && data != null && data.indexOf("Error") == 0){
                 notyView.close();
-                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file\n." + data)});
+                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file.")});
+                alert("The error message is:\n" + data);
+
 
             }
             // console.log("success");
@@ -798,7 +800,8 @@ app.proto.loadAnalysisDir = function(){
 
                 if(json != undefined && json != null && json.indexOf("Error") == 0){
                     notyView.close();
-                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file\n." + json)});
+                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
+                    alert("The error message is:\n" + json);
 
                 }
                 else {
@@ -845,8 +848,9 @@ app.proto.loadAnalysisDir = function(){
 
                 if(data != undefined && data != null && data.indexOf("Error") == 0){
                     notyView.close();
-                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.\n" + data )});
-                    console.log(data);
+                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
+                    alert("The error message is:\n" + data);
+
 
                 }
                 else {
@@ -956,7 +960,9 @@ app.proto.downloadResults = function(){
     socket.emit('downloadRequest', self.room, function(fileContent){
         if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
             notyView.close();
-            notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n." + fileContent)});
+            notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
+            alert("The error message is:\n" + fileContent);
+
 
         }
         else{
