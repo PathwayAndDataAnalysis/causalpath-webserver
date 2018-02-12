@@ -395,10 +395,10 @@ app.proto.submitParameters = function (callback) {
         socket.emit("writeFileOnServerSide", self.room, fileContent, 'parameters.txt', true,function (data) {
             document.getElementById('parameters-table').style.display='none';
 
-            if(data.indexOf("Error") == 0){
+            if(data != undefined && data != null && data.indexOf("Error") == 0){
                 notyView.close();
-                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
-                console.log(data);
+                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.\n" + data)});
+
                 if(callback) callback("error");
             }
             else{
@@ -690,8 +690,13 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
 
 
         //also send to server
-        socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function () {
-            console.log("success");
+        socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function (data) {
+            if(data != undefined && data != null && data.indexOf("Error") == 0){
+                notyView.close();
+                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file\n." + data)});
+
+            }
+            // console.log("success");
         });
     };
     reader.readAsText(file);
@@ -789,12 +794,24 @@ app.proto.loadAnalysisDir = function(){
             fileContents.push({name: file.name, content: e.target.result});
             notyView.setText( "Analyzing results...Please wait.");
             socket.emit('analysisZip', e.target.result, self.room, function(json){
-                self.createCyGraphFromCgf(JSON.parse(json), function(){
-                    notyView.close();
-                });
 
-                self.model.set('_page.doc.cgfText', json);
-                notyView.close();
+
+                if(json != undefined && json != null && json.indexOf("Error") == 0){
+                    notyView.close();
+                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file\n." + json)});
+
+                }
+                else {
+
+                    self.createCyGraphFromCgf(JSON.parse(json), function () {
+                        notyView.close();
+                    });
+
+                    self.model.set('_page.doc.cgfText', json);
+                    notyView.close();
+                }
+
+
             });
         }
 
@@ -826,9 +843,9 @@ app.proto.loadAnalysisDir = function(){
 
             socket.emit('analysisDir', fileContents, self.room, function(data){
 
-                if(data.indexOf("Error") == 0){
+                if(data != undefined && data != null && data.indexOf("Error") == 0){
                     notyView.close();
-                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.\n" + data )});
                     console.log(data);
 
                 }
@@ -937,14 +954,20 @@ app.proto.downloadResults = function(){
     var notyView = noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
 
     socket.emit('downloadRequest', self.room, function(fileContent){
-        console.log("Zip file received.");
+        if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
+            notyView.close();
+            notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n." + fileContent)});
 
-        var blob = base64ToZipBlob(fileContent);
+        }
+        else{
+            console.log("Zip file received.");
 
-        saveAs(blob, (self.room + ".zip"));
+            var blob = base64ToZipBlob(fileContent);
 
-        notyView.close();
+            saveAs(blob, (self.room + ".zip"));
 
+            notyView.close();
+        }
 
     });
 
