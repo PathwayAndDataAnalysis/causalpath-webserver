@@ -43,7 +43,7 @@ function groupTopology(cyElements){
     for(var i = 0; i < nodes.length; i++){
         for(var j = i+1; j < nodes.length; j++){
             if(areNodesAnalogous(nodes[i],nodes[j],edges)) { //combine analogous nodes under the same parent
-                if(nodes[i].data.parent!=null) { //first node already in the newnode list
+                if(nodes[i].data.parent != null) { //first node already in the newnode list
                     nodes[j].data.parent = nodes[i].data.parent;
                     newNodes.forEach(function(newNode){
                         if(newNode.data.id == nodes[i].data.parent){
@@ -53,7 +53,6 @@ function groupTopology(cyElements){
 
                         }
                     })
-
                 }
                 else { //Create a new node and assign it as the parent of both nodes
                     nodes[i].data.parent = nodes[j].data.parent = "p" + parentId;
@@ -83,48 +82,54 @@ function groupTopology(cyElements){
     edges.forEach(function (edge) {
 
         let newEdge;
-        if(nodeHash[edge.data.source].data.parent!=null) { //change the source
+        if(nodeHash[edge.data.source].data.parent != null) { //change the source
             // edge.data.invisible = true;
             var newSource = nodeHash[edge.data.source].data.parent;
 
-            if(nodeHash[edge.data.target].data.parent!=null) {
+            if(nodeHash[edge.data.target].data.parent != null) {
                 var newTarget = nodeHash[edge.data.target].data.parent;
-                newEdge = {data:{id: (newSource+ "_" + newTarget), source: newSource, target:newTarget, edgeType: edge.data.edgeType}};
+
+                if(newSource !== newTarget)
+                    newEdge = {data:{id: (newSource+ "_" + newTarget), source: newSource, target:newTarget, edgeType: edge.data.edgeType}};
 
             }
             else{
-                newEdge = {data:{id: (newSource+ "_" + edge.data.target), source: newSource, target:edge.data.target, edgeType: edge.data.edgeType}};
+                if(newSource !== newTarget)
+                    newEdge = {data:{id: (newSource+ "_" + edge.data.target), source: newSource, target:edge.data.target, edgeType: edge.data.edgeType}};
             }
         }
         else{
-            if(nodeHash[edge.data.target].data.parent!=null) {
+            if(nodeHash[edge.data.target].data.parent != null) {
                 // edge.data.invisible = true;
                 var newTarget = nodeHash[edge.data.target].data.parent;
-                newEdge = {data:{id: (edge.data.source+ "_" + newTarget), source: edge.data.source, target:newTarget, edgeType: edge.data.edgeType}};
+                if(newSource !== newTarget)
+                    newEdge = {data:{id: (edge.data.source+ "_" + newTarget), source: edge.data.source, target:newTarget, edgeType: edge.data.edgeType}};
             }
             else{
-                newEdge = {data:{id: (edge.data.source+ "_" + edge.data.target), source: edge.data.source, target:edge.data.target, edgeType: edge.data.edgeType}};
+                if(newSource !== newTarget)
+                    newEdge = {data:{id: (edge.data.source+ "_" + edge.data.target), source: edge.data.source, target:edge.data.target, edgeType: edge.data.edgeType}};
             }
 
         }
 
+        if(newEdge) {
+
+            if (edge.data.pcLinks)
+                newEdge.data.pcLinks = edge.data.pcLinks;
+            else
+                newEdge.data.pcLinks = [];
 
 
-        if(edge.data.pcLinks)
-            newEdge.data.pcLinks = edge.data.pcLinks;
-        else
-            newEdge.data.pcLinks = [];
-
-
-        let exists = false;
-        newEdges.forEach(function(e){
-            if (e.data.id === newEdge.data.id) { //already added
-                e.data.pcLinks.push(newEdge.data.pcLinks);
-                exists = true;
-            }
-        })
-        if(!exists)
-            newEdges.push(newEdge);
+            let exists = false;
+            newEdges.forEach(function (e) {
+                if (e.data.id === newEdge.data.id) { //already added
+                    e.data.pcLinks.push(newEdge.data.pcLinks);
+                    exists = true;
+                }
+            })
+            if (!exists)
+                newEdges.push(newEdge);
+        }
     });
 
 

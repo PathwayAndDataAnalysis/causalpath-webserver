@@ -1,0 +1,6 @@
+
+
+Data type: org.panda.causalpath.data.PhosphoProteinData
+Row ID	Change amount
+AKT1-T308	100.0
+AKT1S1-T246	100.0

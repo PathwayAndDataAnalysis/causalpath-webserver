@@ -285,7 +285,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                             if(links && links.length > 0) {
                                 uriStr = links[0]
                                 for(let i = 1; i < links.length; i++)
-                                    uriStr += '&' + links[i];
+                                    uriStr += ',' + links[i];
                             }
                             var loc = "http://web.newteditor.org/?URI=";
                             if (loc[loc.length - 1] === "#") {

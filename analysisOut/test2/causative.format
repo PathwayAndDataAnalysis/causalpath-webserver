@@ -1,0 +1,4 @@
+node	all-nodes	color	255 255 255
+node	all-nodes	bordercolor	50 50 50
+node	AKT1	rppasite	AKT1-T308|p|255 80 40|0 180 20|100.0
+node	AKT1S1	rppasite	AKT1S1-T246|p|255 80 40|180 0 20|100.0

@@ -1,0 +1,13 @@
+proteomics-values-file = dataMinimal.txt 
+id-column = ID 
+symbols-column = Symbols 
+sites-column = Sites 
+effect-column = Effect 
+value-transformation = arithmetic-mean 
+value-column = Value 
+threshold-for-data-significance = 1 phosphoprotein 
+site-effect-proximity-threshold = 0 
+relation-filter-type = no-filter 
+color-saturation-value = 1 
+show-all-genes-with-proteomic-data = true 
+built-in-network-resource-selection = PC PhosphoNetworks IPTMNet 
