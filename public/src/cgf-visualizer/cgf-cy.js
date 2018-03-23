@@ -273,7 +273,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                     {
                         id: 'show-pc-query', // ID of menu item
                         content: 'Click to open PC query', // Display content of menu item
-                        tooltipText: 'Click to open PC query on this edge', // Tooltip text for menu item
+                        tooltipText: 'Navigate to details', // Tooltip text for menu item
                         // If the selector is not truthy no elements will have this menu item on cxttap
                         selector: 'edge',
                         onClickFunction: function (event) { // The function to be executed on click
