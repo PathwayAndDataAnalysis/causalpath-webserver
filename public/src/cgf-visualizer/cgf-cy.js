@@ -298,8 +298,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
                                 });
                             }
-                            else
-                                alert("Edge does not have additional data.");
+
 
                         },
                         disabled: false, // Whether the item will be created as disabled
