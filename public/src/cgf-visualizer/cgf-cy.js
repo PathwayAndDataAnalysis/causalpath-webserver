@@ -273,13 +273,16 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                     {
                         id: 'show-pc-query', // ID of menu item
                         content: 'Click to open PC query', // Display content of menu item
-                        tooltipText: 'Click to open PC query', // Tooltip text for menu item
+                        tooltipText: 'Click to open PC query on this edge', // Tooltip text for menu item
                         // If the selector is not truthy no elements will have this menu item on cxttap
                         selector: 'edge',
                         onClickFunction: function (event) { // The function to be executed on click
                             let edge = event.target || event.cyTarget;
 
-
+                            if(!edge.data) {
+                                alert("Edge does not have data");
+                                return;
+                            }
                             let links = edge.data("pcLinks");
                             let uriStr = "";
                             if(links && links.length > 0) {
@@ -299,7 +302,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                         },
                         disabled: false, // Whether the item will be created as disabled
                         hasTrailingDivider: true, // Whether the item will have a trailing divider
-                        coreAsWell: true // Whether core instance have this item on cxttap
+                        coreAsWell: false // Whether core instance have this item on cxttap
                     }
                 ]
             });
