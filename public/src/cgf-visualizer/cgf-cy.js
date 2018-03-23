@@ -272,7 +272,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 menuItems: [
                     {
                         id: 'show-pc-query', // ID of menu item
-                        content: 'Click to open PC query', // Display content of menu item
+                        content: 'Navigate to details', // Display content of menu item
                         tooltipText: 'Navigate to details', // Tooltip text for menu item
                         // If the selector is not truthy no elements will have this menu item on cxttap
                         selector: 'edge',
@@ -280,24 +280,26 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                             let edge = event.target || event.cyTarget;
 
                             if(!edge.data) {
-                                alert("Edge does not have data");
+                                alert("Edge does not have data.");
                                 return;
                             }
                             let links = edge.data("pcLinks");
                             let uriStr = "";
                             if(links && links.length > 0) {
                                 uriStr = links[0]
-                                for(let i = 1; i < links.length; i++)
+                                for (let i = 1; i < links.length; i++)
                                     uriStr += ',' + links[i];
-                            }
-                            var loc = "http://web.newteditor.org/?URI=";
-                            if (loc[loc.length - 1] === "#") {
-                                loc = loc.slice(0, -1);
-                            }
-                            var w = window.open((loc + uriStr), function () {
 
-                            });
+                                var loc = "http://web.newteditor.org/?URI=";
+                                if (loc[loc.length - 1] === "#") {
+                                    loc = loc.slice(0, -1);
+                                }
+                                var w = window.open((loc + uriStr), function () {
 
+                                });
+                            }
+                            else
+                                alert("Edge does not have additional data.");
 
                         },
                         disabled: false, // Whether the item will be created as disabled
