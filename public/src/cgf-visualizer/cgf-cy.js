@@ -164,6 +164,22 @@ function unselectAllSites(node) {
 }
 
 
+const layoutOptions = {
+  animate: false,
+  fit: true,
+  nodeRepulsion: 4500,
+  idealEdgeLength: 50,
+  edgeElasticity: 0.45,
+  nestingFactor: 0.1,
+  gravity: 0.25,
+  gravityRange: 0.8,
+  numIter: 5000,
+  // tile: true,
+  // tilingPaddingVertical: 5,
+  // tilingPaddingHorizontal: 5,
+  randomize: false,
+  name: 'cose-bilkent'
+}
 
 
 /***
@@ -205,23 +221,8 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
 }
 
 module.exports.runLayout = function(){
-    var options =  {
-        animate: false,
-        fit: true,
-        randomize: false,
-        nodeRepulsion: 4500,
-        idealEdgeLength: 50,
-        edgeElasticity: 0.45,
-        nestingFactor: 0.1,
-        gravity: 0.25,
-        numIter: 5000,
-        tile: true,
-        tilingPaddingVertical: 5,
-        tilingPaddingHorizontal: 5,
-        name: 'cose-bilkent'
 
-    };
-    cy.layout(options);
+    cy.layout(layoutOptions);
 
 
 }
@@ -245,23 +246,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
           minZoom:0.1,
           maxZoom:5,
 
-        layout: {
-            animate: false,
-            fit: true,
-            randomize: false,
-            nodeRepulsion: 4500,
-            idealEdgeLength: 50,
-            edgeElasticity: 0.45,
-            nestingFactor: 0.1,
-            gravity: 0.25,
-            numIter: 5000,
-            tile: true,
-            tilingPaddingVertical: 5,
-            tilingPaddingHorizontal: 5,
-
-            name: 'cose-bilkent'
-
-        },
+        layout: layoutOptions,
 
         style: CgfStyleSheet,
 
@@ -503,7 +488,7 @@ var CgfStyleSheet = cytoscape.stylesheet()
         })
         .selector('node:selected')
         .css({
-            'overlay-color': 'FFCC66',
+            'overlay-color': '#FFCC66',
             'opacity': 1
         })
         .selector('edge')
@@ -533,9 +518,9 @@ var CgfStyleSheet = cytoscape.stylesheet()
         })
         .selector('edge:selected')
         .css({
-            'line-color': 'black',
-            'target-arrow-color': 'black',
-            'source-arrow-color': 'black',
+            'line-color': '#FFCC66',
+            'target-arrow-color': '#FFCC66',
+            'source-arrow-color': '#FFCC66',
             'opacity': 1
         })
 
