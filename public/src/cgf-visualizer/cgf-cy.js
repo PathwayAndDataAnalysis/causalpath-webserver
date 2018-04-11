@@ -241,7 +241,9 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
         boxSelectionEnabled: true,
         autounselectify: false,
-
+          wheelSensitivity: 0.3,
+          minZoom:0.1,
+          maxZoom:5,
 
         layout: {
             animate: false,
@@ -256,9 +258,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
             tile: true,
             tilingPaddingVertical: 5,
             tilingPaddingHorizontal: 5,
-            wheelSensitivity: 0.1,
-            minZoom:0.1,
-            maxZoom:2,
+
             name: 'cose-bilkent'
 
         },
