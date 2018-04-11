@@ -140,8 +140,6 @@ app.proto.create = function (model) {
 
     });
 
-
-
 };
 
 /***

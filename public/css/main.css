@@ -129,6 +129,15 @@ input[id = "run-layout-button"]{
 }
 
 
+input[id = "show-legend-button"]{
+    display: none;
+}
+
+
+#graph-legend .w3-modal-content{
+  width: 520px;
+  height: 550px;
+}
 
 #input-container{
 
@@ -200,6 +209,10 @@ input[id = "run-layout-button"]{
 }
 
 .fa-play-circle{
+    font-size:xx-large;
+}
+
+.fa-info-circle{
     font-size:xx-large;
 }
 #download-div .fa-download{

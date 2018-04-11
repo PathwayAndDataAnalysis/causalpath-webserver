@@ -109,7 +109,6 @@ function groupTopology(cyElements){
                 if(newSource !== newTarget)
                     newEdge = {data:{id: (edge.data.source+ "_" + edge.data.target), source: edge.data.source, target:edge.data.target, edgeType: edge.data.edgeType}};
             }
-
         }
 
         if(newEdge) {

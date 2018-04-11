@@ -95,9 +95,17 @@
                     <label for="run-layout-button">
                         <i class="fa fa-play-circle"></i> Run layout
                     </label>
-                    <input type="button" id = "run-layout-button" value = "Run Layout" on-click = "runLayout()"> </td>
+                    <input type="button" id = "run-layout-button" value = "Run Layout" on-click = "runLayout()">
+                </td>
+
+                <td class = "graph-options-td">
 
 
+                    <label for="show-legend-button">
+                        <i class="fa fa-info-circle"></i> Show legend
+                    </label>
+                    <input type="button" id = "show-legend-button" value = "Graph legend" onclick = "document.getElementById('graph-legend').style.display='block'">
+                </td>
 
                 <td>
                     <div id = "download-div">
@@ -107,6 +115,7 @@
                         <div> <input type="button" id = "download-button"  value = "Download" on-click = "downloadResults()"> </div>
                     </div>
                 </td>
+
 
             </tr>
             </tbody>
@@ -179,6 +188,19 @@
             </table>
         </div>
 
+    <div id="graph-legend" class="w3-modal">
+        <div class="w3-modal-content">
+            <!--<header class="w3-container">-->
+                <!--<div class = "modal-body">-->
+            <!--<div class = "legend-container">-->
+            <span onclick="document.getElementById('graph-legend').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
+            <img src='img/legend.png'/>
+                <!--</div>-->
+            <!--</div>-->
+                <!--<h2>Graph legend</h2>-->
+            <!--</header>-->
+        </div>
+    </div>
 
 
     <div id="parameters-table" class="w3-modal">
@@ -296,6 +318,7 @@
 
 
     </div>
+
 
 
     <script>

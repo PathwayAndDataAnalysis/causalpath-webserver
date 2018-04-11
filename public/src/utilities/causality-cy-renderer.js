@@ -118,9 +118,6 @@
                 context.fill();
                  context.stroke();
 
-
-
-
                 if(node.data("sites")){
 
 
