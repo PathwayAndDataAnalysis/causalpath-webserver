@@ -167,17 +167,17 @@ function unselectAllSites(node) {
 const layoutOptions = {
   animate: false,
   fit: true,
-  nodeRepulsion: 4500,
+  nodeRepulsion: 10,//4500,
   idealEdgeLength: 50,
   edgeElasticity: 0.45,
   nestingFactor: 0.1,
-  gravity: 0.25,
+  gravity: 1.25,
   gravityRange: 0.8,
   numIter: 5000,
-  // tile: true,
-  // tilingPaddingVertical: 5,
-  // tilingPaddingHorizontal: 5,
-  randomize: false,
+  tile: true,
+  tilingPaddingVertical: 5,
+  tilingPaddingHorizontal: 5,
+  randomize: true,
   name: 'cose-bilkent'
 }
 
