@@ -66,7 +66,6 @@ function groupTopology(cyElements){
     }
 
 
-
     //Add new nodes to the old list of nodes
     newNodes.forEach(function(newNode) {
         nodes.push(newNode);
@@ -83,8 +82,8 @@ function groupTopology(cyElements){
 
         let newEdge;
         if(nodeHash[edge.data.source].data.parent != null) { //change the source
-            // edge.data.invisible = true;
             var newSource = nodeHash[edge.data.source].data.parent;
+            var target = edge.data.target;
 
             if(nodeHash[edge.data.target].data.parent != null) {
                 var newTarget = nodeHash[edge.data.target].data.parent;
@@ -94,20 +93,24 @@ function groupTopology(cyElements){
 
             }
             else{
-                if(newSource !== newTarget)
-                    newEdge = {data:{id: (newSource+ "_" + edge.data.target), source: newSource, target:edge.data.target, edgeType: edge.data.edgeType}};
+                if(newSource !== target)
+                    newEdge = {data:{id: (newSource+ "_" + edge.data.target), source: newSource, target:target, edgeType: edge.data.edgeType}};
             }
         }
         else{
+
+            // don't change the source
+            var source = edge.data.source;
             if(nodeHash[edge.data.target].data.parent != null) {
-                // edge.data.invisible = true;
                 var newTarget = nodeHash[edge.data.target].data.parent;
-                if(newSource !== newTarget)
-                    newEdge = {data:{id: (edge.data.source+ "_" + newTarget), source: edge.data.source, target:newTarget, edgeType: edge.data.edgeType}};
+                if(source !== newTarget)
+                    newEdge = {data:{id: (edge.data.source+ "_" + newTarget), source: source , target:newTarget, edgeType: edge.data.edgeType}};
             }
             else{
-                if(newSource !== newTarget)
-                    newEdge = {data:{id: (edge.data.source+ "_" + edge.data.target), source: edge.data.source, target:edge.data.target, edgeType: edge.data.edgeType}};
+              var target = edge.data.target;
+
+              if(source !== target)
+                    newEdge = {data:{id: (edge.data.source+ "_" + edge.data.target), source: source, target:target, edgeType: edge.data.edgeType}};
             }
         }
 
@@ -130,8 +133,6 @@ function groupTopology(cyElements){
                 newEdges.push(newEdge);
         }
     });
-
-
 
     return{nodes:nodes, edges:newEdges};
 }
@@ -165,9 +166,7 @@ function areNodesAnalogous(n1, n2,  edges){
                 exists = true;
                 break;
             }
-
         }
-
         if (!exists)
             return false;
     }
@@ -192,7 +191,6 @@ function areNodesAnalogous(n1, n2,  edges){
         if(!exists)
             return false;
     }
-
 
     return true;
 
