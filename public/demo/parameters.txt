@@ -1,15 +1,30 @@
-# This analysis compares the Immunoreactive subtype of the TCGA ovarian cancer to the other subtypes.
-
 proteomics-values-file = PNLL-causality-formatted.txt
 id-column = ID
 symbols-column = Symbols
 sites-column = Sites
 effect-column = Effect
+do-log-transform = false
 
-threshold-for-data-significance = 0.05
 value-transformation = significant-change-of-mean
+fdr-threshold-for-data-significance = 0.1 protein
+fdr-threshold-for-data-significance = 0.2 phosphoprotein
+fdr-threshold-for-data-significance = 0.1 rna
+fdr-threshold-for-data-significance = 0.1 cna
 
-relation-filter-type = phospho-primary-expression-secondary
+use-missing-proteomic-data-for-test = false
+missing-value-test-data-sufficiency-threshold = 0.001
+minimum-sample-size = 3
+
+relation-filter-type = phospho-only
+color-saturation-value = 10
+show-insignificant-data = false
+
+calculate-network-significance = false
+permutations-for-significance = 10000
+
+gene-focus = SRC;FYN;LYN;LCK;HCK;FGR
+
+tcga-directory = ./
 
 test-value-column = TCGA-29-1710
 test-value-column = TCGA-24-2290
