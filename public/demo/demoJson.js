@@ -596,3 +596,5 @@ var demoJson = {
     }
   } ]
 }
+
+module.exports = demoJson;
