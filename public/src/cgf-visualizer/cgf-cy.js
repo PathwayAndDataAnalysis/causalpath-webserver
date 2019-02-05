@@ -382,7 +382,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
     				    });
     				  }
 
-      			  var placement = site && site.bbox.y > 0 ? 'top' : 'bottom';
+      			  var placement = site && site.bbox.y < 0.5 ? 'top' : 'bottom';
       			  var destroyTippy;
 
       			  var tippy = Tippy.one(ref, {
