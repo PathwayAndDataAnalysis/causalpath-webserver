@@ -168,7 +168,7 @@ module.exports = function () {
       return;
     }
 
-    var parentBbox = getNodeBBox(node, true);
+    var parentBbox = getNodeBBox(node);
     var shapeName = node.css('shape');
 
     sites.forEach(function(site) {
@@ -558,7 +558,7 @@ module.exports = function () {
     var nodeX = node.position('x');
     var nodeY = node.position('y');
     var padding = parseInt(node.css('border-width')) / 2;
-    var parentBbox = getNodeBBox(node, true);
+    var parentBbox = getNodeBBox(node);
 
     var intersections = [];
 

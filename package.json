@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "npm run bundle:css && node server.js",
+    "bundle:css": "postcss public/css/index.css -o public/build/bundle.css",
+    "watch:css": "postcss --watch public/css/index.css -o build/bundle.css"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
   "homepage": "http://www.causalpath.org",
   "dependencies": {
     "backbone": "^1.3.3",
+    "bootstrap": "^4.2.1",
     "coffeeify": "^3.0.1",
     "coffeescript": "^2.3.2",
     "compression": "^1.7.1",
@@ -30,11 +33,17 @@
     "derby": "^0.10.9",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "file-saver": "^2.0.0",
+    "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "mongodb": "^3.1.12",
     "noty": "^3.2.0-beta",
     "npm-run-all": "^4.1.5",
     "onecolor": "^3.0.5",
+    "postcss": "^7.0.14",
+    "postcss-cli": "^6.1.1",
+    "postcss-import": "^12.0.1",
+    "postcss-url": "^8.0.0",
     "racer-bundle": "^0.3.0",
     "racer-highway": "^8.0.0",
     "request": "^2.83.0",
@@ -47,7 +56,8 @@
     "tippy.js": "^3.4.1",
     "uid-safe": "^2.1.5",
     "underscore": "^1.8.3",
-    "uws": "^10.148.1"
+    "uws": "^10.148.1",
+    "w3-css": "^4.1.0"
   },
   "devDependencies": {
     "qunitjs": "^2.4.1"

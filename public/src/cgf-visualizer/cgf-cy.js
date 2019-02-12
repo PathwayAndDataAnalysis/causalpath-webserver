@@ -158,18 +158,18 @@ function attachSiteBboxes(nodesData) {
     var paddingCoef = 0.9;
     var w = 15;
     var h = 15;
-    var l = ( 1 - paddingCoef ) / 2;
+    var l = ( 0 - paddingCoef ) / 2;
     var n = sites.length;
     var d = paddingCoef / n;
 
     sites.forEach( function(site, i) {
       if(i % 2 == 0){
           x = l + d * i;
-          y = 0;
+          y = -0.5;
       }
       else{ //Draw sites at the bottom of the node
           x = l + d * (i - 1);
-          y = 1;
+          y = 0.5;
       }
 
       site.bbox = { x, y, w, h };
@@ -343,7 +343,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
       			  // var infobox = classes.AuxiliaryUnit.checkPoint(pos.x, pos.y, node, 0);
       			  var tooltipContent;
-              var parentBbox = getNodeBBox(node, true);
+              var parentBbox = getNodeBBox(node);
 
     					if (!site) {
     				    tooltipContent = node.data('tooltipText');
@@ -622,10 +622,10 @@ var CgfStyleSheet = cytoscape.stylesheet()
         .selector("node:child")
         .css({
 
-            'padding-top': '10px',
-            'padding-bottom': '10px',
-            'padding-left': '10px',
-            'padding-right': '10px',
+            // 'padding-top': '10px',
+            // 'padding-bottom': '10px',
+            // 'padding-left': '10px',
+            // 'padding-right': '10px',
 
 
         });

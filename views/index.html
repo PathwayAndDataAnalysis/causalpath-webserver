@@ -7,16 +7,8 @@
 <Head:>
 
     <meta name="viewport" content="width=device-width">
-    <!--External style files-->
-        <link href="lib/css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet">
-        <link href="./lib/css/bootstrap.css" rel="stylesheet">
-        <link href="lib/css/jquery.qtip.min.css" rel="stylesheet">
-        <link href="./lib/css/w3.css" rel="stylesheet">
-        <link href="./lib/css/cytoscape-context-menus.css" rel="stylesheet">
-
-    <!--Style files-->
-        <link href="./css/main.css" rel="stylesheet">
-
+    
+        <link href="./build/bundle.css" rel="stylesheet">
 
 
 <Body:>
@@ -82,7 +74,7 @@
                 </td>
 
                 <td class = "graph-options-td">
-                    <div data-toggle="tooltip" data-placement="bottom" title="Groups the nodes that have the same graph topology, under a compound node. Use this feature for complexity management.">
+                    <div data-tippy-placement="right" data-tippy="Groups the nodes that have the same graph topology, under a compound node. Use this feature for complexity management.">
                     <input type="checkbox" id = "sif-topology-grouping" checked = "{{!_page.doc.noTopologyGrouping}}" on-change = "reloadGraph()">
                      Topology grouping
                     </div>
@@ -130,7 +122,7 @@
 
                 <tr>
                     <td>
-                        <div data-toggle="tooltip" data-placement="bottom" title="Type-in the parameters">
+                        <div data-tippy="Type-in the parameters">
                             <label for="parameters-button">
                                 <div class = 'input-label'>
                                     A. Load data and enter parameters for analysis <i class="fa fa-tasks"></i> </div></label>
@@ -144,7 +136,7 @@
                         <!--</div>-->
                     <!--</td>-->
                     <td>
-                        <div data-toggle="tooltip" data-placement="bottom" title="Enter multiple input files (data and parameters.txt files at the minimum) or a zip file of input files">
+                        <div data-tippy="Enter multiple input files (data and parameters.txt files at the minimum) or a zip file of input files">
 
                         <label for="analysis-directory-input">
                             <div class = 'input-label'> B. Upload all input files for analysis <i class="fa fa-upload"></i></div>
@@ -161,7 +153,7 @@
                     <!--A. Upload json file for visualization:-->
                     <!--</td>-->
                     <td>
-                        <div data-toggle="tooltip" data-placement="bottom" title="Load .json file">
+                        <div data-tippy="Load .json file">
                             <label for="graph-file-input">
                                 <div class = 'input-label'> C. Visualize results from previous analysis  <i class="fa fa-upload"></i> </div>
                             </label>
@@ -174,7 +166,7 @@
                 <tr>
 
                     <td>
-                        <div data-toggle="tooltip" data-placement="bottom" title="A sample result network for Immunoreactive subtype of ovarian cancer compared to other subtypes">
+                        <div data-tippy="A sample result network for Immunoreactive subtype of ovarian cancer compared to other subtypes">
                         <label for="demo-file-button">
                             <div class = 'input-label'> D. Display a sample result <i class="fa fa-play">  </i></div>
                         </label>
@@ -219,7 +211,7 @@
                                     <!--{{else}}-->
                                         <!--<span style = "display: none">-->
                                 <tr>
-                                <td data-toggle="tooltip" data-placement="right" title={{#parameter.Description}}>
+                                <td data-tippy-placement="right" data-tippy={{#parameter.Description}}>
                                     {{if #parameter.Mandatory }}
                                     {{#parameter.Title}} <span style ="color:red" >*</span>:
                                     {{else}}
@@ -318,16 +310,3 @@
 
 
     </div>
-
-
-
-    <script>
-
-        //     $(document).ready(function(){
-        //
-        //         $('[data-toggle="tooltip"]').tooltip();
-        //
-        //
-        //
-        // });
-    </script>

@@ -7,12 +7,14 @@ var app = module.exports = require('derby').createApp('causalpath', __filename);
 var $ = jQuery = require('jquery');
 var io = require('socket.io-client');
 var Noty = require('noty');
+var saveAs = require('file-saver').saveAs;
 var cytoscape = require('cytoscape');
 var cyCoseBilkent = require('cytoscape-cose-bilkent');
 var cyContextMenus = require('cytoscape-context-menus');
 var cyPopper = require('cytoscape-popper');
-
+var Tippy = require('tippy.js');
 var causalityRenderer = require('./public/src/utilities/causality-cy-renderer');
+var cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
 
 app.loadViews(__dirname + '/views');
 
@@ -21,8 +23,6 @@ var docReady = false;
 var socket;
 
 app.modelManager = null;
-
-var cgfCy;
 
 
 var graphChoiceEnum = {
@@ -110,8 +110,6 @@ app.get('/:docId', function (page, model, arg, next) {
 app.proto.create = function (model) {
 
     let self = this;
-    cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
-
 
     socket = this.socket = io();
 
@@ -158,6 +156,11 @@ app.proto.init = function (model) {
 
     let self = this;
     console.log('app inited');
+
+    Tippy.setDefaults({
+      arrow: true,
+      placement: 'bottom'
+    });
 
     cytoscape.use( cyCoseBilkent );
     cytoscape.use( cyContextMenus, $ );

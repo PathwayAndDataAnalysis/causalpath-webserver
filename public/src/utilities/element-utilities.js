@@ -5,7 +5,7 @@ function computeAbsSitePos({ site, parentBbox, node }) {
     parentBbox = getNodeBBox(node);
   }
 
-  // site.bbox represents top/bottom-left position of infoboxes
+  // site.bbox represents center-left position of infoboxes
   // so it is needed to add site.bbox.w / 2 here while computing
   // 'x' coordinate of center of infobox here
   var x = parentBbox.x + parentBbox.w * site.bbox.x + site.bbox.w / 2;
@@ -38,7 +38,7 @@ function checkPointSites(x, y, node, threshold = 0) {
   var nodeY = node.position('y');
   var padding = parseInt(node.css('border-width')) / 2;
   var cyBaseNodeShapes = cytoscape.baseNodeShapes;
-  var parentBbox = getNodeBBox(node, true);
+  var parentBbox = getNodeBBox(node);
 
   for (var i = 0; i < sites.length; i++) {
     var site = sites[i];
