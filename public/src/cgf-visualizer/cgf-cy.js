@@ -353,21 +353,9 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
     				      return;
     				    }
 
-                var getMidPos = () => {
-                  var srcPos = ele.source().renderedPosition();
-                  var tgtPos = ele.target().renderedPosition();
-                  var pos = {};
-                  ['x', 'y'].forEach( dim => {
-                    pos[ dim ] = ( srcPos[ dim ] + tgtPos[ dim ] ) / 2;
-                  } );
-
-                  return pos;
-                };
-                var midPos = getMidPos();
-
                 ref = ele.popperRef({
                   renderedPosition: function() {
-    				        return midPos;
+    				        return event.renderedPosition || event.cyRenderedPosition;
     				      },
                   renderedDimensions: function() {
                     return { w: 0, h: 0 };
