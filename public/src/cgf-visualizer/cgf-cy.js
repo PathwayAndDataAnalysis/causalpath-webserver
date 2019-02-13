@@ -332,10 +332,11 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 unselectAllSites(this);
             });
 
-            cy.on('tap', 'node', function(event) {
-      			  var node = event.target || event.cyTarget;
+            cy.on('tap', 'node, edge', function(event) {
+      			  var ele = event.target || event.cyTarget;
               var pos = event.position || event.cyPosition;
-              var site = selectAndReturnSite(pos, node);
+              var isNode = ele.isNode();
+              var site = isNode && selectAndReturnSite(pos, ele);
 
       				var ref; // used only for positioning
       				var pan = cy.pan();
@@ -343,18 +344,46 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
       			  // var infobox = classes.AuxiliaryUnit.checkPoint(pos.x, pos.y, node, 0);
       			  var tooltipContent;
-              var parentBbox = getNodeBBox(node);
+              var parentBbox = getNodeBBox(ele);
 
-    					if (!site) {
-    				    tooltipContent = node.data('tooltipText');
+              if (!isNode) { // target is edge
+                tooltipContent = ele.data("edgeType");
+
+                if ( tooltipContent == undefined ) {
+    				      return;
+    				    }
+
+                var getMidPos = () => {
+                  var srcPos = ele.source().renderedPosition();
+                  var tgtPos = ele.target().renderedPosition();
+                  var pos = {};
+                  ['x', 'y'].forEach( dim => {
+                    pos[ dim ] = ( srcPos[ dim ] + tgtPos[ dim ] ) / 2;
+                  } );
+
+                  return pos;
+                };
+                var midPos = getMidPos();
+
+                ref = ele.popperRef({
+                  renderedPosition: function() {
+    				        return midPos;
+    				      },
+                  renderedDimensions: function() {
+                    return { w: 0, h: 0 };
+                  }
+                });
+              }
+    					else if (!site) { // target is node itself
+    				    tooltipContent = ele.data('tooltipText');
 
     				    if ( tooltipContent == undefined ) {
     				      return;
     				    }
 
-    				    ref = node.popperRef();
+    				    ref = ele.popperRef();
     				  }
-    				  else {
+    				  else { // target is a site of node
     				    tooltipContent = site['siteInfo'];
 
     				    if ( tooltipContent == undefined ) {
@@ -372,7 +401,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
     				    var renderedDims = { w: renderedW, h: renderedH };
 
-    				    ref = node.popperRef({
+    				    ref = ele.popperRef({
     				      renderedPosition: function() {
     				        return renderedPos;
     				      },
@@ -384,6 +413,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
       			  var placement = site && site.bbox.y < 0.5 ? 'top' : 'bottom';
       			  var destroyTippy;
+              var relatedNodes = ele.isNode() ? ele : ele.source().union( ele.target() );
 
       			  var tippy = Tippy.one(ref, {
       			    content: (() => {
@@ -400,7 +430,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
       			    placement,
       			    onHidden: function() {
       			      cy.off('pan zoom', destroyTippy);
-      			      node.off('position', destroyTippy);
+      			      relatedNodes.off('position', destroyTippy);
       			    }
       			  });
 
@@ -409,7 +439,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
       			  };
 
       			  cy.on('pan zoom', destroyTippy);
-      			  node.on('position', destroyTippy);
+      			  relatedNodes.on('position', destroyTippy);
 
       			  setTimeout( () => tippy.show(), 0 );
       			});
