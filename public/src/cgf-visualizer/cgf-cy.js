@@ -431,7 +431,8 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
       			    onHidden: function() {
       			      cy.off('pan zoom', destroyTippy);
       			      relatedNodes.off('position', destroyTippy);
-      			    }
+      			    },
+                maxWidth: 'none'
       			  });
 
       			  destroyTippy = function(){
