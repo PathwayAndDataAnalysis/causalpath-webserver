@@ -117,7 +117,7 @@ module.exports = function(){
     }
 
 
-
+    var demoJson = require('../public/demo/demoJson');
     initModelFromJsonTest(demoJson);
 
     createCyTest(function() {
