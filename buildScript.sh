@@ -13,5 +13,4 @@ sudo mkdir analysisOut
 cd analysisOut
 sudo mkdir demo
 cd ..
-sudo PORT=80 node server
-
+sudo PORT=80 npm run start
