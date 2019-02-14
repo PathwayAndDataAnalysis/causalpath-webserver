@@ -106,6 +106,19 @@ app.get('/:docId', function (page, model, arg, next) {
 
 });
 
+app.proto.create = function (model) {
+
+  Tippy.setDefaults({
+    arrow: true,
+    placement: 'bottom'
+  });
+
+  cytoscape.use( cyCoseBilkent );
+  cytoscape.use( cyContextMenus, $ );
+  cytoscape.use( cyPopper );
+  causalityRenderer();
+}
+
 /***
  * Called after document is loaded.
  * Listeners are called here.
@@ -148,16 +161,6 @@ app.proto.init = function (model) {
             self.runUnitTests();
 
     });
-
-    Tippy.setDefaults({
-      arrow: true,
-      placement: 'bottom'
-    });
-
-    cytoscape.use( cyCoseBilkent );
-    cytoscape.use( cyContextMenus, $ );
-    cytoscape.use( cyPopper );
-    causalityRenderer();
 
     model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
         if(docReady) {
@@ -397,6 +400,7 @@ app.proto.submitParameters = function (callback) {
         //send files first
 
         var notyView = new Noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
+        notyView.show();
 
         socket.emit("writeFileOnServerSide", self.room, fileContent, 'parameters.txt', true,function (data) {
             document.getElementById('parameters-table').style.display='none';
@@ -404,6 +408,7 @@ app.proto.submitParameters = function (callback) {
             if(data != undefined && data != null && data.indexOf("Error") == 0){
                 notyView.close();
                 notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+                notyView.show();
                 alert("The error message is:\n" + data);
                 if(callback) callback("error");
             }
@@ -700,6 +705,7 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
             if(data != undefined && data != null && data.indexOf("Error") == 0){
                 notyView.close();
                 notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file.")});
+                notyView.show();
                 alert("The error message is:\n" + data);
 
 
@@ -786,7 +792,7 @@ app.proto.loadAnalysisDir = function(){
     var fileCnt = $('#analysis-directory-input')[0].files.length;
     var fileContents = [];
     var notyView = new Noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
-
+    notyView.show();
 
     notyView.setText( "Reading files...Please wait.");
 
@@ -807,6 +813,7 @@ app.proto.loadAnalysisDir = function(){
                 if(json != undefined && json != null && json.indexOf("Error") == 0){
                     notyView.close();
                     notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
+                    notyView.show();
                     alert("The error message is:\n" + json);
 
                 }
@@ -855,6 +862,7 @@ app.proto.loadAnalysisDir = function(){
                 if(data != undefined && data != null && data.indexOf("Error") == 0){
                     notyView.close();
                     notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
+                    notyView.show();
                     alert("The error message is:\n" + data);
 
 
@@ -910,7 +918,7 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
         this.showGraphContainer();
 
         var notyView = new Noty({type: "information", layout: "bottom",  text: "Drawing graph...Please wait."});
-
+        notyView.show();
 
         var cgfContainer = new cgfCy.createContainer($('#graph-container'),  !noTopologyGrouping, this.modelManager, function () {
 
@@ -962,11 +970,13 @@ app.proto.downloadResults = function(){
     }
 
     var notyView = new Noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
+    notyView.show();
 
     socket.emit('downloadRequest', self.room, function(fileContent){
         if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
             notyView.close();
             notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
+            notyView.show();
             alert("The error message is:\n" + fileContent);
 
 

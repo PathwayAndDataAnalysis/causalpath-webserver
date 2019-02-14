@@ -263,9 +263,11 @@ input[id = "show-legend-button"]{
 
 }
 .close-button{
-    color: #617d8a;
+    color: #617d8a !important;
     font-size: larger;
     font-weight: bolder;
+    background-color: transparent !important;
+    padding: 0 !important;
 }
 input[type="text"]{
     font-size: small;
