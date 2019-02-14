@@ -106,8 +106,12 @@ app.get('/:docId', function (page, model, arg, next) {
 
 });
 
-
-app.proto.create = function (model) {
+/***
+ * Called after document is loaded.
+ * Listeners are called here.
+ * @param model
+ */
+app.proto.init = function (model) {
 
     let self = this;
 
@@ -144,18 +148,6 @@ app.proto.create = function (model) {
             self.runUnitTests();
 
     });
-
-};
-
-/***
- * Called after document is loaded.
- * Listeners are called here.
- * @param model
- */
-app.proto.init = function (model) {
-
-    let self = this;
-    console.log('app inited');
 
     Tippy.setDefaults({
       arrow: true,
