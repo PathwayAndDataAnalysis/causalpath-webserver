@@ -45,7 +45,7 @@ Get project from github:
 
 Run server:
 
->node server
+>npm run start
 
 In order to open a client:
 
