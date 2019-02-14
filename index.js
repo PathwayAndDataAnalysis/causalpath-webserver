@@ -114,6 +114,15 @@ app.proto.create = function (model) {
     //
 
 
+    $(document).ready(function(){
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+
+
+    });
+
+
     this.modelManager = require('./public/src/model/modelManager.js')(model, self.room, model.get('_session.userId'),name );
     //
 
@@ -156,7 +165,7 @@ app.proto.init = function (model) {
             self.updateParameterVisibility();
             setTimeout(function(){
                 self.initSelectBoxes();
-                self.initSelectBoxes();
+                // self.initSelectBoxes();
             }, 100); //wait a little while so that dom elements are updated
 
         }

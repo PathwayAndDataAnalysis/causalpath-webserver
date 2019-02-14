@@ -127,7 +127,7 @@
   }, {
     "ID" : "threshold-for-data-significance",
     "Title" : "Threshold value for significant data",
-    "Description" : "A threshold value for selecting significant data. Use this parameter only when FDR controlling procedureis already performed outside of CausalPath.",
+    "Description" : "A threshold value for selecting significant data. Use this parameter only when FDR controlling procedure is already performed outside of CausalPath.",
     "EntryType" : [ "Double", "DataType" ],
     "Mandatory" : false,
     "CanBeMultiple" : true,

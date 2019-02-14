@@ -240,9 +240,13 @@ module.exports =  function(model, docId, userId, userName) {
 
                 }
                 if(model.get('_page.doc.parameters.' + i + '.value') == null) {
+
                     if(param.Default) {
                         model.set('_page.doc.parameters.' + i + '.value', param.Default);
+
                     }
+
+
                 }
             }
 

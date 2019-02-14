@@ -233,7 +233,7 @@
                                             <label for= {{#parameter.domId[#cnt][#entryInd]}} class = "fa fa-file-text-o parameters-input"> Select {{#parameter.value[#cnt][#entryInd]}} </label>
                                             <input type="file" id= {{#parameter.domId[#cnt][#entryInd]}} accept=".txt" on-change = "loadFile($event, #parameter, #cnt, #entryInd)">
                                         {{else if #type === 'Double'}}
-                                            <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'number' value = {{#parameter.value[#cnt][#entryInd]}}  step = 0.01 >
+                                            <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}}  type = 'number' value = {{#parameter.value[#cnt][#entryInd]}}  step = 0.01 >
 
                                         {{else if #type === 'Integer'}}
                                             <input class = "parameters-input" id = {{#parameter.domId[#cnt][#entryInd]}} type = 'number' value = {{#parameter.value[#cnt][#entryInd]}} step = 1 >

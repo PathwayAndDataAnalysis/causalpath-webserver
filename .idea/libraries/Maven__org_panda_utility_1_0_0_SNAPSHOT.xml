@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: org.panda:utility:1.0.0-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/panda/utility/1.0.0-SNAPSHOT/utility-1.0.0-20180116.230914-10.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/panda/utility/1.0.0-SNAPSHOT/utility-1.0.0-20180919.161110-11.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/panda/utility/1.0.0-SNAPSHOT/utility-1.0.0-20180116.230914-10-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/panda/utility/1.0.0-SNAPSHOT/utility-1.0.0-20180919.161110-11-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/panda/utility/1.0.0-SNAPSHOT/utility-1.0.0-20180116.230914-10-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/panda/utility/1.0.0-SNAPSHOT/utility-1.0.0-20180919.161110-11-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

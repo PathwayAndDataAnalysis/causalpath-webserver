@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: org.biopax.paxtools:paxtools-query:5.1.0-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/paxtools-query/5.1.0-SNAPSHOT/paxtools-query-5.1.0-20180309.120628-22.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/paxtools-query/5.1.0-SNAPSHOT/paxtools-query-5.1.0-20180912.160604-35.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/paxtools-query/5.1.0-SNAPSHOT/paxtools-query-5.1.0-20180309.120628-22-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/paxtools-query/5.1.0-SNAPSHOT/paxtools-query-5.1.0-20180912.160604-35-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/paxtools-query/5.1.0-SNAPSHOT/paxtools-query-5.1.0-20180309.120628-22-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/biopax/paxtools/paxtools-query/5.1.0-SNAPSHOT/paxtools-query-5.1.0-20180912.160604-35-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
