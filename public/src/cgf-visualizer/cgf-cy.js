@@ -3,6 +3,18 @@
  * Cytoscape functions for drawing causality graphs
  */
 
+var cytoscape = require('cytoscape');
+var $ = jQuery = require('jquery');
+var _ = require('underscore');
+var Tippy = require('tippy.js');
+var groupTopology = require('../utilities/topology-grouping');
+var elementUtilities = require('../utilities/element-utilities');
+var convertToRenderedPosition = elementUtilities.convertToRenderedPosition;
+
+var computeAbsSitePos = elementUtilities.computeAbsSitePos;
+var getNodeBBox = elementUtilities.getNodeBBox;
+var checkPointSites = elementUtilities.checkPointSites;
+
 // LOCAL FUNCTIONS
 
 /**
@@ -80,54 +92,6 @@ function attributeMap(edgeType){
     return attributes;
 }
 
-
-/***
- * Distribute sites around the node evenly
- */
-function computeSitePositions(node){
-
-    if(node.data("sites")) {
-        var siteLength = node.data("sites").length;
-
-        for (var i = 0; i < siteLength; i++) {
-            var site = node.data("sites")[i];
-            var paddingCoef = 0.9 ;
-
-            var centerX = node.position("x");
-            var centerY = node.position("y");
-            var width = node.width() * paddingCoef;
-            var height = node.height();
-            var siteCenterX;
-            var siteCenterY;
-
-            var siteWidth = 15;
-            var siteHeight = 15;
-
-            //Draw sites at the top of the node
-            if(i % 2 == 0){
-                siteCenterX = centerX - width / 2 + siteWidth / 2  + width * i /siteLength ;
-                siteCenterY = centerY - height /  2;
-
-            }
-            else{ //Draw sites at the bottom of the node
-                siteCenterX = centerX - width / 2 + siteWidth / 2  + width * (i - 1) /siteLength ;
-                siteCenterY = centerY + height /  2;
-
-            }
-
-            //extend site information
-            node.data("sites")[i].bbox = {'x': siteCenterX, 'y': siteCenterY, 'w': siteWidth, 'h': siteHeight};
-
-            //hack to update the bounding boxes of sites in the viewport
-            node.select();
-            node.unselect();
-        }
-
-    }
-}
-
-
-
 /***
  * Find the site that the user clicked and set it as selected
  * @param pos : mouse position
@@ -135,19 +99,13 @@ function computeSitePositions(node){
  * @returns selected site
  */
 function selectAndReturnSite(pos,  node){
+    var site = checkPointSites(pos.x, pos.y, node);
 
-    if(!node.data("sites"))
-        return null;
-
-    for(var i = 0; i < node.data("sites").length; i++){
-        var site = node.data("sites")[i];
-        if(pos.x >= (site.bbox.x - site.bbox.w/2) && pos.x <= (site.bbox.x + site.bbox.w/2) &&
-            pos.y >= (site.bbox.y - site.bbox.h/2) && pos.y <= (site.bbox.y + site.bbox.h/2)){
-            site.selected = true;
-            return site;
-        }
+    if (site) {
+      site.selected = true;
     }
-    return null;
+
+    return site;
 }
 
 /***
@@ -161,6 +119,62 @@ function unselectAllSites(node) {
     node.data("sites").forEach(function(site){
         site.selected = false;
     });
+}
+
+// function attachStatesAndInfos(nodesData) {
+//   nodesData.forEach( function(nodeData) {
+//     var sites = nodeData.data.sites;
+//     if (!sites) {
+//       return;
+//     }
+//     var parent = nodeData.data.id;
+//
+//     var infoboxes = sites.map( function(site) {
+//       var w = site.bbox.w;
+//       var h = site.bbox.h;
+//       var x = site.bbox.x * 100;
+//       var y = site.bbox.y * 100;
+//
+//       var ib = {
+//         parent,
+//         bbox: { x, y, w, h },
+//         isDisplayed: true
+//       };
+//
+//       return ib;
+//     } );
+//
+//     nodeData.data.statesandinfos = infoboxes;
+//   } );
+// }
+
+function attachSiteBboxes(nodesData) {
+  nodesData.forEach( function(nodeData) {
+    var sites = nodeData.data.sites;
+    if (!sites) {
+      return;
+    }
+
+    var paddingCoef = 0.9;
+    var w = 15;
+    var h = 15;
+    var l = ( 0 - paddingCoef ) / 2;
+    var n = sites.length;
+    var d = paddingCoef / n;
+
+    sites.forEach( function(site, i) {
+      if(i % 2 == 0){
+          x = l + d * i;
+          y = -0.5;
+      }
+      else{ //Draw sites at the bottom of the node
+          x = l + d * (i - 1);
+          y = 0.5;
+      }
+
+      site.bbox = { x, y, w, h };
+    } );
+  } );
 }
 
 
@@ -212,6 +226,8 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
 
     var cyElements = {nodes: nodes, edges: edges};
 
+    attachSiteBboxes(cyElements.nodes);
+    // attachStatesAndInfos(cyElements.nodes);
 
     if(doTopologyGrouping)
         return groupTopology(cyElements);
@@ -222,7 +238,7 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
 
 module.exports.runLayout = function(){
 
-    cy.layout(layoutOptions);
+    cy.layout(layoutOptions).run();
 
 
 }
@@ -236,8 +252,9 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
     let contextMenu;
 
 
+    var cy;
 
-    var cy = window.cy = cytoscape({
+    cytoscape({
         container: el,
 
         boxSelectionEnabled: true,
@@ -254,6 +271,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
         ready: function () {
 
+            var cy = window.cy = this;
 
             contextMenu = cy.contextMenus({
                 // List of initial menu items
@@ -265,7 +283,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                         // If the selector is not truthy no elements will have this menu item on cxttap
                         selector: 'edge',
                         onClickFunction: function (event) { // The function to be executed on click
-                            let edge = event.target || event.cyTarget;
+                            let edge = event.target;
 
                             if(!edge.data) {
                                 alert("Edge does not have data.");
@@ -296,19 +314,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 ]
             });
 
-
-            cy.on('layoutstop', function() {
-                cy.nodes().forEach(function (node) {
-                    computeSitePositions(node);
-                });
-            });
-
-
             if(callback) callback();
-
-            cy.on('drag', 'node', function (e) {
-                computeSitePositions(this);
-            });
 
             cy.on('select', 'node', function(e){
                 this.css('background-color', '#FFCC66');
@@ -326,133 +332,106 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 unselectAllSites(this);
             });
 
-            cy.on('tap', 'node', function(e) {
+            cy.on('tap', 'node, edge', function(event) {
+      			  var ele = event.target || event.cyTarget;
+              var pos = event.position || event.cyPosition;
+              var isNode = ele.isNode();
+              var site = isNode && selectAndReturnSite(pos, ele);
 
-                var site = selectAndReturnSite(e.cyPosition, e.cyTarget);
+      				var ref; // used only for positioning
+      				var pan = cy.pan();
+      			  var zoom = cy.zoom();
 
-                if(!site){ //node is clicked
-                    if(this.data('tooltipText')) { //there is content to show
-                        cy.$(('#' + this.id())).qtip({
-                            content: {
-                                text: function (event, api) {
-                                    return this.data('tooltipText');
-                                }
-                            },
-                            show: {
-                                ready: true
-                            },
-                            position: {
-                                my: 'center',
-                                at: 'center',
-                                adjust: {
-                                    cyViewport: true
+      			  // var infobox = classes.AuxiliaryUnit.checkPoint(pos.x, pos.y, node, 0);
+      			  var tooltipContent;
+              var parentBbox = getNodeBBox(ele);
 
-                                },
-                                effect: false
-                            },
-                            style: {
-                                classes: 'qtip-bootstrap',
-                                tip: {
-                                    corner: false,
-                                    width: 20,
-                                    height: 20
-                                }
-                            }
-                        });
-                    }
-                }
-                else if (site.siteInfo) { //site is clicked and it has information to display
-                    //Adjust the positions of qtip boxes
-                    var sitePosX = site.bbox.x - this.position("x");
-                    var sitePosY = site.bbox.y - this.position("y");
+              if (!isNode) { // target is edge
+                tooltipContent = ele.data("edgeType");
 
-                    var my;
-                    var at;
+                if ( tooltipContent == undefined ) {
+    				      return;
+    				    }
 
-                    if (sitePosX < 0 && sitePosY < 0) {
-                        my = "bottom right";
-                        at = "top left";
-                    }
-                    else if (sitePosX < 0 && sitePosY >= 0) {
-                        my = "bottom right";
-                        at = "bottom left";
-                    }
-                    else if (sitePosX >= 0 && sitePosY >= 0) {
-                        my = "bottom left";
-                        at = "bottom right";
-                    }
-                    else if (sitePosX >= 0 && sitePosY < 0) {
-                        my = "bottom left";
-                        at = "top right";
-                    }
-
-                    cy.$(('#' + this.id())).qtip({
-                        content: {
-                            text: function (event, api) {
-                                return site.siteInfo;
-                            }
-                        },
-                        show: {
-                            ready: true
-                        },
-                        position: {
-                            my: my,
-                            at: at,
-                            adjust: {
-                                cyViewport: true
-
-                            },
-                            effect: false
-                        },
-                        style: {
-                            classes: 'qtip-bootstrap',
-                            tip: {
-                                corner: false,
-                                width: 20,
-                                height: 20
-                            }
-                        }
-                    });
-                }
-
-            });
-
-            cy.on('tapend', 'node', function(e){
-                $('.qtip').remove();
-            });
-
-
-            cy.on('tapend', 'edge', function (e) {
-
-                var edge = this;
-
-                edge.qtip({
-                    content: {
-                        text: "<b style='text-align:center;font-size:16px;'>" + edge.data("edgeType") + "</b>",
-
-                    },
-                    show: {
-                        ready: true
-                    },
-                    position: {
-                        my: 'top center',
-                        at: 'bottom center',
-                        adjust: {
-                            cyViewport: true
-                        }
-                    },
-                    style: {
-                        classes: 'qtip-bootstrap',
-                        tip: {
-                            width: 16,
-                            height: 8
-                        }
-                    }
+                ref = ele.popperRef({
+                  renderedPosition: function() {
+    				        return event.renderedPosition || event.cyRenderedPosition;
+    				      },
+                  renderedDimensions: function() {
+                    return { w: 0, h: 0 };
+                  }
                 });
-              
+              }
+    					else if (!site) { // target is node itself
+    				    tooltipContent = ele.data('tooltipText');
 
-            });
+    				    if ( tooltipContent == undefined ) {
+    				      return;
+    				    }
 
+    				    ref = ele.popperRef();
+    				  }
+    				  else { // target is a site of node
+    				    tooltipContent = site['siteInfo'];
+
+    				    if ( tooltipContent == undefined ) {
+    				      return;
+    				    }
+
+    				    var modelPos = computeAbsSitePos({site, parentBbox});
+    				    var modelW = site.bbox.w;
+    				    var modelH = site.bbox.h;
+    				    var renderedW = modelW * zoom;
+    				    var renderedH = modelH * zoom;
+    				    modelPos.x -= modelW / 2;
+    				    modelPos.y -= modelH / 2;
+    				    var renderedPos = convertToRenderedPosition(modelPos, pan, zoom);
+
+    				    var renderedDims = { w: renderedW, h: renderedH };
+
+    				    ref = ele.popperRef({
+    				      renderedPosition: function() {
+    				        return renderedPos;
+    				      },
+    				      renderedDimensions: function() {
+    				        return renderedDims;
+    				      }
+    				    });
+    				  }
+
+      			  var placement = site && site.bbox.y < 0.5 ? 'top' : 'bottom';
+      			  var destroyTippy;
+              var relatedNodes = ele.isNode() ? ele : ele.source().union( ele.target() );
+
+      			  var tippy = Tippy.one(ref, {
+      			    content: (() => {
+      			      var content = document.createElement('div');
+
+      			      content.style['font-size'] = 12 * zoom + 'px';
+      			      content.innerHTML = tooltipContent;
+
+      			      return content;
+      			    })(),
+      			    trigger: 'manual',
+      			    hideOnClick: true,
+      			    arrow: true,
+      			    placement,
+      			    onHidden: function() {
+      			      cy.off('pan zoom', destroyTippy);
+      			      relatedNodes.off('position', destroyTippy);
+      			    },
+                maxWidth: 'none'
+      			  });
+
+      			  destroyTippy = function(){
+      			    tippy.destroy();
+      			  };
+
+      			  cy.on('pan zoom', destroyTippy);
+      			  relatedNodes.on('position', destroyTippy);
+
+      			  setTimeout( () => tippy.show(), 0 );
+      			});
 
         }
 
@@ -470,7 +449,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 var CgfStyleSheet = cytoscape.stylesheet()
         .selector('node')
         .css({
-            // 'border-width':'css(border-width)',
+            'border-width':'1.25',
             // 'border-color': 'css(border-color)',
             //  'background-color':'white',
             'shape': 'cgfNode',
@@ -493,7 +472,6 @@ var CgfStyleSheet = cytoscape.stylesheet()
         })
         .selector('edge')
         .css({
-            'width': 'css(width)',
             'line-color': function(ele){
                 return attributeMap(ele.data('edgeType')).color;
 
@@ -535,10 +513,10 @@ var CgfStyleSheet = cytoscape.stylesheet()
         .selector("node:child")
         .css({
 
-            'padding-top': '10px',
-            'padding-bottom': '10px',
-            'padding-left': '10px',
-            'padding-right': '10px',
+            // 'padding-top': '10px',
+            // 'padding-bottom': '10px',
+            // 'padding-left': '10px',
+            // 'padding-right': '10px',
 
 
         });

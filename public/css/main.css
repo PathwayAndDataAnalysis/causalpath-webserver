@@ -84,7 +84,7 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
 .input-label {
 
     width: 500px;
-    font-size:larger; !important;
+    font-size:larger !important;
 }
 
 .input-text{
@@ -178,6 +178,10 @@ input[id = "show-legend-button"]{
     /*width:calc( var(--input-width)/2);*/
 }
 
+.main-input-content label, #graph-options-container label {
+  cursor: pointer !important;
+}
+
 /*.main-input-content tr{*/
     /*border: 2px solid #d6e5ec;*/
     /*border-radius: 10px;*/
@@ -199,26 +203,26 @@ input[id = "show-legend-button"]{
 }
 
 .fa-file-text{
-    font-size: xx-large;
+    font-size: xx-large !important;
 }
 
 .fa-arrow-circle-left{
     /*padding-top: 10px;*/
-    font-size: xx-large;
+    font-size: xx-large !important;
 }
 
 .fa-play-circle{
-    font-size:xx-large;
+    font-size:xx-large !important;
 }
 
 .fa-info-circle{
-    font-size:xx-large;
+    font-size:xx-large !important;
 }
 #download-div .fa-download{
-    font-size:xx-large;
+    font-size:xx-large !important;
 }
 #sif-topology-grouping{
-    font-size:xx-large;
+    font-size:xx-large !important;
 }
 
 .graph-options-td{
@@ -252,11 +256,6 @@ input[id = "show-legend-button"]{
 /*}*/
 
 
-.tooltip {
-    font-size:medium;
-}
-
-
 .parameters{
     padding: 20px;
     font-size:small;
@@ -264,9 +263,11 @@ input[id = "show-legend-button"]{
 
 }
 .close-button{
-    color: #617d8a;
+    color: #617d8a !important;
     font-size: larger;
     font-weight: bolder;
+    background-color: transparent !important;
+    padding: 0 !important;
 }
 input[type="text"]{
     font-size: small;
@@ -286,7 +287,7 @@ input[type="text"]{
 }
 
 select, input, textarea, label{
-    width: 150px; !important;
+    max-width: 200px !important;
     margin: 5px !important;
 }
 
@@ -296,11 +297,11 @@ select, input, textarea, label{
 }
 
 .parameter-content tr td {
-    border: 1px solid #ececec; !important;
-    padding-top: 5px; !important;
-    padding-bottom: 5px; !important;
-    padding-left: 5px; !important;
-    padding-right: 5px; !important;
+    border: 1px solid #ececec !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 
 }
 

@@ -4,8 +4,17 @@
  *	Author: Funda Durupinar Babur<f.durupinar@gmail.com>
  */
 var app = module.exports = require('derby').createApp('causalpath', __filename);
-
-
+var $ = jQuery = require('jquery');
+var io = require('socket.io-client');
+var Noty = require('noty');
+var saveAs = require('file-saver').saveAs;
+var cytoscape = require('cytoscape');
+var cyCoseBilkent = require('cytoscape-cose-bilkent');
+var cyContextMenus = require('cytoscape-context-menus');
+var cyPopper = require('cytoscape-popper');
+var Tippy = require('tippy.js');
+var causalityRenderer = require('./public/src/utilities/causality-cy-renderer');
+var cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
 
 app.loadViews(__dirname + '/views');
 
@@ -14,8 +23,6 @@ var docReady = false;
 var socket;
 
 app.modelManager = null;
-
-var cgfCy;
 
 
 var graphChoiceEnum = {
@@ -99,12 +106,27 @@ app.get('/:docId', function (page, model, arg, next) {
 
 });
 
-
 app.proto.create = function (model) {
 
-    let self = this;
-    cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
+  Tippy.setDefaults({
+    arrow: true,
+    placement: 'bottom'
+  });
 
+  cytoscape.use( cyCoseBilkent );
+  cytoscape.use( cyContextMenus, $ );
+  cytoscape.use( cyPopper );
+  causalityRenderer();
+}
+
+/***
+ * Called after document is loaded.
+ * Listeners are called here.
+ * @param model
+ */
+app.proto.init = function (model) {
+
+    let self = this;
 
     socket = this.socket = io();
 
@@ -148,17 +170,6 @@ app.proto.create = function (model) {
             self.runUnitTests();
 
     });
-
-};
-
-/***
- * Called after document is loaded.
- * Listeners are called here.
- * @param model
- */
-app.proto.init = function (model) {
-
-    let self = this;
 
     model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
         if(docReady) {
@@ -397,14 +408,16 @@ app.proto.submitParameters = function (callback) {
 
         //send files first
 
-        var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
+        var notyView = new Noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
+        notyView.show();
 
         socket.emit("writeFileOnServerSide", self.room, fileContent, 'parameters.txt', true,function (data) {
             document.getElementById('parameters-table').style.display='none';
 
             if(data != undefined && data != null && data.indexOf("Error") == 0){
                 notyView.close();
-                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
+                notyView.show();
                 alert("The error message is:\n" + data);
                 if(callback) callback("error");
             }
@@ -700,7 +713,8 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
         socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function (data) {
             if(data != undefined && data != null && data.indexOf("Error") == 0){
                 notyView.close();
-                notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file.")});
+                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file.")});
+                notyView.show();
                 alert("The error message is:\n" + data);
 
 
@@ -745,7 +759,7 @@ app.proto.reloadGraph = function(){
  * Load demo graph from demoJson.js
  */
 app.proto.loadDemoGraph = function(){
-
+    var demoJson = require('./public/demo/demoJson');
     graphChoice = graphChoiceEnum.DEMO;
     this.model.set('_page.doc.cgfText', JSON.stringify(demoJson));
     this.createCyGraphFromCgf(demoJson);
@@ -786,8 +800,8 @@ app.proto.loadAnalysisDir = function(){
     graphChoice = graphChoiceEnum.ANALYSIS;
     var fileCnt = $('#analysis-directory-input')[0].files.length;
     var fileContents = [];
-    var notyView = noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
-
+    var notyView = new Noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
+    notyView.show();
 
     notyView.setText( "Reading files...Please wait.");
 
@@ -807,7 +821,8 @@ app.proto.loadAnalysisDir = function(){
 
                 if(json != undefined && json != null && json.indexOf("Error") == 0){
                     notyView.close();
-                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
+                    notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
+                    notyView.show();
                     alert("The error message is:\n" + json);
 
                 }
@@ -855,7 +870,8 @@ app.proto.loadAnalysisDir = function(){
 
                 if(data != undefined && data != null && data.indexOf("Error") == 0){
                     notyView.close();
-                    notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
+                    notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
+                    notyView.show();
                     alert("The error message is:\n" + data);
 
 
@@ -910,8 +926,8 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
         this.showGraphContainer();
 
-        var notyView = noty({type: "information", layout: "bottom",  text: "Drawing graph...Please wait."});
-
+        var notyView = new Noty({type: "information", layout: "bottom",  text: "Drawing graph...Please wait."});
+        notyView.show();
 
         var cgfContainer = new cgfCy.createContainer($('#graph-container'),  !noTopologyGrouping, this.modelManager, function () {
 
@@ -962,12 +978,14 @@ app.proto.downloadResults = function(){
         return;
     }
 
-    var notyView = noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
+    var notyView = new Noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
+    notyView.show();
 
     socket.emit('downloadRequest', self.room, function(fileContent){
         if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
             notyView.close();
-            notyView = noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
+            notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
+            notyView.show();
             alert("The error message is:\n" + fileContent);
 
 

@@ -2,6 +2,8 @@
  * Created by durupina on 9/6/16.
  */
 
+var _ = require('underscore');
+
 /***
  *
  * @param cyElements
@@ -13,11 +15,11 @@ function groupTopology(cyElements){
     var nodes =  [];
     var edges = [];
 
-   
+
     for(var i = 0; i < cyElements.nodes.length; i++){
         var nodeClone = _.clone(cyElements.nodes[i]);
         nodes.push(nodeClone);
-     
+
     }
 
     for(var i = 0; i < cyElements.edges.length; i++){
@@ -275,5 +277,4 @@ function findCliqueEdgeType(id1, id2, edges) {
     return null;
 }
 
-
-
+module.exports = groupTopology;
