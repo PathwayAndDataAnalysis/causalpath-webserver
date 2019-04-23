@@ -10,6 +10,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/.panda" />
+      <excludeFolder url="file://$MODULE_DIR$/analysisOut" />
       <excludeFolder url="file://$MODULE_DIR$/analysisOut/83ee0ed6-c44c-441a-9824-49e94ff244de" />
       <excludeFolder url="file://$MODULE_DIR$/analysisOut/de64ded8-ebd9-4261-b515-8547bb7ef0aa" />
       <excludeFolder url="file://$MODULE_DIR$/public/derby" />

@@ -322,7 +322,6 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
             });
 
 
-
             cy.on('unselect', 'node', function(e){
                 //get original background color
                 var backgroundColor = modelManager.getModelNodeAttribute(this.id(), 'css.backgroundColor');
@@ -436,11 +435,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
         }
 
     });
-
-
-
 }
-
 
 
 /***

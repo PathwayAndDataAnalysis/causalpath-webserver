@@ -1,3 +1,0 @@
-ID	Symbols	Sites	Effect	Value
-AKT1-T308	AKT1	T308	a	100
-AKT1S1-T246	AKT1S1	T246	i	100

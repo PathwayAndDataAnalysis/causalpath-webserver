@@ -108,15 +108,23 @@ app.get('/:docId', function (page, model, arg, next) {
 
 app.proto.create = function (model) {
 
-  Tippy.setDefaults({
-    arrow: true,
-    placement: 'bottom'
-  });
 
-  cytoscape.use( cyCoseBilkent );
-  cytoscape.use( cyContextMenus, $ );
-  cytoscape.use( cyPopper );
-  causalityRenderer();
+
+      Tippy.setDefaults({
+        arrow: true,
+        placement: 'bottom'
+      });
+
+      cytoscape.use( cyCoseBilkent );
+      cytoscape.use( cyContextMenus, $ );
+      cytoscape.use( cyPopper );
+      causalityRenderer();
+
+    // $(document).ready(function(){
+    //
+    //     $('[data-toggle="tooltip"]').tooltip();
+    //
+    // });
 }
 
 /***
@@ -136,13 +144,7 @@ app.proto.init = function (model) {
     //
 
 
-    $(document).ready(function(){
 
-        $('[data-toggle="tooltip"]').tooltip();
-
-
-
-    });
 
 
     this.modelManager = require('./public/src/model/modelManager.js')(model, self.room, model.get('_session.userId'),name );
