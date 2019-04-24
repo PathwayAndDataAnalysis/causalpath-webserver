@@ -120,6 +120,27 @@ app.proto.create = function (model) {
       cytoscape.use( cyPopper );
       causalityRenderer();
 
+
+
+    var data = [
+        {
+            name: 'node1',
+            children: [
+                { name: 'child1' },
+                { name: 'child2' }
+            ]
+        },
+        {
+            name: 'node2',
+            children: [
+                { name: 'child3' }
+            ]
+        }
+    ];
+    $('#tree1').tree({
+        data: data
+    });
+
     // $(document).ready(function(){
     //
     //     $('[data-toggle="tooltip"]').tooltip();
@@ -170,6 +191,9 @@ app.proto.init = function (model) {
         //Run only after everything is ready
         if(self.room.includes('test'))
             self.runUnitTests();
+
+
+
 
     });
 

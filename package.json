@@ -57,7 +57,8 @@
     "uid-safe": "^2.1.5",
     "underscore": "^1.8.3",
     "uws": "^10.148.1",
-    "w3-css": "^4.1.0"
+    "w3-css": "^4.1.0",
+    "bootstrap-treeview": "^1.2.0"
   },
   "devDependencies": {
     "qunitjs": "^2.4.1"

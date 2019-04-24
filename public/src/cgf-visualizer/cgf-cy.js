@@ -4,7 +4,7 @@
  */
 
 var cytoscape = require('cytoscape');
-var $ = jQuery = require('jquery');
+// var $ = jQuery = require('jquery');
 var _ = require('underscore');
 var Tippy = require('tippy.js');
 var groupTopology = require('../utilities/topology-grouping');
