@@ -4,7 +4,6 @@
  */
 
 var cytoscape = require('cytoscape');
-// var $ = jQuery = require('jquery');
 var _ = require('underscore');
 var Tippy = require('tippy.js');
 var groupTopology = require('../utilities/topology-grouping');
@@ -149,6 +148,7 @@ function unselectAllSites(node) {
 // }
 
 function attachSiteBboxes(nodesData) {
+
   nodesData.forEach( function(nodeData) {
     var sites = nodeData.data.sites;
     if (!sites) {
@@ -207,22 +207,28 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
     var nodes = [];
     var edges = [];
 
-    for(var obj in modelCy.nodes){
+    if(!modelCy)
+      return null;
+    if(modelCy.nodes) {
+      for (var obj in modelCy.nodes) {
         var node = modelCy.nodes[obj]
-            var nodeClone = _.clone(node);
-            nodes.push(nodeClone);
-    };
+        var nodeClone = _.clone(node);
+        nodes.push(nodeClone);
+      }
+      ;
+    }
 
 
-
-    for(var obj in modelCy.edges){
-        var edge = modelCy.edges[obj];
-        var newEdge = _.clone(edge);
-        //need to set this explicitly otherwise cytoscape gives a random id
-        var id = edge.data.source + "-" + edge.data.target;
-        newEdge.data.id = id;
-        edges.push(newEdge);
-    };
+    if(modelCy.edges) {
+      for(var obj in modelCy.edges){
+          var edge = modelCy.edges[obj];
+          var newEdge = _.clone(edge);
+          //need to set this explicitly otherwise cytoscape gives a random id
+          var id = edge.data.source + "-" + edge.data.target;
+          newEdge.data.id = id;
+          edges.push(newEdge);
+      };
+    }
 
     var cyElements = {nodes: nodes, edges: edges};
 

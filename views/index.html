@@ -14,8 +14,13 @@
 
 <Body:>
 
-    <script src="./lib/js/jquery-3.4.0.js"></script>
-    <script src="./lib/js/tree.jquery.js"></script>
+    <!--<script src="./lib/js/jquery-3.4.0.js"></script>-->
+    <!--<script src="./lib/js/tree.jquery.js"></script>-->
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/jstree.min.js"></script>
 
     <div id = "banner" class = "custom-header">
         <img src="logo.png"  class = "cp-logo"> &nbsp; &nbsp; &nbsp;&nbsp;
@@ -128,7 +133,9 @@
                             <label for="graph-file-input">
                                 <div class = 'input-label'> C. Visualize results from previous analysis  <i class="fa fa-upload"></i> </div>
                             </label>
-                            <input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)">
+                            <!--<input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)">-->
+                            <input type="file" id="graph-file-input" on-change = "loadGraphFolder($event)" webkitdirectory directory multiple>
+
                         </div>
                     </td>
 
@@ -279,5 +286,6 @@
 
     <div id = "graph-container">
 
-        <div id="tree1"></div>
+        <div id="folder-tree"></div>
     </div>
+

@@ -4,7 +4,9 @@
  *	Author: Funda Durupinar Babur<f.durupinar@gmail.com>
  */
 var app = module.exports = require('derby').createApp('causalpath', __filename);
-var $ = jQuery = require('jquery');
+// var $ = jQuery = require('jquery');
+
+
 var io = require('socket.io-client');
 var Noty = require('noty');
 var saveAs = require('file-saver').saveAs;
@@ -78,6 +80,7 @@ app.get('/:docId', function (page, model, arg, next) {
         var cyPath =  model.at((docPath + '.cy'));
         var parametersPath =  model.at((docPath + '.parameters'));
         var enumerationsPath =  model.at((docPath + '.enumerations'));
+        var folderTree =  model.at((docPath + '.folderTree'));
 
         cgfTextPath.subscribe(function() {
 
@@ -96,13 +99,19 @@ app.get('/:docId', function (page, model, arg, next) {
                                 model.set(docPath + '.enumerations', null);
 
                         }
-                        page.render();
+
+                        folderTree.subscribe(()=>{
+                            page.render();
+                        });
+
                     });
                 });
 
             });
         });
     });
+
+
 
 });
 
@@ -121,25 +130,25 @@ app.proto.create = function (model) {
       causalityRenderer();
 
 
+    // var data = [
+    //     {
+    //         name: 'node1',
+    //         children: [
+    //             { name: 'child1' },
+    //             { name: 'child2' }
+    //         ]
+    //     },
+    //     {
+    //         name: 'node2',
+    //         children: [
+    //             { name: 'child3' }
+    //         ]
+    //     }
+    // ];
+    // $('#tree1').tree({
+    //     data: data
+    // });
 
-    var data = [
-        {
-            name: 'node1',
-            children: [
-                { name: 'child1' },
-                { name: 'child2' }
-            ]
-        },
-        {
-            name: 'node2',
-            children: [
-                { name: 'child3' }
-            ]
-        }
-    ];
-    $('#tree1').tree({
-        data: data
-    });
 
     // $(document).ready(function(){
     //
@@ -162,8 +171,6 @@ app.proto.init = function (model) {
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
     this.room = model.get('_page.room');
-    //
-
 
 
 
@@ -803,7 +810,7 @@ app.proto.loadGraphFile = function(){
 
     var reader = new FileReader();
 
-    var extension = $("#graph-file-input")[0].files[0].name.split('.').pop().toLowerCase();
+    // var extension = $("#graph-file-input")[0].files[0].name.split('.').pop().toLowerCase();
 
     reader.onload = function (e) {
 
@@ -813,6 +820,105 @@ app.proto.loadGraphFile = function(){
     };
     //TODO: move graph-file-input to an argument
     reader.readAsText($("#graph-file-input")[0].files[0]);
+}
+
+
+/***
+ * Load graph directories as a tree in json format
+ */
+app.proto.loadGraphFolder = function(event){
+
+    var self = this;
+
+    graphChoice = graphChoiceEnum.JSON;
+
+    // let fileList = event.target.files.map((file) => { return {path: file.fullPath, filename: file.name , file: file} });
+
+    let fileList = Array.from(event.target.files);
+    let hierarchy = {}; // {folder_name} = { name: <name of folder>, children: {...just like hierarchy...}, files: [] }
+    // build tree
+    fileList.map(file => {
+
+        let paths = file.webkitRelativePath.split('/').slice(0, -1);
+        let parentFolder = null;
+        // builds the hierarchy of folders.
+        paths.map(path => {
+            if (!parentFolder) {
+                if (!hierarchy[path]) {
+                    hierarchy[path] = {
+                        name: path,
+                        children: {},
+                        files: [],
+                    };
+                }
+                parentFolder = hierarchy[path]
+            } else {
+                if (!parentFolder.children[path]) {
+                    parentFolder.children[path] = {
+                        name: path,
+                        children: {},
+                        files: [],
+                    };
+                }
+                parentFolder = parentFolder.children[path];
+            }
+        });
+
+        parentFolder.files.push(file);
+    });
+
+    let hierarchy_organized = {};
+    for(val in hierarchy){
+        hierarchy_organized['text'] = hierarchy[val];
+    }
+    console.log(hierarchy_organized);
+    // var reader = new FileReader();
+
+    // let files = event.target.files;
+    // console.log(files);
+
+    // var extension = $("#graph-file-input")[0].files[0].name.split('.').pop().toLowerCase();
+
+    // reader.onload = function (e) {
+    //
+    //     console.log(e.target);
+    //     let pathTree = {};
+    //     for (let file of Array.from(event.target.files)) {
+    //
+    //         let item = file.webkitRelativePath;
+    //         pathTree[file.name] = item;
+    //         // let item = document.createElement('li');
+    //         // item.textContent = file.webkitRelativePath;
+    //         // listing.appendChild(item);
+    //     };
+    //
+    //     console.log(pathTree);
+    //
+    //
+    //     //
+    //     // let tree = {
+    //     //     'core' : {
+    //     //         'data' : [
+    //     //             { "text" : "Root node", "children" : [
+    //     //                     { "text" : "Child node 1" },
+    //     //                     { "text" : "Child node 2" }
+    //     //                 ]
+    //     //             }
+    //     //         ]
+    //     //     }
+    //     // };
+    //     //
+    //
+        $('#folder-tree').jstree(hierarchy);
+    //
+    //
+    //     // self.model.set('_page.doc.cgfText', this.result);
+    // self.createCyGraphFromCgf(JSON.parse(this.result));
+    self.createCyGraphFromCgf();
+
+    // };
+    //TODO: move graph-file-input to an argument
+    // reader.readAsText($("#graph-file-input")[0].files[0]);
 }
 
 
@@ -931,7 +1037,23 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
     if(cgfJson == null){
         var cgfText = this.model.get('_page.doc.cgfText');
-        cgfJson = JSON.parse(cgfText);
+        if(cgfText)
+            cgfJson = JSON.parse(cgfText);
+
+        else { //display an empty graph
+            this.showGraphContainer();
+            var cgfContainer = new cgfCy.createContainer($('#graph-container'),  !noTopologyGrouping, this.modelManager, function () {
+
+
+                if(graphChoice != graphChoiceEnum.JSON) //As json object is not associated with any analysis data
+                    $('#download-div').show();
+
+                if (callback) callback();
+            });
+
+        }
+
+
     }
 
 
@@ -962,6 +1084,7 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
              $('#download-div').show();
 
             notyView.close();
+
 
             if (callback) callback();
         });

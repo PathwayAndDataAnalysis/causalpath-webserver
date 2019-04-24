@@ -2,9 +2,7 @@
  * Render specific shapes which are not supported by cytoscape.js core
  */
 
-var jQuery = $ = require('jquery');
 var cytoscape = require('cytoscape');
-
 var elementUtilities = require('./element-utilities');
 var computeAbsSitePos = elementUtilities.computeAbsSitePos;
 var getNodeBBox = elementUtilities.getNodeBBox;
