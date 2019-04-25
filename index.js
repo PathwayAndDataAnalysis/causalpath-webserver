@@ -131,10 +131,10 @@ app.proto.create = function (model) {
 
 
     // make canvas tab area resizable and resize some other components as it is resized
-    $("#graph-container").resizable({
-          alsoResize: '#folder-tree'
-      }
-    );
+    // $("#graph-container").resizable({
+    //       alsoResize: '#folder-tree'
+    //   }
+    // );
 
     // make inspector-tab-area resizable
     $("#folder-tree").resizable({
@@ -897,9 +897,14 @@ app.proto.loadGraphFolder = function(event){
 
     let data = [];
     let fileList = Array.from(event.target.files);
+    let maxTextLength = 0;
     fileList.forEach(file => {
+
         if(file.name.toLowerCase() === 'causative.json') {
             let paths = file.webkitRelativePath.split('/').slice(0, -1);
+
+            if(paths[0].length > maxTextLength)
+                maxTextLength = paths[0].length;
             buildTree(paths, data, file);
         }
 
@@ -911,6 +916,12 @@ app.proto.loadGraphFolder = function(event){
 
 
     $('#folder-tree').jstree(hierarchy);
+
+    let ftWidth = maxTextLength * 10  + 20;
+    $("#folder-tree").width(ftWidth);
+
+    $("#graph-container").css({left:ftWidth + 5});
+
 
     self.createCyGraphFromCgf();
 

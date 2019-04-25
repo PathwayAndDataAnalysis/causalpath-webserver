@@ -94,7 +94,7 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     border: 1px solid #ddd;
     left: 0px;
     width: 200px;
-    height: 85vh;
+
     margin: var(--margin-width);
     display: none;
 }
