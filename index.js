@@ -5,7 +5,7 @@
  */
 var app = module.exports = require('derby').createApp('causalpath', __filename);
 // var $ = jQuery = require('jquery');
-
+const dirTree = require("directory-tree");
 
 var io = require('socket.io-client');
 var Noty = require('noty');
@@ -834,44 +834,67 @@ app.proto.loadGraphFolder = function(event){
 
     // let fileList = event.target.files.map((file) => { return {path: file.fullPath, filename: file.name , file: file} });
 
+    console.log(event);
     let fileList = Array.from(event.target.files);
-    let hierarchy = {}; // {folder_name} = { name: <name of folder>, children: {...just like hierarchy...}, files: [] }
-    // build tree
-    fileList.map(file => {
-
-        let paths = file.webkitRelativePath.split('/').slice(0, -1);
-        let parentFolder = null;
-        // builds the hierarchy of folders.
-        paths.map(path => {
-            if (!parentFolder) {
-                if (!hierarchy[path]) {
-                    hierarchy[path] = {
-                        name: path,
-                        children: {},
-                        files: [],
-                    };
-                }
-                parentFolder = hierarchy[path]
-            } else {
-                if (!parentFolder.children[path]) {
-                    parentFolder.children[path] = {
-                        name: path,
-                        children: {},
-                        files: [],
-                    };
-                }
-                parentFolder = parentFolder.children[path];
-            }
-        });
-
-        parentFolder.files.push(file);
+    const filteredTree = dirTree(event.target.path, {
+        extensions: /\.(json)$/
     });
 
-    let hierarchy_organized = {};
-    for(val in hierarchy){
-        hierarchy_organized['text'] = hierarchy[val];
-    }
-    console.log(hierarchy_organized);
+    // let hierarchy = {'core': {'data': [{'text':'a', 'children':[{'text':'b'}]}]}}; // {folder_name} = { name: <name of folder>, children: {...just like hierarchy...}, files: [] }
+
+    // let hierarchy = {core:{data: {text:'Analysis files', children:[]}}}
+
+    // let hierarchyFolders= []
+    //
+    // let hierarchy = {}; // {folder_name} = { name: <name of folder>, children: {...just like hierarchy...}, files: [] }
+    //
+    // let mapFilesToHierarchy = function(fileList){
+    //     fileList.forEach((file)=>{
+    //         let paths = file.webkitRelativePath.split('/').slice(0, -1);
+    //         console.log(paths);
+    //     })
+    // }(fileList);
+    // build tree
+    // fileList.map(file => {
+    //
+    //     let paths = file.webkitRelativePath.split('/').slice(0, -1);
+    //     let parentFolder = null;
+    //     // builds the hierarchy of folders.
+    //     paths.map(path => {
+    //         if (!parentFolder) {
+    //             if (!hierarchy[path]) {
+    //                 hierarchy[path] = {
+    //                     text: path,
+    //                     children: {},
+    //                     files: [],
+    //                 };
+    //             }
+    //             parentFolder = hierarchy[path]
+    //         }
+    //         else {
+    //             if (!parentFolder.children[path]) {
+    //                 parentFolder.children[path] = {
+    //                     text: path,
+    //                     children: {},
+    //                     files: [],
+    //                 };
+    //             }
+    //             parentFolder = parentFolder.children[path];
+    //         }
+    //     });
+    //
+    //     parentFolder.files.push(file);
+    // });
+
+    // hierarchy.core.data.children = hierarchyFolders;
+
+    console.log(hierarchy);
+    // let hierarchy_organized = {};
+    // for(val in hierarchy){
+    //     hierarchy_organized['text'] = val;
+    //     hierarchy_organized['children'] = hierarchy[val];
+    // }
+    // console.log(hierarchy_organized);
     // var reader = new FileReader();
 
     // let files = event.target.files;
