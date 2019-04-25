@@ -130,6 +130,18 @@ app.proto.create = function (model) {
       causalityRenderer();
 
 
+    // make canvas tab area resizable and resize some other components as it is resized
+    $("#graph-container").resizable({
+          alsoResize: '#folder-tree'
+      }
+    );
+
+    // make inspector-tab-area resizable
+    $("#folder-tree").resizable({
+        alsoResize: '#graph-container'
+    });
+
+
     // var data = [
     //     {
     //         name: 'node1',
@@ -831,113 +843,107 @@ app.proto.loadGraphFolder = function(event){
     var self = this;
 
     graphChoice = graphChoiceEnum.JSON;
+    this.fileHash = {};
 
-    // let fileList = event.target.files.map((file) => { return {path: file.fullPath, filename: file.name , file: file} });
 
-    console.log(event);
+
+    function context_menu(node){
+        // The default set of all items
+        var items = {
+            "Load": {
+                "separator_before": false,
+                "separator_after": false,
+                "label": "Load",
+                "action": function (obj) {
+
+                    let file = node.data;
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        self.model.set('_page.doc.cgfText', e.target.result);
+                        self.createCyGraphFromCgf(JSON.parse(e.target.result));
+                    }
+                    reader.readAsText(file);
+                }
+            }};
+
+
+        return items;
+    }
+
+
+    let hierarchy = {core:{data: {text:'Analysis files', children:[]} }, plugins : [ "contextmenu" ], contextmenu: {items:context_menu} };
+
+
+    function buildTree(parts, treeNode, file) {
+        if(parts.length === 0) {
+            return;
+        }
+
+        for(let i = 0 ; i < treeNode.length; i++) {
+            if(parts[0] == treeNode[i].text) {
+                buildTree(parts.splice(1,parts.length),treeNode[i].children, file);
+                return;
+            }
+        }
+
+        let newNode = {'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
+
+
+        treeNode.push(newNode);
+        buildTree(parts.splice(1,parts.length),newNode.children, file);
+    }
+
+
+    let data = [];
     let fileList = Array.from(event.target.files);
-    const filteredTree = dirTree(event.target.path, {
-        extensions: /\.(json)$/
+    fileList.forEach(file => {
+        if(file.name.toLowerCase() === 'causative.json') {
+            let paths = file.webkitRelativePath.split('/').slice(0, -1);
+            buildTree(paths, data, file);
+        }
+
+
     });
 
-    // let hierarchy = {'core': {'data': [{'text':'a', 'children':[{'text':'b'}]}]}}; // {folder_name} = { name: <name of folder>, children: {...just like hierarchy...}, files: [] }
 
-    // let hierarchy = {core:{data: {text:'Analysis files', children:[]}}}
+    hierarchy.core.data = data;
 
-    // let hierarchyFolders= []
-    //
-    // let hierarchy = {}; // {folder_name} = { name: <name of folder>, children: {...just like hierarchy...}, files: [] }
-    //
-    // let mapFilesToHierarchy = function(fileList){
-    //     fileList.forEach((file)=>{
-    //         let paths = file.webkitRelativePath.split('/').slice(0, -1);
-    //         console.log(paths);
-    //     })
-    // }(fileList);
-    // build tree
-    // fileList.map(file => {
-    //
-    //     let paths = file.webkitRelativePath.split('/').slice(0, -1);
-    //     let parentFolder = null;
-    //     // builds the hierarchy of folders.
-    //     paths.map(path => {
-    //         if (!parentFolder) {
-    //             if (!hierarchy[path]) {
-    //                 hierarchy[path] = {
-    //                     text: path,
-    //                     children: {},
-    //                     files: [],
-    //                 };
-    //             }
-    //             parentFolder = hierarchy[path]
-    //         }
-    //         else {
-    //             if (!parentFolder.children[path]) {
-    //                 parentFolder.children[path] = {
-    //                     text: path,
-    //                     children: {},
-    //                     files: [],
-    //                 };
-    //             }
-    //             parentFolder = parentFolder.children[path];
-    //         }
-    //     });
-    //
-    //     parentFolder.files.push(file);
-    // });
 
-    // hierarchy.core.data.children = hierarchyFolders;
+    $('#folder-tree').jstree(hierarchy);
 
-    console.log(hierarchy);
-    // let hierarchy_organized = {};
-    // for(val in hierarchy){
-    //     hierarchy_organized['text'] = val;
-    //     hierarchy_organized['children'] = hierarchy[val];
-    // }
-    // console.log(hierarchy_organized);
-    // var reader = new FileReader();
+    self.createCyGraphFromCgf();
 
-    // let files = event.target.files;
-    // console.log(files);
 
-    // var extension = $("#graph-file-input")[0].files[0].name.split('.').pop().toLowerCase();
+    // console.log(self.fileHash);
+    // //listen to events
+    // $('#folder-tree')
+    // // listen for event
+    //   .on('changed.jstree', function (e, data) {
+    //       console.log(data);
+    //       let r = [];
+    //       let p = [];
+    //       for(let i = 0; i < data.selected.length; i++) {
+    //           // let node = data.instance.get_node(data.selected[i]).text;
+    //           let path = (data.instance.get_path(data.selected[i])).join('-');
+    //           console.log(path);
+    //
+    //
+    //
+    //           r.push(path);
+    //
+    //       }
+    //       console.log(self.fileHash[r[0]]);
+    //
+    //       // $('#event_result').html('Selected: ' + r.join(', '));
+    //   })
+      // create the instance
+      // .jstree();
 
-    // reader.onload = function (e) {
-    //
-    //     console.log(e.target);
-    //     let pathTree = {};
-    //     for (let file of Array.from(event.target.files)) {
-    //
-    //         let item = file.webkitRelativePath;
-    //         pathTree[file.name] = item;
-    //         // let item = document.createElement('li');
-    //         // item.textContent = file.webkitRelativePath;
-    //         // listing.appendChild(item);
-    //     };
-    //
-    //     console.log(pathTree);
-    //
-    //
-    //     //
-    //     // let tree = {
-    //     //     'core' : {
-    //     //         'data' : [
-    //     //             { "text" : "Root node", "children" : [
-    //     //                     { "text" : "Child node 1" },
-    //     //                     { "text" : "Child node 2" }
-    //     //                 ]
-    //     //             }
-    //     //         ]
-    //     //     }
-    //     // };
-    //     //
-    //
-        $('#folder-tree').jstree(hierarchy);
-    //
-    //
+
     //     // self.model.set('_page.doc.cgfText', this.result);
     // self.createCyGraphFromCgf(JSON.parse(this.result));
-    self.createCyGraphFromCgf();
+
 
     // };
     //TODO: move graph-file-input to an argument
@@ -1124,6 +1130,10 @@ app.proto.showGraphContainer = function(){
     $('#download-div').hide(); //this only appears after analysis is performed
     $('#graph-options-container').show();
     $('#graph-container').show();
+    $('#folder-tree').show();
+
+
+
 }
 
 /***
@@ -1134,6 +1144,7 @@ app.proto.showInputContainer = function(){
     $('#input-container').show();
     $('#graph-options-container').hide();
     $('#graph-container').hide();
+    $('#folder-tree').hide();
 }
 
 
