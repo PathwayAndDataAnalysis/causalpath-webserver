@@ -72,7 +72,7 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
 #graph-container{
 
     position: absolute;
-    top: 150px;
+    /*top: 150px;*/
     border: 1px solid #ddd;
     display: none;
 
@@ -90,7 +90,7 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
 
 #folder-tree{
     position: absolute;
-    top: 150px;
+    /*top: 150px;*/
     border: 1px solid #ddd;
     left: 0px;
     width: 200px;
