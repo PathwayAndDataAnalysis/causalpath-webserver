@@ -790,3 +790,4 @@ public/samples/.DS_Store
 public/src/.DS_Store
 public/build
 .panda/
+.idea/
