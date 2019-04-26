@@ -18,6 +18,7 @@ var Tippy = require('tippy.js');
 var causalityRenderer = require('./public/src/utilities/causality-cy-renderer');
 var cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
 
+
 app.loadViews(__dirname + '/views');
 
 var docReady = false;
@@ -131,42 +132,21 @@ app.proto.create = function (model) {
 
 
     // make canvas tab area resizable and resize some other components as it is resized
-    // $("#graph-container").resizable({
-    //       alsoResize: '#folder-tree'
-    //   }
-    // );
+    $("#graph-container").resizable({
+          alsoResize: '#folder-tree',
+            // maxHeight: 800,
+            maxWidth: 1200,
+            minWidth: 200
 
-    // make inspector-tab-area resizable
+      }
+    );
+
+    // // make inspector-tab-area resizable
     $("#folder-tree").resizable({
-        alsoResize: '#graph-container'
+        alsoResize: '#graph-container',
+        resizeHeight: false
     });
 
-
-    // var data = [
-    //     {
-    //         name: 'node1',
-    //         children: [
-    //             { name: 'child1' },
-    //             { name: 'child2' }
-    //         ]
-    //     },
-    //     {
-    //         name: 'node2',
-    //         children: [
-    //             { name: 'child3' }
-    //         ]
-    //     }
-    // ];
-    // $('#tree1').tree({
-    //     data: data
-    // });
-
-
-    // $(document).ready(function(){
-    //
-    //     $('[data-toggle="tooltip"]').tooltip();
-    //
-    // });
 }
 
 /***
@@ -184,11 +164,7 @@ app.proto.init = function (model) {
     var name = model.get('users.' + id +'.name');
     this.room = model.get('_page.room');
 
-
-
-
     this.modelManager = require('./public/src/model/modelManager.js')(model, self.room, model.get('_session.userId'),name );
-    //
 
     socket.on('parameterDescription', function(fileContent){
 
@@ -847,32 +823,36 @@ app.proto.loadGraphFolder = function(event){
 
 
 
-    function context_menu(node){
-        // The default set of all items
-        var items = {
-            "Load": {
-                "separator_before": false,
-                "separator_after": false,
-                "label": "Load",
-                "action": function (obj) {
+    // function context_menu(node){
+    //     // The default set of all items
+    //     var items = {
+    //         "Load": {
+    //             "separator_before": false,
+    //             "separator_after": false,
+    //             "label": "Load",
+    //             "action": function (obj) {
+    //
+    //                 let file = node.data;
+    //                 var reader = new FileReader();
+    //
+    //                 reader.onload = function (e) {
+    //                     self.model.set('_page.doc.cgfText', e.target.result);
+    //                     self.createCyGraphFromCgf(JSON.parse(e.target.result));
+    //
+    //                     notyView.close();
+    //                 }
+    //                 reader.readAsText(file);
+    //             }
+    //         }};
+    //
+    //
+    //     return items;
+    // }
 
-                    let file = node.data;
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        self.model.set('_page.doc.cgfText', e.target.result);
-                        self.createCyGraphFromCgf(JSON.parse(e.target.result));
-                    }
-                    reader.readAsText(file);
-                }
-            }};
 
 
-        return items;
-    }
-
-
-    let hierarchy = {core:{data: {text:'Analysis files', children:[]} }, plugins : [ "contextmenu" ], contextmenu: {items:context_menu} };
+    // let hierarchy = { core:{data: {text:'Analysis files', children:[]} }, plugins : [ "contextmenu", "json_data" ], contextmenu: {items:context_menu} };
+    let hierarchy = { core:{data: {text:'Analysis files', children:[]} }};
 
 
     function buildTree(parts, treeNode, file) {
@@ -898,27 +878,35 @@ app.proto.loadGraphFolder = function(event){
     let data = [];
     let fileList = Array.from(event.target.files);
     let maxTextLength = 0;
+
+    const fontSize = parseInt($('#folder-tree').css('font-size'));
+    const tabSize = parseInt($('#folder-tree').css('tab-size'));
     fileList.forEach(file => {
 
         if(file.name.toLowerCase() === 'causative.json') {
             let paths = file.webkitRelativePath.split('/').slice(0, -1);
 
-            if(paths[0].length > maxTextLength)
-                maxTextLength = paths[0].length;
+            //update the div size for the folders
+            for(let i = 0; i < paths.length; i++){
+                let lenPathStr = paths[i].length * fontSize + (i+1) * tabSize;
+                if(lenPathStr > maxTextLength)
+                    maxTextLength = lenPathStr;
+            }
             buildTree(paths, data, file);
         }
-
-
     });
 
-
+    // hierarchy.core.data = data;
     hierarchy.core.data = data;
 
+    $("#folder-tree").jstree("destroy");
 
     $('#folder-tree').jstree(hierarchy);
 
-    let ftWidth = maxTextLength * 10  + 20;
+    let ftWidth = Math.min(maxTextLength  + 20, 400);
+    // $("#folder-tree").width(ftWidth + "px");
     $("#folder-tree").width(ftWidth);
+
 
     $("#graph-container").css({left:ftWidth + 5});
 
@@ -926,39 +914,26 @@ app.proto.loadGraphFolder = function(event){
     self.createCyGraphFromCgf();
 
 
-    // console.log(self.fileHash);
-    // //listen to events
-    // $('#folder-tree')
-    // // listen for event
-    //   .on('changed.jstree', function (e, data) {
-    //       console.log(data);
-    //       let r = [];
-    //       let p = [];
-    //       for(let i = 0; i < data.selected.length; i++) {
-    //           // let node = data.instance.get_node(data.selected[i]).text;
-    //           let path = (data.instance.get_path(data.selected[i])).join('-');
-    //           console.log(path);
-    //
-    //
-    //
-    //           r.push(path);
-    //
-    //       }
-    //       console.log(self.fileHash[r[0]]);
-    //
-    //       // $('#event_result').html('Selected: ' + r.join(', '));
-    //   })
-      // create the instance
-      // .jstree();
+    $('#folder-tree').on("dblclick.jstree", function (e) {
+        var instance = $.jstree.reference(this),
+          node = instance.get_node(e.target);
+        let file = node.data;
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            self.model.set('_page.doc.cgfText', e.target.result);
+            self.createCyGraphFromCgf(JSON.parse(e.target.result));
+
+            notyView.close();
+        }
+        reader.readAsText(file);
+    });
 
 
-    //     // self.model.set('_page.doc.cgfText', this.result);
-    // self.createCyGraphFromCgf(JSON.parse(this.result));
+    var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder."});
+    notyView.show();
 
 
-    // };
-    //TODO: move graph-file-input to an argument
-    // reader.readAsText($("#graph-file-input")[0].files[0]);
 }
 
 
@@ -1076,22 +1051,24 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
 
     if(cgfJson == null){
-        var cgfText = this.model.get('_page.doc.cgfText');
-        if(cgfText)
-            cgfJson = JSON.parse(cgfText);
+        // var cgfText = this.model.get('_page.doc.cgfText');
+        // if(cgfText)
+        //     cgfJson = JSON.parse(cgfText);
 
-        else { //display an empty graph
-            this.showGraphContainer();
-            var cgfContainer = new cgfCy.createContainer($('#graph-container'),  !noTopologyGrouping, this.modelManager, function () {
+        // else {
+        //
+        // display an empty graph -- don't show the previous model
+        this.modelManager.clearModel();
+        this.showGraphContainer();
+        var cgfContainer = new cgfCy.createContainer($('#graph-container'),  !noTopologyGrouping, this.modelManager, function () {
 
+            if(graphChoice != graphChoiceEnum.JSON) //As json object is not associated with any analysis data
+                $('#download-div').show();
 
-                if(graphChoice != graphChoiceEnum.JSON) //As json object is not associated with any analysis data
-                    $('#download-div').show();
+            if (callback) callback();
+        });
 
-                if (callback) callback();
-            });
-
-        }
+        // }
 
 
     }
