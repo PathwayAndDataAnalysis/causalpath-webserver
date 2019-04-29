@@ -25,7 +25,7 @@
     "coffeescript": "^2.3.2",
     "compression": "^1.7.1",
     "connect-mongo": "^1.1.0",
-    "cytoscape": "github:iVis-at-Bilkent/cytoscape.js#master",
+    "cytoscape": "github:metincansiper/cytoscape.js#causalpath-fix",
     "cytoscape-canvas": "^3.0.1",
     "cytoscape-context-menus": "^3.0.5",
     "cytoscape-cose-bilkent": "^4.0.0",
