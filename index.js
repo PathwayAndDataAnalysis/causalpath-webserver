@@ -187,9 +187,6 @@ app.proto.init = function (model) {
         if(self.room.includes('test'))
             self.runUnitTests();
 
-
-
-
     });
 
     model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
@@ -813,7 +810,24 @@ app.proto.loadGraphFile = function(file){
     reader.readAsText(file);
 }
 
+function buildTree(parts, treeNode, file) {
+    if(parts.length === 0) {
+        return;
+    }
 
+    for(let i = 0 ; i < treeNode.length; i++) {
+        if(parts[0] == treeNode[i].text) {
+            buildTree(parts.splice(1,parts.length),treeNode[i].children, file);
+            return;
+        }
+    }
+
+    let newNode = {'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
+
+
+    treeNode.push(newNode);
+    buildTree(parts.splice(1,parts.length),newNode.children, file);
+}
 /***
  * Load graph directories as a tree in json format
  */
@@ -824,26 +838,6 @@ app.proto.loadGraphFolder = function(event){
     graphChoice = graphChoiceEnum.JSON;
 
     let hierarchy = { core:{data: {text:'Analysis files', children:[]} }};
-
-
-    function buildTree(parts, treeNode, file) {
-        if(parts.length === 0) {
-            return;
-        }
-
-        for(let i = 0 ; i < treeNode.length; i++) {
-            if(parts[0] == treeNode[i].text) {
-                buildTree(parts.splice(1,parts.length),treeNode[i].children, file);
-                return;
-            }
-        }
-
-        let newNode = {'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
-
-
-        treeNode.push(newNode);
-        buildTree(parts.splice(1,parts.length),newNode.children, file);
-    }
 
 
     let data = [];
@@ -929,24 +923,52 @@ app.proto.loadAnalysisDir = function(){
         reader.onload = function (e) {
             fileContents.push({name: file.name, content: e.target.result});
             notyView.setText( "Analyzing results...Please wait.");
-            socket.emit('analysisZip', e.target.result, self.room, function(json){
+            socket.emit('analysisZip', e.target.result, self.room, function(dirStr){
 
 
-                if(json != undefined && json != null && json.indexOf("Error") == 0){
+                if(dirStr != undefined && dirStr != null && dirStr.indexOf("Error") == 0){
                     notyView.close();
                     notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
                     notyView.show();
-                    alert("The error message is:\n" + json);
+                    alert("The error message is:\n" + dirStr);
 
                 }
                 else {
 
-                    self.createCyGraphFromCgf(JSON.parse(json), function () {
-                        notyView.close();
+                    //TODO
+                    console.log(dirStr);
+
+
+                    let data = [];
+                    let fileStrList = dirStr.split("\n");
+                    let maxTextLength = 0;
+
+                    const fontSize = parseInt($('#folder-tree').css('font-size'));
+                    const tabSize = parseInt($('#folder-tree').css('tab-size'));
+                    fileStrList.forEach(file => {
+
+                        let paths = file.split('/').slice(0, -1);
+
+                        //update the div size for the folders
+                        for(let i = 0; i < paths.length; i++){
+                            let lenPathStr = paths[i].length * fontSize + (i+1) * tabSize;
+                            if(lenPathStr > maxTextLength)
+                                maxTextLength = lenPathStr;
+                        }
+                        buildTree(paths, data, file);
+
                     });
 
-                    self.model.set('_page.doc.cgfText', json);
-                    notyView.close();
+                    console.log(data);
+
+
+                    // buildTree()
+                    // self.createCyGraphFromCgf(JSON.parse(json), function () {
+                    //     notyView.close();
+                    // });
+                    //
+                    // self.model.set('_page.doc.cgfText', json);
+                    // notyView.close();
                 }
 
 
