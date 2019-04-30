@@ -828,41 +828,44 @@ function buildTree(parts, treeNode, file) {
     treeNode.push(newNode);
     buildTree(parts.splice(1,parts.length),newNode.children, file);
 }
+
 /***
- * Load graph directories as a tree in json format
+ * Organizes data as a tree and displays the jstree associated with it
+ * @param data
  */
-app.proto.loadGraphFolder = function(event){
+app.proto.buildAndDisplayFolderTree = function(fileList, isFile){
 
-    var self = this;
-
-    graphChoice = graphChoiceEnum.JSON;
-
-    let hierarchy = { core:{data: {text:'Analysis files', children:[]} }};
-
-
-    let data = [];
-    let fileList = Array.from(event.target.files);
+    let self = this;
     let maxTextLength = 0;
 
+    let data = []
     const fontSize = parseInt($('#folder-tree').css('font-size'));
     const tabSize = parseInt($('#folder-tree').css('tab-size'));
+    let paths;
+
     fileList.forEach(file => {
 
-        if(file.name.toLowerCase() === 'causative.json') {
-            let paths = file.webkitRelativePath.split('/').slice(0, -1);
+        if(isFile && file.name.toLowerCase() === 'causative.json')
+            paths = file.webkitRelativePath.split('/').slice(0, -1);
+        else if(!isFile)
+            paths = file.split('/').slice(0, -1);
 
+
+        if(paths) {
             //update the div size for the folders
-            for(let i = 0; i < paths.length; i++){
-                let lenPathStr = paths[i].length * fontSize + (i+1) * tabSize;
-                if(lenPathStr > maxTextLength)
+            for (let i = 0; i < paths.length; i++) {
+                let lenPathStr = paths[i].length * fontSize + (i + 1) * tabSize;
+                if (lenPathStr > maxTextLength)
                     maxTextLength = lenPathStr;
             }
             buildTree(paths, data, file);
         }
+
     });
 
-    // hierarchy.core.data = data;
-    hierarchy.core.data = data;
+
+    let hierarchy = { core:{data: data }};
+
 
     $("#folder-tree").jstree("destroy");
 
@@ -881,27 +884,53 @@ app.proto.loadGraphFolder = function(event){
 
 
     $('#folder-tree').on("dblclick.jstree", function (e) {
-        var instance = $.jstree.reference(this),
-          node = instance.get_node(e.target);
-        let file = node.data;
-        self.loadGraphFile(file);
+        var instance = $.jstree.reference(this);
+        node = instance.get_node(e.target);
+        if(isFile) { //directly load graph
+
+            let file = node.data;
+            self.loadGraphFile(file);
+        }
+        else {
+            // get data from the server
+            console.log(node.data);
+
+
+            socket.emit('getJsonAtPath', node.data, self.room, function (fileContent) {
+
+
+                self.model.set('_page.doc.cgfText', fileContent);
+                self.createCyGraphFromCgf(JSON.parse(fileContent));
+
+            });
+        }
         notyView.close();
-
     });
-
 
     var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder."});
     notyView.show();
-
-
 }
 
+/***
+ * Load graph directories as a tree in json format
+ */
+app.proto.loadAnalysisDirFromClient = function(event){
+
+    var self = this;
+
+    graphChoice = graphChoiceEnum.JSON;
+
+
+    let fileList = Array.from(event.target.files);
+    self.buildAndDisplayFolderTree(fileList, true);
+
+}
 
 /***
  * Take the input files and transfer them to the server in analysisDir and run shell command
  * Produces graph from analysis results
  */
-app.proto.loadAnalysisDir = function(){
+app.proto.loadAnalysisDirFromServer = function(){
 
     var self = this;
     graphChoice = graphChoiceEnum.ANALYSIS;
@@ -935,42 +964,11 @@ app.proto.loadAnalysisDir = function(){
                 }
                 else {
 
-                    //TODO
-                    console.log(dirStr);
-
-
-                    let data = [];
                     let fileStrList = dirStr.split("\n");
-                    let maxTextLength = 0;
+                    self.buildAndDisplayFolderTree(fileStrList, false);
 
-                    const fontSize = parseInt($('#folder-tree').css('font-size'));
-                    const tabSize = parseInt($('#folder-tree').css('tab-size'));
-                    fileStrList.forEach(file => {
-
-                        let paths = file.split('/').slice(0, -1);
-
-                        //update the div size for the folders
-                        for(let i = 0; i < paths.length; i++){
-                            let lenPathStr = paths[i].length * fontSize + (i+1) * tabSize;
-                            if(lenPathStr > maxTextLength)
-                                maxTextLength = lenPathStr;
-                        }
-                        buildTree(paths, data, file);
-
-                    });
-
-                    console.log(data);
-
-
-                    // buildTree()
-                    // self.createCyGraphFromCgf(JSON.parse(json), function () {
-                    //     notyView.close();
-                    // });
-                    //
-                    // self.model.set('_page.doc.cgfText', json);
-                    // notyView.close();
+                    notyView.close();
                 }
-
 
             });
         }
@@ -1133,7 +1131,7 @@ app.proto.showInputContainer = function(){
 app.proto.showGraphContainerAndFolderTree = function(){
     $('#info-div').hide();
     $('#input-container').hide();
-    $('#download-div').hide(); //this only appears after analysis is performed
+    $('#download-div').show(); //this only appears after analysis is performed
     $('#graph-options-container').show();
     $('#graph-container').show();
     $('#folder-tree').show();
@@ -1156,13 +1154,17 @@ app.proto.downloadResults = function(){
     var notyView = new Noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
     notyView.show();
 
-    socket.emit('downloadRequest', self.room, function(fileContent){
+
+
+    let analysisFileName = "./analysisOut/" + self.room;
+
+
+    socket.emit('downloadRequest', analysisFileName, function(fileContent){
         if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
             notyView.close();
             notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
             notyView.show();
             alert("The error message is:\n" + fileContent);
-
 
         }
         else{
