@@ -80,34 +80,37 @@ app.get('/:docId', function (page, model, arg, next) {
         var cgfTextPath =  model.at((docPath + '.cgfText'));
         var cyPath =  model.at((docPath + '.cy'));
         var parametersPath =  model.at((docPath + '.parameters'));
+        var layoutPath =  model.at((docPath + '.layout'));
         var enumerationsPath =  model.at((docPath + '.enumerations'));
         var folderTree =  model.at((docPath + '.folderTree'));
 
         cgfTextPath.subscribe(function() {
 
             cyPath.subscribe(function () {
-                parametersPath.subscribe(function(){
-                    enumerationsPath.subscribe(function(){
-                        model.set('_page.room', room);
-                        if(arg.docId.includes('test')) { //clear everything and start from scratch if this is test mode
-                            if(cgfTextPath.get())
-                                model.set(docPath + '.cgfText', null);
-                            if(cyPath.get())
-                                model.set(docPath + '.cy', null);
-                            if(parametersPath.get())
-                                model.set(docPath + '.parameters', null);
-                            if(enumerationsPath.get())
-                                model.set(docPath + '.enumerations', null);
+                parametersPath.subscribe(function() {
+                    enumerationsPath.subscribe(function () {
+                        layoutPath.subscribe(function () {
+                            model.set('_page.room', room);
+                            if (arg.docId.includes('test')) { //clear everything and start from scratch if this is test mode
+                                if (cgfTextPath.get())
+                                    model.set(docPath + '.cgfText', null);
+                                if (cyPath.get())
+                                    model.set(docPath + '.cy', null);
+                                if (parametersPath.get())
+                                    model.set(docPath + '.parameters', null);
+                                if (layoutPath.get())
+                                    model.set(docPath + '.layout', null);
+                                if (enumerationsPath.get())
+                                    model.set(docPath + '.enumerations', null);
+                            }
 
-                        }
+                            folderTree.subscribe(() => {
+                                page.render();
+                            });
 
-                        folderTree.subscribe(()=>{
-                            page.render();
                         });
-
                     });
                 });
-
             });
         });
     });
@@ -130,21 +133,20 @@ app.proto.create = function (model) {
       cytoscape.use( cyPopper );
       causalityRenderer();
 
-
-    // make canvas tab area resizable and resize some other components as it is resized
+    //
+    // // make canvas tab area resizable and resize some other components as it is resized
     // $("#graph-container").resizable({
-    //       alsoResize: '#folder-tree',
-    //         // maxHeight: 800,
-    //         maxWidth: 1200,
-    //         minWidth: 200
+    //       // alsoResize: '#folder-tree',
+    //       //   // maxHeight: 800,
+    //       //   maxWidth: 1200,
+    //       //   minWidth: 200
     //
     //   }
     // );
-    //
-    // // // make inspector-tab-area resizable
+
+    // // make inspector-tab-area resizable
     // $("#folder-tree").resizable({
     //     alsoResize: '#graph-container',
-    //     resizeHeight: false
     // });
 
 }
@@ -412,6 +414,21 @@ app.proto.resetToDefaultParameters= function(){
 
 }
 
+
+/***
+ * Resets all layout parameters to default values
+ */
+app.proto.resetToDefaultLayoutParameters= function(){
+
+    cgfCy.initLayoutOptions(this.modelManager);
+
+}
+
+
+app.proto.submitLayoutParameters = function(){
+    document.getElementById('layout-properties-table').style.display='none';
+}
+
 /***
  * Sends the parameters to the server to write into a text file
  */
@@ -458,6 +475,8 @@ app.proto.submitParameters = function (callback) {
     }
 
 }
+
+
 /***
  * Make sure the mandatory parameters are not null
  * @returns {boolean}
@@ -727,7 +746,6 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
     reader.onload = function (event) {
         self.model.set('_page.doc.parameters.' + param.ind + '.value', [[file.name]]);
 
-
         //also send to server
         socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function (data) {
             if(data != undefined && data != null && data.indexOf("Error") == 0){
@@ -735,7 +753,6 @@ app.proto.loadFile = function(e, param, cnt, entryInd){
                 notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file.")});
                 notyView.show();
                 alert("The error message is:\n" + data);
-
 
             }
             // console.log("success");
@@ -759,7 +776,7 @@ app.proto.getDomElement = function(param, cnt, entryInd){
 
 app.proto.runLayout = function(){
     if(docReady)
-        cgfCy.runLayout();
+        cgfCy.runLayout(this.modelManager.getLayoutOptions());
 }
 
 
@@ -785,6 +802,7 @@ app.proto.loadDemoGraph = function(){
     this.createCyGraphFromCgf(demoJson);
 
     $('#folder-tree').hide();
+    $('#download-div').hide(); //this only appears after analysis is performed -- demo has no analysis result
 
 }
 
@@ -806,7 +824,7 @@ app.proto.loadGraphFile = function(file){
         self.createCyGraphFromCgf(JSON.parse(this.result));
 
     };
-    //TODO: move graph-file-input to an argument
+
     reader.readAsText(file);
 }
 
@@ -833,7 +851,7 @@ function buildTree(parts, treeNode, file) {
  * Organizes data as a tree and displays the jstree associated with it
  * @param data
  */
-app.proto.buildAndDisplayFolderTree = function(fileList, isFile){
+app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
 
     let self = this;
     let maxTextLength = 0;
@@ -845,11 +863,10 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFile){
 
     fileList.forEach(file => {
 
-        if(isFile && file.name.toLowerCase() === 'causative.json')
+        if(isFromClient && file.name.toLowerCase() === 'causative.json')
             paths = file.webkitRelativePath.split('/').slice(0, -1);
-        else if(!isFile)
+        else if(!isFromClient)
             paths = file.split('/').slice(0, -1);
-
 
         if(paths) {
             //update the div size for the folders
@@ -860,19 +877,20 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFile){
             }
             buildTree(paths, data, file);
         }
-
     });
 
 
     let hierarchy = { core:{data: data }};
 
 
-    $("#folder-tree").jstree("destroy");
+      $("#folder-tree").jstree("destroy");
 
     $('#folder-tree').jstree(hierarchy);
 
+
+
     let ftWidth = Math.min(maxTextLength  + 20, 400);
-    // $("#folder-tree").width(ftWidth + "px");
+
     $("#folder-tree").width(ftWidth);
 
 
@@ -886,7 +904,7 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFile){
     $('#folder-tree').on("dblclick.jstree", function (e) {
         var instance = $.jstree.reference(this);
         node = instance.get_node(e.target);
-        if(isFile) { //directly load graph
+        if(isFromClient) { //directly load graph
 
             let file = node.data;
             self.loadGraphFile(file);
@@ -922,6 +940,7 @@ app.proto.loadAnalysisDirFromClient = function(event){
 
 
     let fileList = Array.from(event.target.files);
+
     self.buildAndDisplayFolderTree(fileList, true);
 
 }
@@ -1053,17 +1072,11 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
             if (callback) callback();
         });
-
-        // }
-
-
     }
-
 
     if(cgfJson) {
         this.modelManager.clearModel();
         this.modelManager.initModelFromJson(cgfJson);
-
 
         if (docReady){
 
@@ -1131,7 +1144,7 @@ app.proto.showInputContainer = function(){
 app.proto.showGraphContainerAndFolderTree = function(){
     $('#info-div').hide();
     $('#input-container').hide();
-    $('#download-div').show(); //this only appears after analysis is performed
+    $('#download-div').hide(); //this only appears after analysis is performed
     $('#graph-options-container').show();
     $('#graph-container').show();
     $('#folder-tree').show();
@@ -1154,12 +1167,7 @@ app.proto.downloadResults = function(){
     var notyView = new Noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
     notyView.show();
 
-
-
-    let analysisFileName = "./analysisOut/" + self.room;
-
-
-    socket.emit('downloadRequest', analysisFileName, function(fileContent){
+    socket.emit('downloadRequest', self.room, function(fileContent){
         if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
             notyView.close();
             notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});

@@ -53,8 +53,6 @@ a:hover   {color:red; background-color:transparent; text-decoration:underline}
 a:active  {color:yellow; background-color:transparent; text-decoration:underline}
 
 
-
-
 #graph-options-container{
     /*position:absolute;*/
     /*top: 60px;*/
@@ -63,6 +61,8 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     /*width:var(--graph-width);*/
     margin-left:10px;
     margin-right: 10px;
+    height:90px;
+    padding: 5px;
     border: 1px solid #ddd;
     display:none;
     overflow:auto;
@@ -75,23 +75,27 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     /*top: 150px;*/
     border: 1px solid #ddd;
     display: none;
-
+    resize: both;
     left: 205px;
     right: 0px;
 
-    height: 85vh;
+    resize: horizontal;
+    overflow: auto;
+
+    height: 83vh;
     margin: var(--margin-width);
 
     display: none;
-
 }
-
 
 
 #folder-tree{
     position: absolute;
     /*top: 150px;*/
     border: 1px solid #ddd;
+    resize: horizontal;
+    overflow: auto;
+
     left: 0px;
     width: 200px;
 

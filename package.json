@@ -20,7 +20,6 @@
   "homepage": "http://www.causalpath.org",
   "dependencies": {
     "backbone": "^1.4.0",
-    "bootstrap": "^4.2.1",
     "coffeeify": "^3.0.1",
     "coffeescript": "^2.3.2",
     "compression": "^1.7.4",

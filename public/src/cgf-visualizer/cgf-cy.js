@@ -120,32 +120,7 @@ function unselectAllSites(node) {
     });
 }
 
-// function attachStatesAndInfos(nodesData) {
-//   nodesData.forEach( function(nodeData) {
-//     var sites = nodeData.data.sites;
-//     if (!sites) {
-//       return;
-//     }
-//     var parent = nodeData.data.id;
-//
-//     var infoboxes = sites.map( function(site) {
-//       var w = site.bbox.w;
-//       var h = site.bbox.h;
-//       var x = site.bbox.x * 100;
-//       var y = site.bbox.y * 100;
-//
-//       var ib = {
-//         parent,
-//         bbox: { x, y, w, h },
-//         isDisplayed: true
-//       };
-//
-//       return ib;
-//     } );
-//
-//     nodeData.data.statesandinfos = infoboxes;
-//   } );
-// }
+
 
 function attachSiteBboxes(nodesData) {
 
@@ -178,23 +153,32 @@ function attachSiteBboxes(nodesData) {
 }
 
 
-const layoutOptions = {
-  animate: false,
-  fit: true,
-  nodeRepulsion: 10,//4500,
-  idealEdgeLength: 50,
-  edgeElasticity: 0.45,
-  nestingFactor: 0.1,
-  gravity: 1.25,
-  gravityRange: 0.8,
-  numIter: 5000,
-  tile: true,
-  tilingPaddingVertical: 5,
-  tilingPaddingHorizontal: 5,
-  randomize: true,
-  name: 'cose-bilkent'
-}
 
+module.exports.initLayoutOptions = function(modelManager){
+  let layoutOptions = {
+    nodeRepulsion: 2000, //4500,
+    idealEdgeLength: 50,
+    edgeElasticity: 0.45,
+    nestingFactor: 0.1,
+    gravity: 1.25,
+    gravityRange: 0.8,
+    gravityCompound: 1,
+    gravityRangeCompound: 1.5,
+    numIter: 2500,
+    tileDisconnected: true,
+    tilingPaddingVertical: 20,
+    tilingPaddingHorizontal: 20,
+    animate: false,
+    incremental: false,
+    improveFlow: true,
+    initialEnergyOnIncremental: 0.3,
+    name: 'cose-bilkent'
+  }
+
+
+  modelManager.setLayoutOptions(layoutOptions);
+
+}
 
 /***
  * @param modelCy: Cy elements stored in the model as json objects
@@ -242,14 +226,12 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
 
 }
 
-module.exports.runLayout = function(){
-
+module.exports.runLayout = function(layoutOptions){
     cy.layout(layoutOptions).run();
-
-
 }
 
 module.exports.createContainer = function(el, doTopologyGrouping, modelManager, callback) {
+
 
     var modelCy = modelManager.getModelCy();
 
@@ -257,8 +239,9 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
 
     let contextMenu;
 
-
     var cy;
+
+    module.exports.initLayoutOptions(modelManager);
 
     cytoscape({
         container: el,
@@ -269,7 +252,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
           minZoom:0.1,
           maxZoom:5,
 
-        layout: layoutOptions,
+        layout: modelManager.getLayoutOptions(),
 
         style: CgfStyleSheet,
 

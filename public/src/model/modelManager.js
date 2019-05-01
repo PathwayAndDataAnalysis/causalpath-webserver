@@ -245,11 +245,8 @@ module.exports =  function(model, docId, userId, userName) {
                         model.set('_page.doc.parameters.' + i + '.value', param.Default);
 
                     }
-
-
                 }
             }
-
         },
 
         resetToDefaultModelParameters(){
@@ -258,6 +255,14 @@ module.exports =  function(model, docId, userId, userName) {
             for(let i = 0; i < parameterList.length; i++){
                model.set('_page.doc.parameters.' + i + '.value', parameterList[i].Default);
             }
+        },
+
+        getLayoutOptions(){
+            return model.get('_page.doc.layout');
+        },
+
+        setLayoutOptions(layoutOptions){
+            return model.set('_page.doc.layout', layoutOptions);
         }
 
     }

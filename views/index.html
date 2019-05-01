@@ -13,12 +13,13 @@
     <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css" />-->
     <link href="./lib/css/themes/default/style.css" rel="stylesheet">
     <link href="./lib/css/jquery-ui.css" rel="stylesheet">
+    <link href="./lib/css/jquery-ui.css" rel="stylesheet">
+    <link href="./lib/css/bootstrap.css" rel="stylesheet">
 
-
-    <Body:>
+<Body:>
 
     <script src="./lib/js/jquery-3.4.0.js"></script>
-
+    <script src="./lib/js/bootstrap.bundle.min.js"></script>
     <!--<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>-->
 
 
@@ -26,6 +27,7 @@
     <script src="./lib/js/jstree.min.js"></script>
     <!--For canvas-tab resizable-->
     <script src="./lib/js/jquery-ui.js"></script>
+
 
     <div id = "banner" class = "custom-header">
         <img src="logo.png"  class = "cp-logo"> &nbsp; &nbsp; &nbsp;&nbsp;
@@ -62,18 +64,22 @@
                 </td>
 
 
-                <td class = "graph-options-td">
+                <td class = "dropdown">
+
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Layout
+                    </button>
 
 
-                    <label for="run-layout-button">
-                        <i class="fa fa-play-circle"></i> Run layout
-                    </label>
-                    <input type="button" id = "run-layout-button" value = "Run Layout" on-click = "runLayout()">
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <button class = "dropdown-item" id="run-layout"  on-click = "runLayout()">Run Layout</button>
+                        <button class = "dropdown-item" id="layout-properties" onclick = "document.getElementById('layout-properties-table').style.display='block'">Layout Properties...</button>
+                    </div>
+
                 </td>
 
+
                 <td class = "graph-options-td">
-
-
                     <label for="show-legend-button">
                         <i class="fa fa-info-circle"></i> Show legend
                     </label>
@@ -289,10 +295,169 @@
     </div>
 
 
+    <div id="layout-properties-table" class="w3-modal">
+        <div class="w3-modal-content">
+        <div class="w3-modal-container parameters">
+            <header class="w3-container custom-header"> <span onclick="document.getElementById('layout-properties-table').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
+                <h2>Layout Properties</h2> </header>
+            <p></p>
+            <table class = "parameter-content">
+                <tbody>
+                <tr>
+                    <td>
+                        <input id="node-repulsion" type="text" min="0" class="sbgn-input-small layout-text integer-input" value = {{_page.doc.layout.nodeRepulsion}} >
+                    </td>
+                </tr>
 
-        <div id = "folder-tree"></div>
-        <div id = "graph-container"></div>
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Ideal (intra-graph) edge length"> Ideal Edge Length </span>
+                    </td>
+                    <td>
+                        <input id="ideal-edge-length" type="number" min="5" class="sbgn-input-small layout-text integer-input" value = {{_page.doc.layout.idealEdgeLength}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Divisor to compute edge forces"> Edge Elasticity </span>
+                    </td>
+                    <td>
+                        <input id="edge-elasticity" type="number" min="0" class="sbgn-input-small layout-text" value = {{_page.doc.layout.edgeElasticity}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Nesting factor (multiplier) to compute ideal edge length for inter-graph edges"> Nesting Factor </span>
+                    </td>
+                    <td>
+                        <input id="nesting-factor" type="number" min="0" class="sbgn-input-small layout-text" value = {{_page.doc.layout.nestingFactor}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Gravity force (constant)"> Gravity </span>
+                    </td>
+                    <td>
+                        <input id="gravity" type="number" min="0" class="sbgn-input-small layout-text" value = {{_page.doc.layout.gravity}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Gravity range (constant)"> Gravity Range   </span>
+                    </td>
+                    <td>
+                        <input id="gravity-range" type="number" min="0" class="sbgn-input-small layout-text" value = {{_page.doc.layout.gravityRange}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Gravity force (constant) for compounds"> Compound Gravity  </span>
+                    </td>
+                    <td>
+                        <input id="gravity-compound" type="number" min="0" class="sbgn-input-small layout-text" value = {{_page.doc.layout.gravityCompound}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Gravity range (constant) for compounds"> Compound Gravity Range </span>
+                    </td>
+                    <td>
+                        <input id="gravity-range-compound" type="number" min="0" class="sbgn-input-small layout-text" value = {{_page.doc.layout.gravityRangeCompound}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Maximum number of iterations to perform"> Number of Iterations </span>
+                    </td>
+                    <td>
+                        <input id="num-iter" type="number" min="0" class="sbgn-input-small layout-text integer-input" value = {{_page.doc.layout.numIter}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Amount of vertical space to put between degree zero nodes during tiling"> Tiling Vertical Padding </span>
+                    </td>
+                    <td>
+                        <input id="tiling-padding-vertical" type="number" min="0" class="sbgn-input-small layout-text integer-input" value = {{_page.doc.layout.tilingPaddingVertical}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Amount of horizontal space to put between degree zero nodes during tiling"> Tiling Horizontal Padding </span>
+                    </td>
+                    <td>
+                        <input id="tiling-padding-horizontal" type="number" min="0" class="sbgn-input-small layout-text integer-input" value = {{_page.doc.layout.tilingPaddingHorizontal}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Whether to tile disconnected nodes" > Tile Disconnected </span>
+                    </td>
+
+                    <td>
+                        <input id="tile" type="checkbox" class="layout-text" checked = {{_page.doc.layout.tileDisconnected}}>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Whether to perform animation during layout" > Animate </span>
+                    </td>
+
+                    <td>
+                        <input id="animate" type="checkbox" class="layout-text" checked = {{_page.doc.layout.animate}}>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Whether to enable incremental mode" > Incremental </span>
+                    </td>
+
+                    <td>
+                        <input id="incremental" type="checkbox" class="layout-text" checked = {{_page.doc.layout.incremental}}>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Initial cooling factor for incremental layout"> Incremental Cooling Factor </span>
+                    </td>
+                    <td>
+                        <input id="incremental-cooling-factor" type="number" min="0" class="sbgn-input-small layout-text" value = {{_page.doc.layout.initialEnergyOnIncremental}} >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="add-on layout-text" title="Whether to adjust port orientations to improve flow" > Improve Flow </span>
+                    </td>
+                    <td>
+                        <input id="improve-flow" type="checkbox" class="layout-text" checked = {{_page.doc.layout.improveFlow}}>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <input type = "button" value = "OK" on-click = "submitLayoutParameters()">
+
+            <input type = "button" value = "Default" on-click = "resetToDefaultLayoutParameters()">
+
+        </div>
+        </div>
+    </div>
 
 
 
+    <div id = "folder-tree"></div>
+    <div id = "graph-container"></div>
 
