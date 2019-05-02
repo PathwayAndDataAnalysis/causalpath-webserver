@@ -128,7 +128,7 @@
                         <label for="analysis-directory-input">
                             <div class = 'input-label'> B. Upload all input files for analysis <i class="fa fa-upload"></i></div>
                         </label>
-                        <input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-change = "loadAnalysisDirFromServer()"  multiple >
+                        <input type="file"  id="analysis-directory-input" accept=".txt, .zip"  on-input = "loadAnalysisDirFromServer($event)" multiple >
                         </div>
                     </td>
 
@@ -145,7 +145,7 @@
                                 <div class = 'input-label'> C. Visualize results from previous analysis  <i class="fa fa-upload"></i> </div>
                             </label>
                             <!--<input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)">-->
-                            <input type="file" id="graph-file-input" on-change = "loadAnalysisDirFromClient($event)" webkitdirectory directory multiple>
+                            <input type="file" id="graph-file-input" on-input = "loadAnalysisDirFromClient($event)" webkitdirectory directory multiple>
 
                         </div>
                     </td>

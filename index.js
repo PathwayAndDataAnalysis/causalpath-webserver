@@ -936,6 +936,7 @@ app.proto.loadAnalysisDirFromClient = function(event){
 
     var self = this;
 
+
     graphChoice = graphChoiceEnum.JSON;
 
 
@@ -943,13 +944,14 @@ app.proto.loadAnalysisDirFromClient = function(event){
 
     self.buildAndDisplayFolderTree(fileList, true);
 
+    event.target.value = null; //to make sure the same files can be loaded again
 }
 
 /***
  * Take the input files and transfer them to the server in analysisDir and run shell command
  * Produces graph from analysis results
  */
-app.proto.loadAnalysisDirFromServer = function(){
+app.proto.loadAnalysisDirFromServer = function(event){
 
     var self = this;
     graphChoice = graphChoiceEnum.ANALYSIS;
@@ -961,6 +963,7 @@ app.proto.loadAnalysisDirFromServer = function(){
     notyView.setText( "Reading files...Please wait.");
 
 
+    console.log($('#analysis-directory-input')[0].files);
     //Sending a zip file
     if(fileCnt == 1 &&  $('#analysis-directory-input')[0].files[0].name.split('.').pop().toLowerCase() == "zip"){
 
@@ -1018,9 +1021,9 @@ app.proto.loadAnalysisDirFromServer = function(){
 
             notyView.setText( "Analyzing results...Please wait.");
 
-            socket.emit('analysisDir', fileContents, self.room, function(data){
+            socket.emit('analysisDir', fileContents, self.room, function(dirStr){
 
-                if(data != undefined && data != null && data.indexOf("Error") == 0){
+                if(dirStr != undefined && dirStr != null && dirStr.indexOf("Error") == 0){
                     notyView.close();
                     notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
                     notyView.show();
@@ -1029,12 +1032,15 @@ app.proto.loadAnalysisDirFromServer = function(){
 
                 }
                 else {
+                    let fileStrList = dirStr.split("\n");
+                    self.buildAndDisplayFolderTree(fileStrList, false);
 
-                    self.createCyGraphFromCgf(JSON.parse(data), function () {
-                        notyView.close();
-                    });
-
-                    self.model.set('_page.doc.cgfText', data);
+                    notyView.close();
+                    // self.createCyGraphFromCgf(JSON.parse(data), function () {
+                    //     notyView.close();
+                    // });
+                    //
+                    // self.model.set('_page.doc.cgfText', data);
                 }
             });
 
@@ -1044,6 +1050,8 @@ app.proto.loadAnalysisDirFromServer = function(){
 
         }
     }
+
+    event.target.value = null; //to make sure the same files can be loaded again
 }
 
 /***
