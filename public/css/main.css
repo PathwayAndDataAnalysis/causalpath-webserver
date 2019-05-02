@@ -99,6 +99,7 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     margin: var(--margin-width);
     display: none;
 
+    overflow-x: auto;
     font-size: 15px;
 }
 

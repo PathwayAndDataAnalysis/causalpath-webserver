@@ -133,6 +133,7 @@ app.proto.create = function (model) {
       cytoscape.use( cyPopper );
       causalityRenderer();
 
+
     //
     // // make canvas tab area resizable and resize some other components as it is resized
     // $("#graph-container").resizable({
@@ -925,7 +926,7 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
         notyView.close();
     });
 
-    var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder."});
+    var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder.", timeout: 10000});
     notyView.show();
 }
 
