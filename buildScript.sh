@@ -1,6 +1,7 @@
 sudo apt-get update
 sudo apt-get install zip
 sudo git pull origin master
+sudo npm install
 cd jar
 cd causalpath
 sudo git pull origin master
