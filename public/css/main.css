@@ -179,6 +179,7 @@ input[id = "show-legend-button"]{
 
     /*font-size:x-large;*/
     font-family: Verdana;
+    margin-right: 5%;
 }
 
 /*One column of the initial input screen*/
@@ -194,12 +195,15 @@ input[id = "show-legend-button"]{
     /*color: floralwhite;*/
     color: #3a3a3a;
     border-radius: 25px;
+
     /*background: #e9f8ff;*/
     /*border: 2px solid #d6e5ec;*/
     /*border-color: #0e90d2;*/
 
     /*width:calc( var(--input-width)/2);*/
 }
+
+
 
 .main-input-content label, #graph-options-container label {
   cursor: pointer !important;
@@ -213,16 +217,17 @@ input[id = "show-legend-button"]{
 /*!*background: rgba(255,127,80, 0.3)*!*/
 /*}*/
 
-
 .main-input-content tr:nth-child(even)
 {
-    background: #98c1d9
+    background: #98c1d9;
+
     /*background: rgba(255,127,80, 0.3)*/
 }
 .main-input-content tr:nth-child(odd)
 {
     /*background: rgba(21, 197, 223, 0.7)*/
-    background: #e9f8ff
+    background: #e9f8ff;
+
 }
 
 .fa-file-text{
