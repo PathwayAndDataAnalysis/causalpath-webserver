@@ -166,6 +166,13 @@ module.exports = function () {
       return;
     }
 
+    var toRestore = ['font', 'fillStyle', 'globalAlpha', 'textAlign', 'textBaseline'];
+    var initialPropMap = {};
+
+    toRestore.forEach( function( propName ) {
+      initialPropMap[ propName ] = context[ propName ];
+    } );
+
     var parentBbox = getNodeBBox(node);
     var shapeName = node.css('shape');
 
@@ -178,11 +185,18 @@ module.exports = function () {
         color, opacity: 1
       };
 
+      context.strokeStyle = site.siteBorderColor;
+      context.fillStyle = site.siteBackgroundColor;
+
       $$.sbgn.drawInfoBox(context, sitePos.x, sitePos.y, site.bbox.w, site.bbox.h, shapeName);
       $$.sbgn.drawText(context, textProp);
     });
     context.beginPath();
     context.closePath();
+
+    toRestore.forEach( function( propName ) {
+      context[ propName ] = initialPropMap[ propName ];
+    } );
   };
 
   $$.sbgn.drawInfoBox = function(context, x, y, width, height, shapeName) {
