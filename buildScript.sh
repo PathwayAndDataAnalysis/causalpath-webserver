@@ -8,6 +8,7 @@ sudo git pull origin master
 sudo mvn clean install
 sudo mvn assembly:single
 cp ./target/causalpath.jar ../causalpath.jar
+java -jar causalpath.jar params-in-json
 cd ..
 cd ..
 sudo mkdir analysisOut

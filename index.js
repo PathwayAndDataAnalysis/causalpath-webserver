@@ -850,7 +850,8 @@ function buildTree(parts, treeNode, file) {
 
 /***
  * Organizes data as a tree and displays the jstree associated with it
- * @param data
+ * @param fileList: List of files to display
+ * @param isFromClient: file list structure is different depending on whether it is coming from the server or client
  */
 app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
 
@@ -884,7 +885,7 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
     let hierarchy = { core:{data: data }};
 
 
-      $("#folder-tree").jstree("destroy");
+    $("#folder-tree").jstree("destroy");
 
     $('#folder-tree').jstree(hierarchy);
 
