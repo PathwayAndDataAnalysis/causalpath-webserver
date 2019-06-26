@@ -161,7 +161,7 @@ app.proto.init = function (model) {
 
     let self = this;
 
-    socket = this.socket = io({transports: ['websocket']});
+    socket = this.socket = io( 'localhost', {transports: ['websocket']});
 
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
