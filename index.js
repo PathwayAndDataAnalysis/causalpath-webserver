@@ -933,6 +933,7 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
 
 /***
  * Load graph directories as a tree in json format
+ * In visualize results from a previous analysis
  */
 app.proto.loadAnalysisDirFromClient = function(event){
 
@@ -1025,6 +1026,8 @@ app.proto.loadAnalysisDirFromServer = function(event){
 
             socket.emit('analysisDir', fileContents, self.room, function(dirStr){
 
+                console.log("Output of analysisdir:");
+                console.log(dirStr);
                 if(dirStr != undefined && dirStr != null && dirStr.indexOf("Error") == 0){
                     notyView.close();
                     notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
