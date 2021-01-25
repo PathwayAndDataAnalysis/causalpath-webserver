@@ -169,7 +169,7 @@ module.exports =  function(model, docId, userId, userName) {
                     return parameterList[i];
                 }
 
-            console.log("Parameter with ID " + id + "not found.")
+            console.log("Parameter with ID " + id + " not found.")
         },
 
         setModelParameterValue: function(ind, cnt, entryInd, val){

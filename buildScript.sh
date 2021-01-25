@@ -1,8 +1,11 @@
 sudo apt-get update
 sudo apt-get install zip
 sudo git pull origin master
+# if below gives a permission denied error, use sudo two times "sudo sudo npm install"
 sudo npm install
 cd jar
+# Use the below line if this is first time installation of causalpath-webserver
+# git submodule add https://github.com/PathwayAndDataAnalysis/causalpath.git
 cd causalpath
 sudo git pull origin master
 sudo mvn clean install
