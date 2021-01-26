@@ -335,8 +335,8 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
               var parentBbox = getNodeBBox(ele);
 
               if (!isNode) { // target is edge
-                // tooltipContent = ele.data("edgeType");
-                tooltipContent = ele.data("tooltipText");
+                tooltipContent = ele.data("edgeType");
+                // tooltipContent = ele.data("tooltipText");
 
                 if ( tooltipContent == undefined ) {
     				      return;
@@ -352,7 +352,8 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 });
               }
     					else if (!site) { // target is node itself
-    				    tooltipContent = ele.css('tooltipText');
+    				    // tooltipContent = ele.data('tooltipText');
+    				    tooltipContent = ele.style['tooltipText'];
 
     				    if ( tooltipContent == undefined ) {
     				      return;
