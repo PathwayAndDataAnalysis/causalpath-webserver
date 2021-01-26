@@ -335,7 +335,8 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
               var parentBbox = getNodeBBox(ele);
 
               if (!isNode) { // target is edge
-                tooltipContent = ele.data("edgeType");
+                // tooltipContent = ele.data("edgeType");
+                tooltipContent = ele.data("tooltipText");
 
                 if ( tooltipContent == undefined ) {
     				      return;
