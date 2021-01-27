@@ -45,7 +45,7 @@ function groupTopology(cyElements){
     for(var i = 0; i < nodes.length; i++){
         for(var j = i+1; j < nodes.length; j++){
             if(areNodesAnalogous(nodes[i],nodes[j],edges)) { //combine analogous nodes under the same parent
-                if(nodes[i].data.parent != null) { //first node already in the newnode list
+                if(nodes[i].data.parent != null) { //first node already in the newNode list
                     nodes[j].data.parent = nodes[i].data.parent;
                     newNodes.forEach(function(newNode){
                         if(newNode.data.id == nodes[i].data.parent){
@@ -123,14 +123,26 @@ function groupTopology(cyElements){
             else
                 newEdge.data.pcLinks = [];
 
+            if (edge.data.tooltipText)
+            {
+                newEdge.data.tooltipText = edge.data.tooltipText;
+            }
 
             let exists = false;
             newEdges.forEach(function (e) {
                 if (e.data.id === newEdge.data.id) { //already added
                     e.data.pcLinks.push(newEdge.data.pcLinks);
+                    if (e.data.tooltipText)
+                    {
+                        e.data.tooltipText += '\n' + newEdge.tooltipText;
+                    }
+                    else
+                    {
+                        e.data.tooltipText = newEdge.tooltipText;
+                    }
                     exists = true;
                 }
-            })
+            });
             if (!exists)
                 newEdges.push(newEdge);
         }
