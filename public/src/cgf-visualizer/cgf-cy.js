@@ -352,8 +352,8 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 });
               }
     					else if (!site) { // target is node itself
-    				    // tooltipContent = ele.data('tooltipText');
-    				    tooltipContent = ele.style['tooltipText'];
+    				    tooltipContent = ele.data('tooltipText');
+    				    // tooltipContent = ele.style['tooltipText'];
 
     				    if ( tooltipContent == undefined ) {
     				      return;
