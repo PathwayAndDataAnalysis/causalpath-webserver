@@ -133,8 +133,11 @@ function groupTopology(cyElements){
                 if (e.data.id === newEdge.data.id) { //already added
                     e.data.pcLinks.push.apply(e.data.pcLinks, newEdge.data.pcLinks);
                     if (newEdge.data.tooltipText) {
-                        if (e.data.tooltipText) {
-                            e.data.tooltipText += '\n' + newEdge.tooltipText;
+                        if (e.data.tooltipText)
+                        {
+                            if (!e.data.tooltipText.includes(newEdge.data.tooltipText)) {
+                                e.data.tooltipText = e.data.tooltipText.concat('\n', newEdge.data.tooltipText);
+                            }
                         }
                         else {
                             e.data.tooltipText = newEdge.tooltipText;
