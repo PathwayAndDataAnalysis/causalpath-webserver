@@ -335,7 +335,6 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
               var parentBbox = getNodeBBox(ele);
 
               if (!isNode) { // target is edge
-                // tooltipContent = ele.data("edgeType");
                 tooltipContent = ele.data("tooltipText");
 
                 if ( tooltipContent == undefined ) {
@@ -352,8 +351,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
                 });
               }
     					else if (!site) { // target is node itself
-    				    // tooltipContent = ele.data('tooltipText');
-    				    tooltipContent = 'Test Test';
+    				    tooltipContent = ele.data('tooltipText');
 
     				    if ( tooltipContent == undefined ) {
     				      return;
