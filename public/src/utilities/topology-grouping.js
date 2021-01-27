@@ -131,14 +131,14 @@ function groupTopology(cyElements){
             let exists = false;
             newEdges.forEach(function (e) {
                 if (e.data.id === newEdge.data.id) { //already added
-                    e.data.pcLinks.push(newEdge.data.pcLinks);
-                    if (e.data.tooltipText)
-                    {
-                        e.data.tooltipText += '\n' + newEdge.tooltipText;
-                    }
-                    else
-                    {
-                        e.data.tooltipText = newEdge.tooltipText;
+                    e.data.pcLinks.push.apply(e.data.pcLinks, newEdge.data.pcLinks);
+                    if (newEdge.data.tooltipText) {
+                        if (e.data.tooltipText) {
+                            e.data.tooltipText += '\n' + newEdge.tooltipText;
+                        }
+                        else {
+                            e.data.tooltipText = newEdge.tooltipText;
+                        }
                     }
                     exists = true;
                 }
