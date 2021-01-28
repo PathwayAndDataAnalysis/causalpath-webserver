@@ -37,13 +37,14 @@
 
     <div id = "info-div">
 
-        CausalPath generates explanations to the observations in proteomic data using literature-curated mechanistic pathways.&nbsp;
+        CausalPath identifies potentially causal dependencies between measured protein features (such as phosphorylations or global protein levels) using literature-curated biological pathways.&nbsp;
+        The method uses prior knowledge in high precision, distinguishes between activating and inhibiting phosphorylations, performs a site-specific evaluation of causality.&nbsp;
         Please refer to <a href="https://www.biorxiv.org/content/early/2018/02/02/258855">this preprint</a> for a description of the method.
         <p></p>
         A <a href="https://github.com/PathwayAndDataAnalysis/causalpath">Java implementation</a> of CausalPath is freely available.&nbsp;
         We also provide this web service for easy access to the method and/or visualizing analysis results.&nbsp;
-        Please note the webserver does not support network significance calculations in the analysis due to limited resources.&nbsp;
-        If that is desired, then the method needs to be run locally from its JAR file (see above link). Analysis results, however, can still be visualized on this webserver using option C below.
+        Please note the web server does not support network significance calculations in the analysis due to limited resources.&nbsp;
+        If that is desired, then the method needs to be run locally from its JAR file (see above link). Analysis results, however, can still be visualized on this web server using option C below.
         <p></p>
         For a CausalPath analysis, please prepare your input files according to the <a href="https://github.com/PathwayAndDataAnalysis/causalpath/blob/master/wiki/InputFormat.md">guidelines</a>.&nbsp;
         If you already have results, please visualize them by uploading the related output folder(s) using option C below.&nbsp;
