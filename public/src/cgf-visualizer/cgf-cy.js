@@ -72,38 +72,38 @@ function attributeMap(edgeType){
         case "upregulates-expression":
             attributes["lineStyle"]= "dashed";
             // attributes["color"] =  "green";
-            attributes["color"] =  "#53a93c";
+            attributes["color"] =  "#43a93c";
             break;
         case "downregulates-expression":
             attributes["lineStyle"]= "dashed";
             // attributes["color"] =  "red";
-            attributes["color"] =  "#bd3f32";
+            attributes["color"] =  "#cd4f32";
             break;
         case "phosphorylates":
             // attributes["color"] =  "green";
-            attributes["color"] =  "#53a93c";
+            attributes["color"] =  "#43a93c";
             break;
         case "dephosphorylates":
             // attributes["color"] =  "red";
-            attributes["color"] =  "#bd3f32";
+            attributes["color"] =  "#cd4f32";
             break;
         case "acetylates":
-            attributes["color"] =  "#65c1c6";
+            attributes["color"] =  "#55b1b6";
             break;
         case "deacetylates":
-            attributes["color"] =  "#ee6f98";
+            attributes["color"] =  "#ee5f78";
             break;
         case "methylates":
-            attributes["color"] =  "#d9de4d";
+            attributes["color"] =  "#b0b03d";
             break;
         case "demethylates":
-            attributes["color"] =  "#db7f31";
+            attributes["color"] =  "#db6f21";
             break;
         case "activates-gtpase":
-            attributes["color"] =  "#569de3";
+            attributes["color"] =  "#468de3";
             break;
         case "inhibits-gtpase":
-            attributes["color"] =  "#9374df";
+            attributes["color"] =  "#c364bf";
             break;
         default:
             attributes["color"] =  'gray';
