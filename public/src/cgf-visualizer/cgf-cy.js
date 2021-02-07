@@ -71,17 +71,39 @@ function attributeMap(edgeType){
             break;
         case "upregulates-expression":
             attributes["lineStyle"]= "dashed";
-            attributes["color"] =  "green";
+            // attributes["color"] =  "green";
+            attributes["color"] =  "#53a93c";
             break;
         case "downregulates-expression":
             attributes["lineStyle"]= "dashed";
-            attributes["color"] =  "red";
+            // attributes["color"] =  "red";
+            attributes["color"] =  "#bd3f32";
             break;
         case "phosphorylates":
-            attributes["color"] =  "green";
+            // attributes["color"] =  "green";
+            attributes["color"] =  "#53a93c";
             break;
         case "dephosphorylates":
-            attributes["color"] =  "red";
+            // attributes["color"] =  "red";
+            attributes["color"] =  "#bd3f32";
+            break;
+        case "acetylates":
+            attributes["color"] =  "#65c1c6";
+            break;
+        case "deacetylates":
+            attributes["color"] =  "#ee6f98";
+            break;
+        case "methylates":
+            attributes["color"] =  "#d9de4d";
+            break;
+        case "demethylates":
+            attributes["color"] =  "#db7f31";
+            break;
+        case "activates-gtpase":
+            attributes["color"] =  "#569de3";
+            break;
+        case "inhibits-gtpase":
+            attributes["color"] =  "#9374df";
             break;
         default:
             attributes["color"] =  'gray';
@@ -337,9 +359,12 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
               if (!isNode) { // target is edge
                 tooltipContent = ele.data("tooltipText");
 
-                if ( tooltipContent == undefined ) {
-    				      return;
-    				    }
+                if ( tooltipContent === undefined ) {
+                    tooltipContent = ele.data("edgeType");
+                    if ( tooltipContent == undefined ) {
+                        return;
+                    }
+                }
 
                 ref = ele.popperRef({
                   renderedPosition: function() {
