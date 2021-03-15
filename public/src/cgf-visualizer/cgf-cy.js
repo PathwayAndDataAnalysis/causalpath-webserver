@@ -28,7 +28,6 @@ function attributeMap(edgeType){
     switch(edgeType){
         case "controls-state-change-of":
             attributes["color"] = "coral";
-            attributes["lineStyle"]= "dashed";
             break;
         case "controls-transport-of":
             attributes["color"] = "blue";
@@ -38,6 +37,7 @@ function attributeMap(edgeType){
             break;
         case "controls-expression-of":
             attributes["color"] =  "deeppink";
+            attributes["lineStyle"]= "dashed";
             break;
         case "catalysis-precedes":
             attributes["color"] =  "red";
