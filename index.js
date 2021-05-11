@@ -803,7 +803,9 @@ app.proto.loadDemoGraph = function(){
     this.showGraphContainer();
     this.createCyGraphFromCgf(demoJson);
 
-    $('#folder-tree').hide();
+    // commenting out this line to support multiple demo graphs
+    // $('#folder-tree').hide();
+
     $('#download-div').hide(); //this only appears after analysis is performed -- demo has no analysis result
 
 }
