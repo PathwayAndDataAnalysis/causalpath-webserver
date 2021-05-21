@@ -810,22 +810,19 @@ app.proto.loadDemoGraph = function(){
 
 }
 
-app.proto.loadDemoGraphs = function(){
-  var self = this;
-
+app.proto.getFileObject = function(filePath){
   function getFileBlob(filePath) {
-    filePath = filePath.replace('public/', '');
-   if (window.XMLHttpRequest) {
-     xhttp = new XMLHttpRequest();
-   }
-   else {
-     xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-   }
-   xhttp.open("GET", filePath, false);
-   xhttp.send();
-   var text = xhttp.response;
-   return new Blob([text]);
- }
+    if (window.XMLHttpRequest) {
+      xhttp = new XMLHttpRequest();
+    }
+    else {
+      xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xhttp.open("GET", filePath, false);
+    xhttp.send();
+    var text = xhttp.response;
+    return new Blob([text]);
+  }
 
   var blobToFile = function (blob, name) {
       blob.lastModifiedDate = new Date();
@@ -833,23 +830,25 @@ app.proto.loadDemoGraphs = function(){
       return blob;
   };
 
-  var getFileObject = function(filePath) {
-    var fileName = filePath.substring( filePath.lastIndexOf('/') + 1 );
-    var blob = getFileBlob(filePath);
-    var fileObj = blobToFile(blob, fileName);
-    return fileObj;
-  };
+  var fileName = filePath.substring( filePath.lastIndexOf('/') + 1 );
+  var blob = getFileBlob(filePath);
+  var fileObj = blobToFile(blob, fileName);
+  return fileObj;
+}
+
+app.proto.loadDemoGraphs = function(){
+  var self = this;
 
   const extendFileObj = ( fileObj, filePath ) => {
-    fileObj.webkitRelativePath = filePath.replace('public/demo/', '');
+    fileObj.webkitRelativePath = filePath.replace('demo/', '');
     return fileObj;
   };
 
-  console.log('will emit')
   socket.emit('calculateDemoFolderFilePaths', function( filePaths ) {
 
     var fileObjs = filePaths.map( filePath => {
-      var fileObj = getFileObject( filePath );
+      filePath = filePath.replace('public/', '');
+      var fileObj = self.getFileObject( filePath );
       fileObj = extendFileObj( fileObj, filePath );
       return fileObj;
     } );
