@@ -810,6 +810,53 @@ app.proto.loadDemoGraph = function(){
 
 }
 
+app.proto.loadDemoGraphs = function(){
+  var self = this;
+
+  function getFileBlob(filePath) {
+    filePath = filePath.replace('public/', '');
+   if (window.XMLHttpRequest) {
+     xhttp = new XMLHttpRequest();
+   }
+   else {
+     xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+   }
+   xhttp.open("GET", filePath, false);
+   xhttp.send();
+   var text = xhttp.response;
+   return new Blob([text]);
+ }
+
+  var blobToFile = function (blob, name) {
+      blob.lastModifiedDate = new Date();
+      blob.name = name;
+      return blob;
+  };
+
+  var getFileObject = function(filePath) {
+    var fileName = filePath.substring( filePath.lastIndexOf('/') + 1 );
+    var blob = getFileBlob(filePath);
+    var fileObj = blobToFile(blob, fileName);
+    return fileObj;
+  };
+
+  const extendFileObj = ( fileObj, filePath ) => {
+    fileObj.webkitRelativePath = filePath.replace('public/demo/', '');
+    return fileObj;
+  };
+
+  console.log('will emit')
+  socket.emit('calculateDemoFolderFilePaths', function( filePaths ) {
+
+    var fileObjs = filePaths.map( filePath => {
+      var fileObj = getFileObject( filePath );
+      fileObj = extendFileObj( fileObj, filePath );
+      return fileObj;
+    } );
+    self.loadAnalysisFilesFromClient( fileObjs );
+  });
+}
+
 /***
  * Load graph file in json format
  */
@@ -938,17 +985,26 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
  * Load graph directories as a tree in json format
  * In visualize results from a previous analysis
  */
-app.proto.loadAnalysisDirFromClient = function(event){
+app.proto.loadAnalysisFilesFromClient = function(fileList){
 
     var self = this;
 
 
     graphChoice = graphChoiceEnum.JSON;
 
+    self.buildAndDisplayFolderTree(fileList, true);
+}
+
+/***
+ * Load graph directories as a tree in json format
+ * In visualize results from a previous analysis
+ */
+app.proto.loadAnalysisDirFromClientInput = function(event){
+
+    var self = this;
 
     let fileList = Array.from(event.target.files);
-
-    self.buildAndDisplayFolderTree(fileList, true);
+    self.loadAnalysisFilesFromClient(fileList);
 
     event.target.value = null; //to make sure the same files can be loaded again
 }
@@ -1134,6 +1190,7 @@ app.proto.showGraphContainer = function(){
     $('#graph-options-container').show();
     $('#graph-container').show();
     $('#folder-tree').hide();
+    $('#example-graphs-container').hide();
 
     $("#graph-container").css({left:0});
 
@@ -1147,6 +1204,7 @@ app.proto.showGraphContainer = function(){
 app.proto.showInputContainer = function(){
     $('#info-div').show();
     $('#input-container').show();
+    $('#example-graphs-container').show();
     $('#graph-options-container').hide();
     $('#graph-container').hide();
     $('#folder-tree').hide();
@@ -1161,6 +1219,7 @@ app.proto.showGraphContainerAndFolderTree = function(){
     $('#info-div').hide();
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
+    $('#example-graphs-container').hide();
     $('#graph-options-container').show();
     $('#graph-container').show();
     $('#folder-tree').show();

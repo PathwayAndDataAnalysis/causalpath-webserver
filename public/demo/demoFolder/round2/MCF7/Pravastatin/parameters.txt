@@ -1,0 +1,23 @@
+proteomics-values-file = ../../MCF7.txt
+id-column = ID
+symbols-column = Symbols
+sites-column = Sites
+effect-column = Effect
+
+value-transformation = signed-p-values
+
+fdr-threshold-for-data-significance = 0.1 phosphoprotein
+
+color-saturation-value = 10
+show-all-genes-with-proteomic-data = false
+hide-data-not-part-of-causal-relations = true
+
+calculate-network-significance = true
+permutations-for-significance = 10000
+fdr-threshold-for-network-significance = 0.1
+use-network-significance-for-causal-reasoning = true
+
+gene-activity = HMGCR i
+gene-activity = STAT1 i
+
+value-column = Pravastatin

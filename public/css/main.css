@@ -43,7 +43,7 @@ img.cp-logo{
 #info-div{
     padding-left: 5%;
     padding-right: 5%;
-    padding-top: 5%;
+    padding-top: 2%;
     padding-bottom: 2%;
     text-align: justify;
 }
@@ -137,6 +137,10 @@ input[id = "back-button"]{
 }
 
 input[id = "demo-file-button"]{
+    display: none;
+}
+
+input[id = "more-info-button"]{
     display: none;
 }
 
@@ -354,6 +358,31 @@ select, input, textarea, label{
     position: absolute;
 
 }
+
+#example-graphs-slider {
+    width:35%;
+    /*text-align: center;*/
+    /*height:360px;*/
+}
+
+#example-graphs-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#more-info-text-container {
+  padding: 20px !important;
+  /*z-index: 20 !important;*/
+}
+
+.carousel-control-next-icon,
+.carousel-control-prev-icon,
+.carousel-indicators {
+  filter: invert(1);
+  z-index: 0 !important;
+}
+
 /*table[class = "parameter-content"], tr, td {*/
     /*border: 1px solid black;*/
 /*}*/
