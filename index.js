@@ -810,19 +810,46 @@ app.proto.loadDemoGraph = function(){
 
 }
 
+app.proto.loadSpecificDemoGraph = function(subPath){
+  var self = this;
+  // TODO: error handling
+  var choosenFileContent = self.getFileText( 'demo/demoFolder/' + subPath + '/causative.json' );
+  self.loadDemoGraphs(choosenFileContent);
+}
+
+app.proto.getFileText = function(filePath) {
+  if (window.XMLHttpRequest) {
+    xhttp = new XMLHttpRequest();
+  }
+  else {
+    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhttp.open("GET", filePath, false);
+  xhttp.send();
+  var text = xhttp.response;
+  return text;
+}
+
 app.proto.getFileObject = function(filePath){
+  var self = this;
+
   function getFileBlob(filePath) {
-    if (window.XMLHttpRequest) {
-      xhttp = new XMLHttpRequest();
-    }
-    else {
-      xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xhttp.open("GET", filePath, false);
-    xhttp.send();
-    var text = xhttp.response;
+    var text = self.getFileText(filePath);
     return new Blob([text]);
   }
+
+  // function getFileBlob(filePath) {
+  //   if (window.XMLHttpRequest) {
+  //     xhttp = new XMLHttpRequest();
+  //   }
+  //   else {
+  //     xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  //   }
+  //   xhttp.open("GET", filePath, false);
+  //   xhttp.send();
+  //   var text = xhttp.response;
+  //   return new Blob([text]);
+  // }
 
   var blobToFile = function (blob, name) {
       blob.lastModifiedDate = new Date();
@@ -836,7 +863,7 @@ app.proto.getFileObject = function(filePath){
   return fileObj;
 }
 
-app.proto.loadDemoGraphs = function(){
+app.proto.loadDemoGraphs = function(choosenFileContent){
   var self = this;
 
   const extendFileObj = ( fileObj, filePath ) => {
@@ -852,7 +879,7 @@ app.proto.loadDemoGraphs = function(){
       fileObj = extendFileObj( fileObj, filePath );
       return fileObj;
     } );
-    self.loadAnalysisFilesFromClient( fileObjs );
+    self.loadAnalysisFilesFromClient( fileObjs, choosenFileContent );
   });
 }
 
@@ -902,7 +929,7 @@ function buildTree(parts, treeNode, file) {
  * @param fileList: List of files to display
  * @param isFromClient: file list structure is different depending on whether it is coming from the server or client
  */
-app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
+app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFileContent){
 
     let self = this;
     let maxTextLength = 0;
@@ -949,7 +976,12 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
 
     this.showGraphContainerAndFolderTree();
 
-    self.createCyGraphFromCgf();
+    var choosenFileJson = undefined;
+    if ( choosenFileContent ) {
+      choosenFileJson = JSON.parse(choosenFileContent);
+    }
+
+    self.createCyGraphFromCgf(choosenFileJson);
 
 
     $('#folder-tree').on("dblclick.jstree", function (e) {
@@ -984,14 +1016,14 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
  * Load graph directories as a tree in json format
  * In visualize results from a previous analysis
  */
-app.proto.loadAnalysisFilesFromClient = function(fileList){
+app.proto.loadAnalysisFilesFromClient = function(fileList, choosenFileContent){
 
     var self = this;
 
 
     graphChoice = graphChoiceEnum.JSON;
 
-    self.buildAndDisplayFolderTree(fileList, true);
+    self.buildAndDisplayFolderTree(fileList, true, choosenFileContent);
 }
 
 /***
