@@ -121,8 +121,6 @@ app.get('/:docId', function (page, model, arg, next) {
 
 app.proto.create = function (model) {
 
-
-
       Tippy.setDefaults({
         arrow: true,
         placement: 'bottom'
@@ -812,9 +810,17 @@ app.proto.loadDemoGraph = function(){
 
 app.proto.loadSpecificDemoGraph = function(subPath){
   var self = this;
-  // TODO: error handling
   var choosenFileContent = self.getFileText( 'demo/demoFolder/' + subPath + '/causative.json' );
-  self.loadDemoGraphs(choosenFileContent);
+  var choosenFileJson = undefined;
+  if ( choosenFileContent ) {
+    try {
+      choosenFileJson = JSON.parse(choosenFileContent);
+    }
+    catch(err) {
+      console.log('error while converting text into JSON: ', err);
+    }
+  }
+  self.loadDemoGraphs(choosenFileJson);
 }
 
 app.proto.getFileText = function(filePath) {
@@ -863,7 +869,7 @@ app.proto.getFileObject = function(filePath){
   return fileObj;
 }
 
-app.proto.loadDemoGraphs = function(choosenFileContent){
+app.proto.loadDemoGraphs = function(choosenFileJson){
   var self = this;
 
   const extendFileObj = ( fileObj, filePath ) => {
@@ -879,7 +885,7 @@ app.proto.loadDemoGraphs = function(choosenFileContent){
       fileObj = extendFileObj( fileObj, filePath );
       return fileObj;
     } );
-    self.loadAnalysisFilesFromClient( fileObjs, choosenFileContent );
+    self.loadAnalysisFilesFromClient( fileObjs, choosenFileJson );
   });
 }
 
@@ -929,7 +935,7 @@ function buildTree(parts, treeNode, file) {
  * @param fileList: List of files to display
  * @param isFromClient: file list structure is different depending on whether it is coming from the server or client
  */
-app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFileContent){
+app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFileJson){
 
     let self = this;
     let maxTextLength = 0;
@@ -976,11 +982,6 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFi
 
     this.showGraphContainerAndFolderTree();
 
-    var choosenFileJson = undefined;
-    if ( choosenFileContent ) {
-      choosenFileJson = JSON.parse(choosenFileContent);
-    }
-
     self.createCyGraphFromCgf(choosenFileJson);
 
 
@@ -1016,14 +1017,14 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFi
  * Load graph directories as a tree in json format
  * In visualize results from a previous analysis
  */
-app.proto.loadAnalysisFilesFromClient = function(fileList, choosenFileContent){
+app.proto.loadAnalysisFilesFromClient = function(fileList, choosenFileJson){
 
     var self = this;
 
 
     graphChoice = graphChoiceEnum.JSON;
 
-    self.buildAndDisplayFolderTree(fileList, true, choosenFileContent);
+    self.buildAndDisplayFolderTree(fileList, true, choosenFileJson);
 }
 
 /***
@@ -1209,6 +1210,16 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
         });
     }
 
+}
+
+app.proto.hideMoreInfo = function(){
+  $('#more-info-legend').hide();
+  $('#example-graph-indicators').removeClass('z-index-0');
+}
+
+app.proto.showMoreInfo = function(){
+  $('#more-info-legend').show();
+  $('#example-graph-indicators').addClass('z-index-0');
 }
 
 /***

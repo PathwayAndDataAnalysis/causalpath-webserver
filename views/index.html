@@ -38,7 +38,7 @@
       <!--Carousel Wrapper-->
       <div id="example-graphs-slider" class="carousel slide carousel-fade" data-ride="carousel">
         <!--Indicators-->
-        <ol class="carousel-indicators">
+        <ol id="example-graph-indicators" class="carousel-indicators">
           <li data-target="#example-graphs-slider" data-slide-to="0" class="active"></li>
           <li data-target="#example-graphs-slider" data-slide-to="1"></li>
           <li data-target="#example-graphs-slider" data-slide-to="2"></li>
@@ -211,9 +211,9 @@
                 <tr>
 
                     <td>
-                        <div data-tippy="A sample result network for Immunoreactive subtype of ovarian cancer compared to other subtypes">
+                        <div data-tippy="A folder of sample result networks that can be controlled by a folder tree interface">
                         <label for="demo-file-button">
-                            <div class = 'input-label'> D. Display a sample result <i class="fa fa-play">  </i></div>
+                            <div class = 'input-label'> D. Display folder of sample results <i class="fa fa-play">  </i></div>
                         </label>
                         <input type="button" id="demo-file-button"  value = "Display" on-click = "loadDemoGraphs()"  >
                         </div>
@@ -223,14 +223,26 @@
                 <tr>
 
                     <td>
-                        <div data-tippy="A sample result network for Immunoreactive subtype of ovarian cancer compared to other subtypes">
+                        <div data-tippy="Learn more about causalpath and how to use it">
                         <label for="more-info-button">
                             <div class = 'input-label'> E. Learn more <i class="fa fa-play">  </i></div>
                         </label>
-                        <input type="button" id="more-info-button"  value = "Display" onclick = "document.getElementById('more-info-legend').style.display='block'"  >
+                        <input type="button" id="more-info-button" value = "LearnMore" on-click = "showMoreInfo()"  >
                         </div>
                     </td>
                 </tr>
+
+                <!-- <tr>
+
+                    <td>
+                        <div data-tippy="Learn more about causalpath and how to use it">
+                        <label for="more-info-button">
+                            <div class = 'input-label'> E. Learn more <i class="fa fa-play">  </i></div>
+                        </label>
+                        <input type="button" id="more-info-button"  value = "LearnMore" onclick = "document.getElementById('more-info-legend').style.display='block'"  >
+                        </div>
+                    </td>
+                </tr> -->
 
 
                 </tbody>
@@ -257,7 +269,7 @@
             <!--<header class="w3-container">-->
                 <!--<div class = "modal-body">-->
             <!--<div class = "legend-container">-->
-            <span onclick="document.getElementById('more-info-legend').style.display='none'" class="w3-button w3-display-topright close-button">&times;</span>
+            <span id="more-info-close-button" on-click="hideMoreInfo()" class="w3-button w3-display-topright close-button">&times;</span>
             <!-- <img src='img/legend.png'/> -->
             <div id="more-info-text-container" class="w3-container">
               CausalPath identifies potentially causal dependencies between measured protein features (such as phosphorylations or global protein levels) using literature-curated biological pathways.&nbsp;
