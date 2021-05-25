@@ -930,6 +930,10 @@ function buildTree(parts, treeNode, file) {
     buildTree(parts.splice(1,parts.length),newNode.children, file);
 }
 
+app.proto.setGraphDescriptionText = function(text){
+  $("#graph-description-span").text(text);
+}
+
 /***
  * Organizes data as a tree and displays the jstree associated with it
  * @param fileList: List of files to display
@@ -981,6 +985,8 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFi
     $("#graph-container").css({left:ftWidth + 5});
 
     this.showGraphContainerAndFolderTree();
+
+    this.setGraphDescriptionText("");
 
     self.createCyGraphFromCgf(choosenFileJson);
 
@@ -1208,6 +1214,15 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
             if (callback) callback();
         });
+
+        var graphDescription = cgfJson.description;
+        if ( graphDescription ) {
+          this.setGraphDescriptionText(graphDescription);
+        }
+        else {
+          this.setGraphDescriptionText("");
+        }
+
     }
 
 }
@@ -1229,7 +1244,7 @@ app.proto.showGraphContainer = function(){
     $('#info-div').hide();
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
-    $('#graph-options-container').show();
+    $('#graph-options-container').addClass('display-flex');
     $('#graph-container').show();
     $('#folder-tree').hide();
     $('#example-graphs-container').hide();
@@ -1247,7 +1262,7 @@ app.proto.showInputContainer = function(){
     $('#info-div').show();
     $('#input-container').show();
     $('#example-graphs-container').show();
-    $('#graph-options-container').hide();
+    $('#graph-options-container').removeClass('display-flex');
     $('#graph-container').hide();
     $('#folder-tree').hide();
 }
@@ -1262,6 +1277,7 @@ app.proto.showGraphContainerAndFolderTree = function(){
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
     $('#example-graphs-container').hide();
+    $('#graph-options-container').addClass('display-flex');
     $('#graph-options-container').show();
     $('#graph-container').show();
     $('#folder-tree').show();

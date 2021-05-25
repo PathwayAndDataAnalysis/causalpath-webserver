@@ -1439,5 +1439,6 @@
       "pcLinks" : [ "http://pathwaycommons.org/pc2/Catalysis_29ca98cf89ed516bb1a8d7848953d39d", "http://pathwaycommons.org/pc2/BiochemicalReaction_63cfc09021c019dd77be3ce13e26379a", "http://pathwaycommons.org/pc2/BiochemicalReaction_7f19f83a3392e0abf646e4a433a12b1a", "http://pathwaycommons.org/pc2/Catalysis_2af31f1953e20a32b3ffeb957a2c6770", "http://identifiers.org/reactome/R-HSA-112342", "http://pathwaycommons.org/pc2/Catalysis_6854e447e3b2e51e6ab01437f786ff36" ],
       "target" : "MAP2K1"
     }
-  } ]
+  } ],
+  "description": "Demo graph 1"
 }

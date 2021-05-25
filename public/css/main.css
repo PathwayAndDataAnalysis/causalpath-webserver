@@ -68,6 +68,10 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     overflow:auto;
 }
 
+.display-flex{
+  display: flex !important;
+}
+
 
 #graph-container{
 
@@ -384,6 +388,19 @@ select, input, textarea, label{
 
 .z-index-0 {
   z-index: 0 !important;
+}
+
+.flex-filler {
+  flex-grow: 1;
+}
+
+.graph-info {
+  text-align: center;
+  width: 40%;
+}
+
+.graph-info > i {
+  font-size: 18px !important;
 }
 
 /*table[class = "parameter-content"], tr, td {*/
