@@ -407,6 +407,10 @@ select, input, textarea, label{
   font-size: 18px !important;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /*table[class = "parameter-content"], tr, td {*/
     /*border: 1px solid black;*/
 /*}*/
