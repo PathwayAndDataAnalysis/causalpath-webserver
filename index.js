@@ -808,19 +808,10 @@ app.proto.loadDemoGraph = function(){
 
 }
 
-app.proto.loadSpecificDemoGraph = function(subPath){
+app.proto.loadSpecificDemoGraph = function(subId){
   var self = this;
-  var choosenFileContent = self.getFileText( 'demo/demoFolder/' + subPath + '/causative.json' );
-  var choosenFileJson = undefined;
-  if ( choosenFileContent ) {
-    try {
-      choosenFileJson = JSON.parse(choosenFileContent);
-    }
-    catch(err) {
-      console.log('error while converting text into JSON: ', err);
-    }
-  }
-  self.loadDemoGraphs(choosenFileJson);
+  let choosenNodeId = '___demoFolder___' + subId;
+  self.loadDemoGraphs(choosenNodeId);
 }
 
 app.proto.getFileText = function(filePath) {
@@ -869,7 +860,7 @@ app.proto.getFileObject = function(filePath){
   return fileObj;
 }
 
-app.proto.loadDemoGraphs = function(choosenFileJson){
+app.proto.loadDemoGraphs = function(choosenNodeId){
   var self = this;
 
   const extendFileObj = ( fileObj, filePath ) => {
@@ -885,7 +876,7 @@ app.proto.loadDemoGraphs = function(choosenFileJson){
       fileObj = extendFileObj( fileObj, filePath );
       return fileObj;
     } );
-    self.loadAnalysisFilesFromClient( fileObjs, choosenFileJson );
+    self.loadAnalysisFilesFromClient( fileObjs, choosenNodeId );
   });
 }
 
@@ -911,23 +902,26 @@ app.proto.loadGraphFile = function(file){
     reader.readAsText(file);
 }
 
-function buildTree(parts, treeNode, file) {
+function buildTree(parts, treeNode, file, parentNodePath='') {
+    let idSeperator = '___';
     if(parts.length === 0) {
         return;
     }
 
     for(let i = 0 ; i < treeNode.length; i++) {
-        if(parts[0] == treeNode[i].text) {
-            buildTree(parts.splice(1,parts.length),treeNode[i].children, file);
+        let nodeText = treeNode[i].text;
+        if(parts[0] == nodeText) {
+            buildTree(parts.splice(1,parts.length),treeNode[i].children, file, parentNodePath + idSeperator + nodeText);
             return;
         }
     }
 
-    let newNode = {'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
+    let nodeId = parentNodePath + idSeperator + parts[0];
+    let newNode = {'id': nodeId, 'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
 
 
     treeNode.push(newNode);
-    buildTree(parts.splice(1,parts.length),newNode.children, file);
+    buildTree(parts.splice(1,parts.length),newNode.children, file, nodeId);
 }
 
 app.proto.setGraphDescriptionText = function(text){
@@ -939,7 +933,7 @@ app.proto.setGraphDescriptionText = function(text){
  * @param fileList: List of files to display
  * @param isFromClient: file list structure is different depending on whether it is coming from the server or client
  */
-app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFileJson){
+app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNodeId){
 
     let self = this;
     let maxTextLength = 0;
@@ -988,12 +982,11 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFi
 
     this.setGraphDescriptionText("");
 
-    self.createCyGraphFromCgf(choosenFileJson);
+    self.createCyGraphFromCgf();
 
 
-    $('#folder-tree').on("dblclick.jstree", function (e) {
-        var instance = $.jstree.reference(this);
-        node = instance.get_node(e.target);
+    $('#folder-tree').on("select_node.jstree", function (e, data) {
+        node = data.node;
         if(isFromClient) { //directly load graph
 
             let file = node.data;
@@ -1015,6 +1008,12 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFi
         notyView.close();
     });
 
+    if ( choosenNodeId ) {
+      $('#folder-tree').on("ready.jstree", function () {
+        $("#folder-tree").jstree("select_node", choosenNodeId);
+      });
+    }
+
     var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder.", timeout: 10000});
     notyView.show();
 
@@ -1027,14 +1026,14 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFi
  * Load graph directories as a tree in json format
  * In visualize results from a previous analysis
  */
-app.proto.loadAnalysisFilesFromClient = function(fileList, choosenFileJson){
+app.proto.loadAnalysisFilesFromClient = function(fileList, choosenNodeId){
 
     var self = this;
 
 
     graphChoice = graphChoiceEnum.JSON;
 
-    self.buildAndDisplayFolderTree(fileList, true, choosenFileJson);
+    self.buildAndDisplayFolderTree(fileList, true, choosenNodeId);
 }
 
 /***
