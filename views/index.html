@@ -95,7 +95,7 @@
         Select one of the following options to start. -->
         CausalPath identifies potentially causal dependencies between measured protein features (such as phosphorylations or global protein levels) using literature-curated biological pathways.&nbsp;
         The method uses prior knowledge in high precision, distinguishes between activating and inhibiting phosphorylations, performs a site-specific evaluation of causality.&nbsp;
-        Please refer to <a href="https://www.biorxiv.org/content/early/2018/02/02/258855">this preprint</a> for a description of the method. To learn more refer to option E below.
+        Please refer to <a href="https://www.biorxiv.org/content/early/2018/02/02/258855">this preprint</a> for a description of the method. To learn more refer to option D below.
     </div>
     <div id  = "graph-options-container">
         <table align= "top" cellpadding="10px" >
@@ -160,7 +160,7 @@
             <table  class = "main-input-content" border="0"  width="100%" align="center" >
                 <tbody>
 
-                <tr>
+                <!-- <tr>
                     <td>
                         <div data-tippy="Type-in the parameters">
                             <label for="parameters-button">
@@ -169,7 +169,7 @@
                             <input  type = "button" id = "parameters-button" onclick = "document.getElementById('parameters-table').style.display='block'">
                         </div>
                     </td>
-                </tr>
+                </tr> -->
                 <tr>
                     <!--<td>-->
                         <!--B. Upload input files for analysis:-->
@@ -178,7 +178,7 @@
                     <td>
                         <div data-tippy="Enter multiple input files (data and parameters.txt files at the minimum) or a zip file of input files" >
                         <label for="analysis-directory-input">
-                            <div class = 'input-label' > B. Upload all input files for analysis <i class="fa fa-upload"></i></div>
+                            <div class = 'input-label' > A. Upload all input files for analysis <i class="fa fa-upload"></i></div>
                         </label>
                         <input type="file"  id="analysis-directory-input" accept=".txt, .zip" on-change = "loadAnalysisDirFromServer($event)" multiple >
                         </div>
@@ -194,7 +194,7 @@
                     <td>
                         <div data-tippy="Load an analysis folder or a hierarchy of folders">
                             <label for="graph-file-input">
-                                <div class = 'input-label'> C. Visualize results from previous analysis  <i class="fa fa-upload"></i> </div>
+                                <div class = 'input-label'> B. Visualize results from previous analysis  <i class="fa fa-upload"></i> </div>
                             </label>
                             <!--<input type="file" id="graph-file-input" accept=".txt, .json" on-change = "loadGraphFile($event)">-->
                             <input type="file" id="graph-file-input" on-change = "loadAnalysisDirFromClientInput($event)" webkitdirectory directory multiple>
@@ -209,7 +209,7 @@
                     <td>
                         <div data-tippy="A folder of sample result networks that can be controlled by a folder tree interface">
                         <label for="demo-file-button">
-                            <div class = 'input-label'> D. Display folder of sample results <i class="fa fa-play">  </i></div>
+                            <div class = 'input-label'> C. Display folder of sample results <i class="fa fa-play">  </i></div>
                         </label>
                         <input type="button" id="demo-file-button"  value = "Display" on-click = "loadDemoGraphs()"  >
                         </div>
@@ -221,7 +221,7 @@
                     <td>
                         <div data-tippy="Learn more about causalpath and how to use it">
                         <label for="more-info-button">
-                            <div class = 'input-label'> E. Learn more <i class="fa fa-play">  </i></div>
+                            <div class = 'input-label'> D. Learn more <i class="fa fa-play">  </i></div>
                         </label>
                         <input type="button" id="more-info-button" value = "LearnMore" on-click = "showMoreInfo()"  >
                         </div>
@@ -275,16 +275,16 @@
               A <a href="https://github.com/PathwayAndDataAnalysis/causalpath">Java implementation</a> of CausalPath is freely available.&nbsp;
               We also provide this web service for easy access to the method and/or visualizing analysis results.&nbsp;
               Please note the web server does not support network significance calculations in the analysis due to limited resources.&nbsp;
-              If that is desired, then the method needs to be run locally from its JAR file (see above link). Analysis results, however, can still be visualized on this web server using option C below.
+              If that is desired, then the method needs to be run locally from its JAR file (see above link). Analysis results, however, can still be visualized on this web server using option B in main menu.
               <p></p>
               For a CausalPath analysis, please prepare your input files according to the <a href="https://github.com/PathwayAndDataAnalysis/causalpath/blob/master/wiki/InputFormat.md">guidelines</a>.&nbsp;
-              If you already have results, please visualize them by uploading the related output folder(s) using option C below.&nbsp;
+              If you already have results, please visualize them by uploading the related output folder(s) using option B in main menu.&nbsp;
               A sample dataset and analysis parameters can be found in <a href="https://github.com/PathwayAndDataAnalysis/causalpath/raw/master/wiki/sample-data-and-parameters.zip">this archive</a>.&nbsp;
               This can be directly uploaded for analysis through option B below.
               <p></p>
               The <a href="https://github.com/PathwayAndDataAnalysis/causalpath-webserver">source code of this web server</a> is freely available in a separate project.
               <p></p>
-              Select one of the following options to start.
+              Select one of the options in main menu to start.
             </div>
                 <!--</div>-->
             <!--</div>-->
