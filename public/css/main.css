@@ -390,16 +390,20 @@ select, input, textarea, label{
   z-index: 0 !important;
 }
 
-.flex-filler {
-  flex-grow: 1;
-}
-
-.graph-info {
+#graph-description {
   text-align: center;
+  flex-grow: 1;
+  display: table;
+  height: 100%;
   width: 40%;
 }
 
-.graph-info > i {
+#graph-description-span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#graph-description > i {
   font-size: 18px !important;
 }
 
