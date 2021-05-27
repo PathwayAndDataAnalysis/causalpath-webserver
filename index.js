@@ -1017,6 +1017,10 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenFi
 
     var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder.", timeout: 10000});
     notyView.show();
+
+    $('#back-button').unbind('click.removeNoty').bind('click.removeNoty', function() {
+      notyView.close();
+    });
 }
 
 /***
