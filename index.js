@@ -985,8 +985,9 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNo
     self.createCyGraphFromCgf();
 
 
-    $('#folder-tree').on("select_node.jstree", function (e, data) {
-        node = data.node;
+    $('#folder-tree').on("dblclick.jstree", function (e) {
+        var instance = $.jstree.reference(this);
+        node = instance.get_node(e.target);
         if(isFromClient) { //directly load graph
 
             let file = node.data;
@@ -1009,8 +1010,13 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNo
     });
 
     if ( choosenNodeId ) {
-      $('#folder-tree').on("ready.jstree", function () {
-        $("#folder-tree").jstree("select_node", choosenNodeId);
+      $('#folder-tree').on("ready.jstree", function (e) {
+        var instance = $.jstree.reference(this);
+        node = instance.get_node(choosenNodeId);
+        var nodeDivId = node.a_attr.id;
+
+        $("#" + nodeDivId).trigger("dblclick.jstree");
+        instance.select_node(node);
       });
     }
 
