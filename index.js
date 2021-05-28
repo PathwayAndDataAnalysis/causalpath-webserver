@@ -863,6 +863,9 @@ app.proto.getFileObject = function(filePath){
 app.proto.loadDemoGraphs = function(choosenNodeId){
   var self = this;
 
+  var notyView = new Noty({type: "information", layout: "bottom",  text: "Loading demo folders...Please wait."});
+  notyView.show();
+
   const extendFileObj = ( fileObj, filePath ) => {
     fileObj.webkitRelativePath = filePath.replace('demo/', '');
     return fileObj;
@@ -876,6 +879,7 @@ app.proto.loadDemoGraphs = function(choosenNodeId){
       fileObj = extendFileObj( fileObj, filePath );
       return fileObj;
     } );
+    notyView.close();
     self.loadAnalysisFilesFromClient( fileObjs, choosenNodeId );
   });
 }
