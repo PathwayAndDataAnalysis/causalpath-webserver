@@ -363,16 +363,16 @@ select, input, textarea, label{
 
 }
 
-#example-graphs-slider {
-    width:35%;
-    /*text-align: center;*/
-    /*height:360px;*/
+#example-graphs-slider img {
+  height:360px;
 }
 
 #example-graphs-container {
-  display: flex;
+  width:35%;
+  margin: auto;
+  /*display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;*/
 }
 
 #more-info-text-container {
