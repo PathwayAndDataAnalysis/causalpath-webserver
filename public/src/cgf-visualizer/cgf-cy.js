@@ -67,7 +67,7 @@ function attributeMap(edgeType){
             attributes["color"] =  "deepskyblue";
             break;
         case "used-to-produce":
-            attributes["color"] =  "green";
+            attributes["color"] =  "#3c4650";
             break;
         case "upregulates-expression":
             attributes["lineStyle"]= "dashed";
@@ -104,6 +104,12 @@ function attributeMap(edgeType){
             break;
         case "inhibits-gtpase":
             attributes["color"] =  "#c364bf";
+            break;
+        case "produces":
+            attributes["color"] =  "#6374c3";
+            break;
+        case "consumes":
+            attributes["color"] =  "#c3698a";
             break;
         default:
             attributes["color"] =  'gray';
