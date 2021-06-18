@@ -906,7 +906,7 @@ app.proto.loadGraphFile = function(file){
     reader.readAsText(file);
 }
 
-function buildTree(parts, treeNode, file, parentNodePath='') {
+function buildTree(parts, treeNode, file, parentNodePath='', isFromClient) {
     let idSeperator = '___';
     if(parts.length === 0) {
         return;
@@ -915,7 +915,7 @@ function buildTree(parts, treeNode, file, parentNodePath='') {
     for(let i = 0 ; i < treeNode.length; i++) {
         let nodeText = treeNode[i].text;
         if(parts[0] == nodeText) {
-            buildTree(parts.splice(1,parts.length),treeNode[i].children, file, parentNodePath + idSeperator + nodeText);
+            buildTree(parts.splice(1,parts.length),treeNode[i].children, file, parentNodePath + idSeperator + nodeText, isFromClient);
             return;
         }
     }
@@ -923,9 +923,13 @@ function buildTree(parts, treeNode, file, parentNodePath='') {
     let nodeId = parentNodePath + idSeperator + parts[0];
     let newNode = {'id': nodeId, 'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
 
+    if ( parts.length == 1 ) {
+      newNode.icon = 'fa fa-file tree-file';
+    }
+
 
     treeNode.push(newNode);
-    buildTree(parts.splice(1,parts.length),newNode.children, file, nodeId);
+    buildTree(parts.splice(1,parts.length),newNode.children, file, nodeId, isFromClient);
 }
 
 app.proto.setGraphDescriptionText = function(text){
@@ -965,7 +969,8 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNo
                 if (lenPathStr > maxTextLength)
                     maxTextLength = lenPathStr;
             }
-            buildTree(paths, data, file);
+            let parentNodePath = undefined;
+            buildTree(paths, data, file, parentNodePath, isFromClient);
         }
     });
 
