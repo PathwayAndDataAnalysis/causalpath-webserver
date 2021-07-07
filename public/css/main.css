@@ -411,10 +411,6 @@ select, input, textarea, label{
   cursor: pointer;
 }
 
-.tree-file {
-  color: #d3d3d3;
-}
-
 /*table[class = "parameter-content"], tr, td {*/
     /*border: 1px solid black;*/
 /*}*/
