@@ -949,14 +949,10 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNo
 
     fileList.forEach(file => {
 
-        if(isFromClient && file.name.toLowerCase().endsWith('.json')) {
-          paths = file.webkitRelativePath.split('/');
-          let lastIndex = paths.length - 1;
-          paths[ lastIndex ] = paths[ lastIndex ].replace('.json', '');
-        }
-        else if(!isFromClient) {
-          paths = file.split('/').slice(0, -1);
-        }
+        if(isFromClient && file.name.toLowerCase() === 'causative.json')
+            paths = file.webkitRelativePath.split('/').slice(0, -1);
+        else if(!isFromClient)
+            paths = file.split('/').slice(0, -1);
 
         if(paths) {
             //update the div size for the folders
