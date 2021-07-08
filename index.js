@@ -965,8 +965,16 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNo
         }
     });
 
+    let sort = function( id1, id2 ) {
+      var node1 = this.get_node(id1);
+      var node2 = this.get_node(id2);
 
-    let hierarchy = { core:{data: data }};
+      var text1 = node1.text || '';
+      var text2 = node2.text || '';
+
+      return text1.localeCompare(text2, undefined, {numeric: 'true'});
+    };
+    let hierarchy = { core:{data: data }, sort, plugins : [ 'sort' ]};
 
 
     $("#folder-tree").jstree("destroy");
