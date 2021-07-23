@@ -187,12 +187,12 @@ module.exports.initLayoutOptions = function(modelManager){
     gravityCompound: 0,
     gravityRangeCompound: 1.5,
     numIter: 2500,
-    tileDisconnected: true,
+    tile: true,
     tilingPaddingVertical: 5,
     tilingPaddingHorizontal: 5,
     animate: false,
     incremental: false,
-    improveFlow: true,
+    // improveFlow: true,
     initialEnergyOnIncremental: 0.3,
     name: 'cose-bilkent'
   }
@@ -249,7 +249,10 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
 }
 
 module.exports.runLayout = function(layoutOptions){
-    cy.layout(layoutOptions).run();
+    let randomize = !layoutOptions.incremental;
+    let normalizedOptions = _.extend({}, layoutOptions, { randomize });
+    delete normalizedOptions.incremental;
+    cy.layout(normalizedOptions).run();
 }
 
 module.exports.createContainer = function(el, doTopologyGrouping, modelManager, callback) {

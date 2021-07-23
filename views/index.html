@@ -417,6 +417,9 @@
                 <tbody>
                 <tr>
                     <td>
+                        <span class="add-on layout-text" title="Node repulsion (non overlapping) multiplier"> Node Repulsion </span>
+                    </td>
+                    <td>
                         <input id="node-repulsion" type="text" min="0" class="sbgn-input-small layout-text integer-input" value = {{_page.doc.layout.nodeRepulsion}} >
                     </td>
                 </tr>
@@ -517,7 +520,7 @@
                     </td>
 
                     <td>
-                        <input id="tile" type="checkbox" class="layout-text" checked = {{_page.doc.layout.tileDisconnected}}>
+                        <input id="tile" type="checkbox" class="layout-text" checked = {{_page.doc.layout.tile}}>
                     </td>
                 </tr>
 
@@ -549,14 +552,15 @@
                     </td>
                 </tr>
 
-                <tr>
+                <!-- TODO: Could not find a corrsponding option in cytoscape-cose-bilkent? -->
+                <!-- <tr>
                     <td>
                         <span class="add-on layout-text" title="Whether to adjust port orientations to improve flow" > Improve Flow </span>
                     </td>
                     <td>
                         <input id="improve-flow" type="checkbox" class="layout-text" checked = {{_page.doc.layout.improveFlow}}>
                     </td>
-                </tr>
+                </tr> -->
                 </tbody>
             </table>
 
