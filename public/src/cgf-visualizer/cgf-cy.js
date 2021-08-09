@@ -174,7 +174,20 @@ function attachSiteBboxes(nodesData) {
   } );
 }
 
+// normalize and/or extend layout options
+function finilizeLayoutOptions(layoutOptions){
+  let randomize = !layoutOptions.incremental;
+  let tilingCompareBy = function ( nodeId1, nodeId2 ){
+    if ( nodeId1 < nodeId2 ) {
+      return -1;
+    }
+    return 0;
+  };
 
+  let extendedOptions = _.extend({}, layoutOptions, { randomize, tilingCompareBy });
+  delete extendedOptions.incremental;
+  return extendedOptions;
+};
 
 module.exports.initLayoutOptions = function(modelManager){
   let layoutOptions = {
@@ -249,10 +262,8 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
 }
 
 module.exports.runLayout = function(layoutOptions){
-    let randomize = !layoutOptions.incremental;
-    let normalizedOptions = _.extend({}, layoutOptions, { randomize });
-    delete normalizedOptions.incremental;
-    cy.layout(normalizedOptions).run();
+    let finalLayoutOptions = finilizeLayoutOptions(layoutOptions);
+    cy.layout(finalLayoutOptions).run();
 }
 
 module.exports.createContainer = function(el, doTopologyGrouping, modelManager, callback) {
@@ -277,7 +288,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
           minZoom:0.1,
           maxZoom:5,
 
-        layout: modelManager.getLayoutOptions(),
+        layout: finilizeLayoutOptions(modelManager.getLayoutOptions()),
 
         style: CgfStyleSheet,
 
