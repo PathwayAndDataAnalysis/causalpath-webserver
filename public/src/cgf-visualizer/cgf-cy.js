@@ -528,7 +528,10 @@ var CgfStyleSheet = cytoscape.stylesheet()
         .selector("node:parent")
         .css({
             'text-valign': 'bottom',
-            'content': 'data(edgeType)', //there is a label when there's a clique among the nodes inside the compound
+            'content': function( node ){
+               //there is a label when there's a clique among the nodes inside the compound
+              return node.data('edgeType') || '';
+            },
             'font-size': 8,
 
 
