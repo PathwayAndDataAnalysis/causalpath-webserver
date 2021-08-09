@@ -27,6 +27,7 @@
     "cytoscape": "github:PathwayAndDataAnalysis/cytoscape.js#causalpath-fix2",
     "cytoscape-canvas": "^3.0.1",
     "cytoscape-context-menus": "^3.0.6",
+    "cytoscape-cose-bilkent": "github:cytoscape/cytoscape.js-cose-bilkent#unstable",
     "cytoscape-popper": "^1.0.2",
     "derby": "^0.10.10",
     "dir-tree": "^1.0.1",
