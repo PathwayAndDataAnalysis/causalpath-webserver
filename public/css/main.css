@@ -307,9 +307,10 @@ input[id = "show-legend-button"]{
 }
 
 .graph-legend-link-button{
-  padding-top: 6px !important;
-  padding-left: 1px !important;
-  padding-bottom: 1px !important;
+  padding-top: 0.33em !important;
+  padding-left: 0.1em !important;
+  padding-right: 0.1em !important;
+  padding-bottom: 0.07em !important;
 }
 
 input[type="text"]{
