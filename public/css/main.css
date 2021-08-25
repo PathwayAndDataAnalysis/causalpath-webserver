@@ -290,13 +290,20 @@ input[id = "show-legend-button"]{
     overflow-y: auto;
 
 }
-.close-button{
+.close-button, .graph-legend-link-button{
     color: #617d8a !important;
-    font-size: larger;
-    font-weight: bolder;
+    font-size: larger !important;
+    font-weight: bolder !important;
     background-color: transparent !important;
     padding: 0 !important;
 }
+
+.graph-legend-link-button{
+  padding-top: 6px !important;
+  padding-left: 1px !important;
+  padding-bottom: 1px !important;
+}
+
 input[type="text"]{
     font-size: small;
 }
