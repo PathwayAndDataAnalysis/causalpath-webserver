@@ -43,7 +43,7 @@ img.cp-logo{
 #info-div{
     padding-left: 5%;
     padding-right: 5%;
-    padding-top: 5%;
+    padding-top: 2%;
     padding-bottom: 2%;
     text-align: justify;
 }
@@ -66,6 +66,10 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
     border: 1px solid #ddd;
     display:none;
     overflow:auto;
+}
+
+.display-flex{
+  display: flex !important;
 }
 
 
@@ -137,6 +141,10 @@ input[id = "back-button"]{
 }
 
 input[id = "demo-file-button"]{
+    display: none;
+}
+
+input[id = "more-info-button"]{
     display: none;
 }
 
@@ -362,6 +370,55 @@ select, input, textarea, label{
     position: absolute;
 
 }
+
+#example-graphs-slider {
+  width:35%;
+}
+
+#example-graphs-container {
+  /*width:35%;*/
+  /*margin: auto;*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#more-info-text-container {
+  padding: 20px !important;
+  /*z-index: 20 !important;*/
+}
+
+.carousel-control-next-icon,
+.carousel-control-prev-icon,
+.carousel-indicators {
+  filter: invert(1);
+}
+
+.z-index-0 {
+  z-index: 0 !important;
+}
+
+#graph-description {
+  text-align: center;
+  flex-grow: 1;
+  display: table;
+  height: 100%;
+  width: 40%;
+}
+
+#graph-description-span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#graph-description > i {
+  font-size: 18px !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /*table[class = "parameter-content"], tr, td {*/
     /*border: 1px solid black;*/
 /*}*/

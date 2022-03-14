@@ -121,8 +121,6 @@ app.get('/:docId', function (page, model, arg, next) {
 
 app.proto.create = function (model) {
 
-
-
       Tippy.setDefaults({
         arrow: true,
         placement: 'bottom'
@@ -810,6 +808,82 @@ app.proto.loadDemoGraph = function(){
 
 }
 
+app.proto.loadSpecificDemoGraph = function(subId){
+  var self = this;
+  let choosenNodeId = '___demoFolder___' + subId;
+  self.loadDemoGraphs(choosenNodeId);
+}
+
+app.proto.getFileText = function(filePath) {
+  if (window.XMLHttpRequest) {
+    xhttp = new XMLHttpRequest();
+  }
+  else {
+    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhttp.open("GET", filePath, false);
+  xhttp.send();
+  var text = xhttp.response;
+  return text;
+}
+
+app.proto.getFileObject = function(filePath){
+  var self = this;
+
+  function getFileBlob(filePath) {
+    var text = self.getFileText(filePath);
+    return new Blob([text]);
+  }
+
+  // function getFileBlob(filePath) {
+  //   if (window.XMLHttpRequest) {
+  //     xhttp = new XMLHttpRequest();
+  //   }
+  //   else {
+  //     xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  //   }
+  //   xhttp.open("GET", filePath, false);
+  //   xhttp.send();
+  //   var text = xhttp.response;
+  //   return new Blob([text]);
+  // }
+
+  var blobToFile = function (blob, name) {
+      blob.lastModifiedDate = new Date();
+      blob.name = name;
+      return blob;
+  };
+
+  var fileName = filePath.substring( filePath.lastIndexOf('/') + 1 );
+  var blob = getFileBlob(filePath);
+  var fileObj = blobToFile(blob, fileName);
+  return fileObj;
+}
+
+app.proto.loadDemoGraphs = function(choosenNodeId){
+  var self = this;
+
+  var notyView = new Noty({type: "information", layout: "bottom",  text: "Loading demo folders...Please wait."});
+  notyView.show();
+
+  const extendFileObj = ( fileObj, filePath ) => {
+    fileObj.webkitRelativePath = filePath.replace('demo/', '');
+    return fileObj;
+  };
+
+  socket.emit('calculateDemoFolderFilePaths', function( filePaths ) {
+
+    var fileObjs = filePaths.map( filePath => {
+      filePath = filePath.replace('public/', '');
+      var fileObj = self.getFileObject( filePath );
+      fileObj = extendFileObj( fileObj, filePath );
+      return fileObj;
+    } );
+    notyView.close();
+    self.loadAnalysisFilesFromClient( fileObjs, choosenNodeId );
+  });
+}
+
 /***
  * Load graph file in json format
  */
@@ -832,23 +906,30 @@ app.proto.loadGraphFile = function(file){
     reader.readAsText(file);
 }
 
-function buildTree(parts, treeNode, file) {
+function buildTree(parts, treeNode, file, parentNodePath='') {
+    let idSeperator = '___';
     if(parts.length === 0) {
         return;
     }
 
     for(let i = 0 ; i < treeNode.length; i++) {
-        if(parts[0] == treeNode[i].text) {
-            buildTree(parts.splice(1,parts.length),treeNode[i].children, file);
+        let nodeText = treeNode[i].text;
+        if(parts[0] == nodeText) {
+            buildTree(parts.splice(1,parts.length),treeNode[i].children, file, parentNodePath + idSeperator + nodeText);
             return;
         }
     }
 
-    let newNode = {'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
+    let nodeId = parentNodePath + idSeperator + parts[0];
+    let newNode = {'id': nodeId, 'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
 
 
     treeNode.push(newNode);
-    buildTree(parts.splice(1,parts.length),newNode.children, file);
+    buildTree(parts.splice(1,parts.length),newNode.children, file, nodeId);
+}
+
+app.proto.setGraphDescriptionText = function(text){
+  $("#graph-description-span").text(text);
 }
 
 /***
@@ -856,7 +937,7 @@ function buildTree(parts, treeNode, file) {
  * @param fileList: List of files to display
  * @param isFromClient: file list structure is different depending on whether it is coming from the server or client
  */
-app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
+app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNodeId){
 
     let self = this;
     let maxTextLength = 0;
@@ -884,8 +965,16 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
         }
     });
 
+    let sort = function( id1, id2 ) {
+      var node1 = this.get_node(id1);
+      var node2 = this.get_node(id2);
 
-    let hierarchy = { core:{data: data }};
+      var text1 = node1.text || '';
+      var text2 = node2.text || '';
+
+      return text1.localeCompare(text2, undefined, {numeric: 'true'});
+    };
+    let hierarchy = { core:{data: data }, sort, plugins : [ 'sort' ]};
 
 
     $("#folder-tree").jstree("destroy");
@@ -902,6 +991,8 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
     $("#graph-container").css({left:ftWidth + 5});
 
     this.showGraphContainerAndFolderTree();
+
+    this.setGraphDescriptionText("");
 
     self.createCyGraphFromCgf();
 
@@ -930,25 +1021,49 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
         notyView.close();
     });
 
+    if ( choosenNodeId ) {
+      $('#folder-tree').on("ready.jstree", function (e) {
+        var instance = $.jstree.reference(this);
+        node = instance.get_node(choosenNodeId);
+        var nodeDivId = node.a_attr.id;
+
+        $("#" + nodeDivId).trigger("dblclick.jstree");
+        instance.select_node(node);
+      });
+    }
+
     var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder.", timeout: 10000});
     notyView.show();
+
+    $('#back-button').unbind('click.removeNoty').bind('click.removeNoty', function() {
+      notyView.close();
+    });
 }
 
 /***
  * Load graph directories as a tree in json format
  * In visualize results from a previous analysis
  */
-app.proto.loadAnalysisDirFromClient = function(event){
+app.proto.loadAnalysisFilesFromClient = function(fileList, choosenNodeId){
 
     var self = this;
 
 
     graphChoice = graphChoiceEnum.JSON;
 
+    self.buildAndDisplayFolderTree(fileList, true, choosenNodeId);
+}
+
+/***
+ * Load graph directories as a tree in json format
+ * In visualize results from a previous analysis
+ */
+app.proto.loadAnalysisDirFromClientInput = function(event){
+
+    var self = this;
 
     let fileList = Array.from(event.target.files);
-
-    self.buildAndDisplayFolderTree(fileList, true);
+    self.loadAnalysisFilesFromClient(fileList);
 
     event.target.value = null; //to make sure the same files can be loaded again
 }
@@ -1120,8 +1235,27 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
             if (callback) callback();
         });
+
+        var graphDescription = cgfJson.description;
+        if ( graphDescription ) {
+          this.setGraphDescriptionText(graphDescription);
+        }
+        else {
+          this.setGraphDescriptionText("");
+        }
+
     }
 
+}
+
+app.proto.hideMoreInfo = function(){
+  $('#more-info-legend').hide();
+  $('#example-graph-indicators').removeClass('z-index-0');
+}
+
+app.proto.showMoreInfo = function(){
+  $('#more-info-legend').show();
+  $('#example-graph-indicators').addClass('z-index-0');
 }
 
 /***
@@ -1131,9 +1265,10 @@ app.proto.showGraphContainer = function(){
     $('#info-div').hide();
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
-    $('#graph-options-container').show();
+    $('#graph-options-container').addClass('display-flex');
     $('#graph-container').show();
     $('#folder-tree').hide();
+    $('#example-graphs-container').hide();
 
     $("#graph-container").css({left:0});
 
@@ -1147,7 +1282,8 @@ app.proto.showGraphContainer = function(){
 app.proto.showInputContainer = function(){
     $('#info-div').show();
     $('#input-container').show();
-    $('#graph-options-container').hide();
+    $('#example-graphs-container').show();
+    $('#graph-options-container').removeClass('display-flex');
     $('#graph-container').hide();
     $('#folder-tree').hide();
 }
@@ -1161,6 +1297,8 @@ app.proto.showGraphContainerAndFolderTree = function(){
     $('#info-div').hide();
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
+    $('#example-graphs-container').hide();
+    $('#graph-options-container').addClass('display-flex');
     $('#graph-options-container').show();
     $('#graph-container').show();
     $('#folder-tree').show();
