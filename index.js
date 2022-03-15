@@ -7,7 +7,6 @@ var app = module.exports = require('derby').createApp('causalpath', __filename);
 // var $ = jQuery = require('jquery');
 const dirTree = require("directory-tree");
 
-var io = require('socket.io-client');
 var Noty = require('noty');
 var saveAs = require('file-saver').saveAs;
 var cytoscape = require('cytoscape');
@@ -23,7 +22,6 @@ app.loadViews(__dirname + '/views');
 
 var docReady = false;
 
-var socket;
 
 app.modelManager = null;
 
@@ -33,6 +31,20 @@ var graphChoiceEnum = {
 };
 
 var graphChoice;
+
+let handleResponse = ( res, afterResolve, handleRequestError, getResData ) => {
+    let { statusText, status, ok } = res;
+
+    if ( !ok ) {
+        let errStr = status + " - " + statusText;
+        return handleRequestError( errStr );
+    }
+
+    if ( !getResData ) {
+      getResData = () => res.text();
+    }
+    return getResData( res ).then( afterResolve );
+};
 
 app.get('/', function (page, model, params) {
     function getId() {
@@ -159,37 +171,11 @@ app.proto.init = function (model) {
 
     let self = this;
 
-    socket = this.socket = io();
-    // io('http://localhost', { transports: ['websocket'] });
-
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
     this.room = model.get('_page.room');
 
     this.modelManager = require('./public/src/model/modelManager.js')(model, self.room, model.get('_session.userId'),name );
-
-    socket.on('parameterDescription', function(fileContent){
-
-        self.parameterJson = JSON.parse(fileContent);
-
-        self.initParameters(model, self.parameterJson);
-
-        docReady = true;
-
-        self.initSelectBoxes();
-        self.initCheckBoxes();
-
-
-        //it can only run after the parameters are run
-        window.testApp = self;
-
-        console.log("Parameters acquired from the server");
-
-        //Run only after everything is ready
-        if(self.room.includes('test'))
-            self.runUnitTests();
-
-    });
 
     model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
         if(docReady) {
@@ -427,53 +413,6 @@ app.proto.resetToDefaultLayoutParameters= function(){
 
 app.proto.submitLayoutParameters = function(){
     document.getElementById('layout-properties-table').style.display='none';
-}
-
-/***
- * Sends the parameters to the server to write into a text file
- */
-app.proto.submitParameters = function (callback) {
-    let self = this;
-    let parameterList = this.modelManager.getModelParameters();
-
-    let isSuccessful = this.checkParameters();
-    if(isSuccessful) { //means all the parameters are assigned proper values
-
-        let fileContent = convertParameterListToFileContent(parameterList);
-
-        //send files first
-
-        var notyView = new Noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
-        notyView.show();
-
-        socket.emit("writeFileOnServerSide", self.room, fileContent, 'parameters.txt', true,function (data) {
-            document.getElementById('parameters-table').style.display='none';
-
-            if(data != undefined && data != null && data.indexOf("Error") == 0){
-                notyView.close();
-                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
-                notyView.show();
-                alert("The error message is:\n" + data);
-                if(callback) callback("error");
-            }
-            else{
-
-                notyView.setText( "Analyzing results...Please wait.");
-
-                self.showGraphContainer();
-                self.createCyGraphFromCgf(JSON.parse(data), function () {
-                    notyView.close();
-                });
-
-                self.model.set('_page.doc.cgfText', data);
-
-                if(callback) callback(data);
-            }
-
-        });
-
-    }
-
 }
 
 
@@ -731,38 +670,6 @@ app.proto.conditionResult = function(ind, value){
 }
 
 /***
- * Load file specified in the parameters
- */
-app.proto.loadFile = function(e, param, cnt, entryInd){
-
-    var self = this;
-    let id = self.model.get('_page.doc.parameters.' + param.ind + '.domId.' + cnt + '.' + entryInd);
-
-    var reader = new FileReader();
-
-
-    let file = this.getDomElement(param, cnt, entryInd)[0].files[0];
-
-    reader.onload = function (event) {
-        self.model.set('_page.doc.parameters.' + param.ind + '.value', [[file.name]]);
-
-        //also send to server
-        socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function (data) {
-            if(data != undefined && data != null && data.indexOf("Error") == 0){
-                notyView.close();
-                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file.")});
-                notyView.show();
-                alert("The error message is:\n" + data);
-
-            }
-            // console.log("success");
-        });
-    };
-    reader.readAsText(file);
-
-}
-
-/***
  * Returns the element given the parameter and its indices
  * @param param
  * @param cnt
@@ -794,6 +701,7 @@ app.proto.reloadGraph = function(){
 /***
  * Load demo graph from demoJson.js
  */
+ // TODO: remove or comment out?
 app.proto.loadDemoGraph = function(){
     var demoJson = require('./public/demo/demoJson');
     graphChoice = graphChoiceEnum.DEMO;
@@ -871,17 +779,30 @@ app.proto.loadDemoGraphs = function(choosenNodeId){
     return fileObj;
   };
 
-  socket.emit('calculateDemoFolderFilePaths', function( filePaths ) {
-
-    var fileObjs = filePaths.map( filePath => {
-      filePath = filePath.replace('public/', '');
-      var fileObj = self.getFileObject( filePath );
-      fileObj = extendFileObj( fileObj, filePath );
-      return fileObj;
-    } );
-    notyView.close();
-    self.loadAnalysisFilesFromClient( fileObjs, choosenNodeId );
+  let makeRequest = () => fetch( '/api/calculateDemoFolderFilePaths', {
+      method: 'POST'
   });
+
+  let afterResolve = filePaths => {
+      var fileObjs = filePaths.map( filePath => {
+          filePath = filePath.replace('public/', '');
+          var fileObj = self.getFileObject( filePath );
+          fileObj = extendFileObj( fileObj, filePath );
+          return fileObj;
+      } );
+      notyView.close();
+      self.loadAnalysisFilesFromClient( fileObjs, choosenNodeId );
+  };
+
+  let handleRequestError = err => {
+      notyView.close();
+      notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in reading demo folder content.")});
+      notyView.show();
+      alert("The error message is:\n" + err);
+      throw err;
+  };
+
+  makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError, res => res.json() ) );
 }
 
 /***
@@ -1009,14 +930,33 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNo
             // get data from the server
             console.log(node.data);
 
+            let q = {
+              dir: node.data,
+              room: self.room
+            };
 
-            socket.emit('getJsonAtPath', node.data, self.room, function (fileContent) {
+            let makeRequest = () => fetch( '/api/getJsonAtPath', {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json'
+                },
+                body: JSON.stringify(q)
+            });
 
-
+            let afterResolve = fileContent => {
                 self.model.set('_page.doc.cgfText', fileContent);
                 self.createCyGraphFromCgf(JSON.parse(fileContent));
+            };
 
-            });
+            let handleRequestError = err => {
+                notyView.close();
+                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in reading json file content.")});
+                notyView.show();
+                alert("The error message is:\n" + err);
+                throw err;
+            };
+
+            makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
         }
         notyView.close();
     });
@@ -1095,25 +1035,34 @@ app.proto.loadAnalysisDirFromServer = function(event){
         reader.onload = function (e) {
             fileContents.push({name: file.name, content: e.target.result});
             notyView.setText( "Analyzing results...Please wait.");
-            socket.emit('analysisZip', e.target.result, self.room, function(dirStr){
+            let q = {
+              fileContent: e.target.result,
+              room: self.room
+            };
 
-
-                if(dirStr != undefined && dirStr != null && dirStr.indexOf("Error") == 0){
-                    notyView.close();
-                    notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
-                    notyView.show();
-                    alert("The error message is:\n" + dirStr);
-
-                }
-                else {
-
-                    let fileStrList = dirStr.split("\n");
-                    self.buildAndDisplayFolderTree(fileStrList, false);
-
-                    notyView.close();
-                }
-
+            let makeRequest = () => fetch( '/api/analysisZip', {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json'
+                },
+                body: JSON.stringify(q)
             });
+
+            let afterResolve = dirStr => {
+                let fileStrList = dirStr.split("\n");
+                self.buildAndDisplayFolderTree(fileStrList, false);
+
+                notyView.close();
+            };
+
+            let handleRequestError = err => {
+                notyView.close();
+                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
+                notyView.show();
+                alert("The error message is:\n" + err);
+            };
+
+            makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
         }
 
         reader.readAsBinaryString(file);
@@ -1139,39 +1088,40 @@ app.proto.loadAnalysisDirFromServer = function(event){
         });
 
         p1.then(function (content) {
-
             notyView.setText( "Analyzing results...Please wait.");
 
-            socket.emit('analysisDir', fileContents, self.room, function(dirStr){
+            let q = {
+              inputFiles: fileContents,
+              room: self.room
+            };
 
-                console.log("Output of analysisdir:");
-                console.log(dirStr);
-                if(dirStr != undefined && dirStr != null && dirStr.indexOf("Error") == 0){
-                    notyView.close();
-                    notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
-                    notyView.show();
-                    alert("The error message is:\n" + data);
-
-
-                }
-                else {
-                    let fileStrList = dirStr.split("\n");
-                    self.buildAndDisplayFolderTree(fileStrList, false);
-
-                    notyView.close();
-                    // self.createCyGraphFromCgf(JSON.parse(data), function () {
-                    //     notyView.close();
-                    // });
-                    //
-                    // self.model.set('_page.doc.cgfText', data);
-                }
+            let makeRequest = () => fetch( '/api/analysisDir', {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json'
+                },
+                body: JSON.stringify(q)
             });
 
+            let afterResolve = dirStr => {
+                console.log("Output of analysisdir:");
+                console.log(dirStr);
 
-        }), function (xhr, status, error) {
-            api.set('content.text', "Error retrieving data: " + error);
+                let fileStrList = dirStr.split("\n");
+                self.buildAndDisplayFolderTree(fileStrList, false);
 
-        }
+                notyView.close();
+            };
+
+            let handleRequestError = err => {
+                  notyView.close();
+                  notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
+                  notyView.show();
+                  alert("The error message is:\n" + err);
+            };
+
+            makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
+        })
     }
 
     event.target.value = null; //to make sure the same files can be loaded again
@@ -1321,25 +1271,35 @@ app.proto.downloadResults = function(){
     var notyView = new Noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
     notyView.show();
 
-    socket.emit('downloadRequest', self.room, function(fileContent){
-        if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
-            notyView.close();
-            notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
-            notyView.show();
-            alert("The error message is:\n" + fileContent);
+    let q = {
+      room: self.room
+    };
 
-        }
-        else{
-            console.log("Zip file received.");
-
-            var blob = base64ToZipBlob(fileContent);
-
-            saveAs(blob, (self.room + ".zip"));
-
-            notyView.close();
-        }
-
+    let makeRequest = () => fetch( '/api/downloadRequest', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(q)
     });
+
+    let afterResolve = fileContent => {
+        console.log("Zip file received.");
+
+        var blob = base64ToZipBlob(fileContent);
+        saveAs(blob, (self.room + ".zip"));
+
+        notyView.close();
+    };
+
+    let handleRequestError = err => {
+      notyView.close();
+      notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
+      notyView.show();
+      alert("The error message is:\n" + err);
+    };
+
+    makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
 
 }
 
