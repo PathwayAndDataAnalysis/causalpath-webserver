@@ -718,7 +718,7 @@ app.proto.loadDemoGraph = function(){
 
 app.proto.loadSpecificDemoGraph = function(subId){
   var self = this;
-  let choosenNodeId = '___demoFolder___' + subId;
+  let choosenNodeId = '___samples___' + subId;
   self.loadDemoGraphs(choosenNodeId);
 }
 
