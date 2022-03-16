@@ -177,16 +177,18 @@ app.proto.init = function (model) {
 
     this.modelManager = require('./public/src/model/modelManager.js')(model, self.room, model.get('_session.userId'),name );
 
-    model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
-        if(docReady) {
-            self.updateParameterVisibility();
-            setTimeout(function(){
-                self.initSelectBoxes();
-                // self.initSelectBoxes();
-            }, 100); //wait a little while so that dom elements are updated
-
-        }
-    });
+    docReady = true;
+    // TODO: later remove this and other code parts that would become useless after removing option a?
+    // model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
+    //     if(docReady) {
+    //         self.updateParameterVisibility();
+    //         setTimeout(function(){
+    //             self.initSelectBoxes();
+    //             // self.initSelectBoxes();
+    //         }, 100); //wait a little while so that dom elements are updated
+    //
+    //     }
+    // });
 }
 
 app.proto.runUnitTests = function(){
