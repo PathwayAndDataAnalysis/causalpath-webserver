@@ -62,6 +62,9 @@
     "w3-css": "^4.1.0"
   },
   "devDependencies": {
-    "qunitjs": "^2.4.1"
+    "node-fetch": "^2.6.7",
+    "qunitjs": "^2.4.1",
+    "uuid": "^8.3.2",
+    "findit": "^2.0.0"
   }
 }

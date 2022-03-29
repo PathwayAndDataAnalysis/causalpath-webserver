@@ -1,0 +1,24 @@
+config:
+  target: "http://localhost:3001"
+  http:
+    timeout: 120
+  environments:
+    production:
+      target: "https://causalpath.org"
+    staging:
+      target: "http://35.192.108.199:3001"
+    local:
+      target: "http://localhost:3001"
+  phases:
+    - duration: 1
+      arrivalRate: 2
+      name: Load
+  processor: "./processor.js"
+scenarios:
+  - flow:
+    - post:
+        url: "/api/analysisZip"
+        beforeRequest: makeAnalysisZipVars
+        json:
+          fileContent: "{{ fileContent }}"
+          room: "{{ room }}"
