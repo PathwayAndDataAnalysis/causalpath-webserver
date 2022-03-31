@@ -7,11 +7,13 @@ config:
       target: "https://causalpath.org"
     staging:
       target: "http://35.192.108.199:3001"
+      http:
+        timeout: 900
     local:
       target: "http://localhost:3001"
   phases:
     - duration: 1
-      arrivalRate: 2
+      arrivalRate: 20
       name: Load
   processor: "./processor.js"
 scenarios:
