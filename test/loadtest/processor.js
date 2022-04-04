@@ -2,6 +2,7 @@ let fs = require('fs');
 let { v4: uuid } = require('uuid');
 let fetch = require('node-fetch');
 let findit = require('findit');
+let LineReaderSync = require("line-reader-sync")
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
@@ -22,10 +23,16 @@ let parametersFilePath = '../../public/demo/parameters.txt';
 // Therefore, I want to make sure that we start the all download requests at the time when all of the
 // analysis requests are ended. This file will be used to observe if all of the analysis requests are completed.
 // I tried a few other ways but none of them was feasible. Therefore, I had to use this workaround.
-let countFileName = './download_request_count.txt'
+let countFileName = './download_request_count.txt';
+
+let analyzedRoomsFileName = './analyzed_rooms.txt';
 
 if ( !fs.existsSync(countFileName) ) {
   fs.writeFileSync(countFileName, '');
+}
+
+if ( !fs.existsSync(analyzedRoomsFileName) ) {
+  fs.writeFileSync(analyzedRoomsFileName, '');
 }
 
 function readFile(filePath){
@@ -46,22 +53,29 @@ function makeAnalysisDirVars(requestParams, ctx, ee, next) {
 }
 
 function makeGetJsonAtPathVars(requestParams, ctx, ee, next) {
-  let finder = findit('../../analysisOut');
-  let paths = [];
-  finder.on('file', function (file, stat) {
-      // console.log(file);
-      if ( file.endsWith('causative.json') ) {
-        paths.push(file);
-      }
-  });
+  if ( process.env.USE_ANALYSIS_OUT == 'true' ) {
+      let finder = findit('../../analysisOut');
+      let paths = [];
+      finder.on('file', function (file, stat) {
+          if ( file.endsWith('causative.json') ) {
+            paths.push(file);
+          }
+      });
 
-  finder.on('end', function () {
-    // TODO: Handle no path case?
-    let i = getRandomInt( paths.length - 1 );
-    ctx.vars["path"] = paths[ i ].replace('../../', './');
-    console.log(paths[i])
-    next();
-  });
+      finder.on('end', function () {
+        // TODO: Handle no path case?
+        let i = getRandomInt( paths.length - 1 );
+        ctx.vars["path"] = paths[ i ].replace('../../', './');
+        next();
+      });
+  }
+  else {
+      let lrs = new LineReaderSync(analyzedRoomsFileName);
+      let paths = lrs.toLines();
+      let i = getRandomInt( paths.length - 1 );
+      ctx.vars["path"] = paths[ i ];
+      next();
+  }
 }
 
 function makeAnalysisZipVars(requestParams, ctx, ee, next) {
@@ -78,7 +92,7 @@ function makeDownloadRequestVars(requestParams, ctx, ee, next){
     var fileContent = fs.readFileSync(countFileName);
     // the expected length may change based on the number of requests
     // TODO: may take the number of requests from the yml file as a parameter?
-    if ( fileContent.length == 20 ) {
+    if ( fileContent.length == 1 ) {
       return new Promise(resolve => setTimeout(resolve, interval)).then( () => {
         if ( fs.existsSync(countFileName) ) {
           fs.unlinkSync(countFileName);
@@ -88,7 +102,6 @@ function makeDownloadRequestVars(requestParams, ctx, ee, next){
       } );
     }
   }, interval );
-  console.log(uuid)
   let room = uuid();
   ctx.vars["room"] = room;
 
@@ -99,7 +112,7 @@ function makeDownloadRequestVars(requestParams, ctx, ee, next){
   };
 
   console.log('preparing for download request, called analysisZip for room ', room);
-  let makeRequest = () => fetch( 'http://localhost:3001/api/analysisZip', {
+  let makeRequest = () => fetch( ctx.vars.target + '/api/analysisZip', {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
@@ -113,9 +126,36 @@ function makeDownloadRequestVars(requestParams, ctx, ee, next){
   } );
 }
 
+// TODO: when analysis request is handled if analyzedRoomsFile does not have enough (20) lines alredy
+// and the status code is 200 then append the analysed room to the file
+// Possibly use it in loadtests for download request and get json at path (if file has enough content use it
+// else use the existing methods)
+function analysisResponseHandler(requestParams, response, context, ee, next) {
+  if ( response.statusCode != 200 ) {
+    next();
+  }
+  else {
+    let lrs = new LineReaderSync(analyzedRoomsFileName);
+    let numOfLines = lrs.toLines().length;
+    if ( numOfLines >= 20 ) {
+      next();
+    }
+    else {
+      // because of a bug in the code the file path may contain
+      // double '/' character instead of a single one
+      // handle that case like this until the main problem is fixed
+      let path = response.body.replace('//', '/');
+      fs.appendFileSync(analyzedRoomsFileName, path);
+
+      next();
+    }
+  }
+}
+
 module.exports = {
   makeAnalysisDirVars,
   makeAnalysisZipVars,
   makeDownloadRequestVars,
-  makeGetJsonAtPathVars
+  makeGetJsonAtPathVars,
+  analysisResponseHandler
 };

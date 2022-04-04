@@ -21,6 +21,7 @@ scenarios:
     - post:
         url: "/api/analysisZip"
         beforeRequest: makeAnalysisZipVars
+        afterResponse: analysisResponseHandler
         json:
           fileContent: "{{ fileContent }}"
           room: "{{ room }}"

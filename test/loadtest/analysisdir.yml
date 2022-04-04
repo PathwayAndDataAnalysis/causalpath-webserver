@@ -21,6 +21,7 @@ scenarios:
     - post:
         url: "/api/analysisDir"
         beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
         json:
           inputFiles: "{{ inputFiles }}"
           room: "{{ room }}"

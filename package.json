@@ -62,9 +62,11 @@
     "w3-css": "^4.1.0"
   },
   "devDependencies": {
+    "connect-timeout": "^1.9.0",
+    "findit": "^2.0.0",
+    "line-reader-sync": "^0.1.0",
     "node-fetch": "^2.6.7",
     "qunitjs": "^2.4.1",
-    "uuid": "^8.3.2",
-    "findit": "^2.0.0"
+    "uuid": "^8.3.2"
   }
 }
