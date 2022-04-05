@@ -880,7 +880,21 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNo
         if(paths) {
             //update the div size for the folders
             for (let i = 0; i < paths.length; i++) {
-                let lenPathStr = paths[i].length * fontSize + (i + 1) * tabSize;
+                let path = paths[i];
+                let lenPathStr = path.length * fontSize + (i + 1) * tabSize;
+                let capitalCaseDifference = fontSize * 0.4;
+                // TODO:
+                // apperantly the calculation of 'lenPathStr' here is just an approximation
+                // when there were plenty of capital letters in path strings
+                // the folder tree the content was not fitting to the folder tree div
+                // for now add an extra value for the capital letters
+                // but for longer term may need to either update the css logic there
+                // or calculate 'lenPathStr' more precisely 
+                path.split('').forEach( ch => {
+                  if (ch >= "A" && ch <= "Z") {
+                    lenPathStr += capitalCaseDifference;
+                  }
+                } )
                 if (lenPathStr > maxTextLength)
                     maxTextLength = lenPathStr;
             }
