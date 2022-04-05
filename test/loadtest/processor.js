@@ -25,15 +25,20 @@ let parametersFilePath = '../../public/demo/parameters.txt';
 // I tried a few other ways but none of them was feasible. Therefore, I had to use this workaround.
 let countFileName = './download_request_count.txt';
 
-let analyzedRoomsFileName = './analyzed_rooms.txt';
+let analyzedRoomsFilePrefix = './analyzed_rooms';
+let getAnalyzedRoomsFileName = env => analyzedRoomsFilePrefix + '_' + env + '.txt';
 
 if ( !fs.existsSync(countFileName) ) {
   fs.writeFileSync(countFileName, '');
 }
 
-if ( !fs.existsSync(analyzedRoomsFileName) ) {
-  fs.writeFileSync(analyzedRoomsFileName, '');
-}
+['local', 'staging', 'production'].forEach( env => {
+  let fname = getAnalyzedRoomsFileName( env );
+  if ( !fs.existsSync(fname) ) {
+    fs.writeFileSync(fname, '');
+  }
+} );
+
 
 function readFile(filePath){
     var fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -70,6 +75,7 @@ function makeGetJsonAtPathVars(requestParams, ctx, ee, next) {
       });
   }
   else {
+      let analyzedRoomsFileName = getAnalyzedRoomsFileName( ctx.vars.$environment );
       let lrs = new LineReaderSync(analyzedRoomsFileName);
       let paths = lrs.toLines();
       let i = getRandomInt( paths.length - 1 );
@@ -135,16 +141,14 @@ function analysisResponseHandler(requestParams, response, context, ee, next) {
     next();
   }
   else {
+    let analyzedRoomsFileName = getAnalyzedRoomsFileName( context.vars.$environment );
     let lrs = new LineReaderSync(analyzedRoomsFileName);
     let numOfLines = lrs.toLines().length;
     if ( numOfLines >= 20 ) {
       next();
     }
     else {
-      // because of a bug in the code the file path may contain
-      // double '/' character instead of a single one
-      // handle that case like this until the main problem is fixed
-      let path = response.body.replace('//', '/');
+      let path = response.body;
       fs.appendFileSync(analyzedRoomsFileName, path);
 
       next();
