@@ -23,14 +23,14 @@ let parametersFilePath = '../../public/demo/parameters.txt';
 // Therefore, I want to make sure that we start the all download requests at the time when all of the
 // analysis requests are ended. This file will be used to observe if all of the analysis requests are completed.
 // I tried a few other ways but none of them was feasible. Therefore, I had to use this workaround.
-let countFileName = './download_request_count.txt';
+// let countFileName = './download_request_count.txt';
 
 let analyzedRoomsFilePrefix = './analyzed_rooms';
 let getAnalyzedRoomsFileName = env => analyzedRoomsFilePrefix + '_' + env + '.txt';
 
-if ( !fs.existsSync(countFileName) ) {
-  fs.writeFileSync(countFileName, '');
-}
+// if ( !fs.existsSync(countFileName) ) {
+//   fs.writeFileSync(countFileName, '');
+// }
 
 ['local', 'staging', 'production'].forEach( env => {
   let fname = getAnalyzedRoomsFileName( env );
@@ -79,7 +79,7 @@ function makeGetJsonAtPathVars(requestParams, ctx, ee, next) {
       let lrs = new LineReaderSync(analyzedRoomsFileName);
       let paths = lrs.toLines();
       let i = getRandomInt( paths.length - 1 );
-      ctx.vars["path"] = paths[ i ];
+      ctx.vars["path"] = './analysisOut/' + paths[ i ] + '/causative.json';
       next();
   }
 }
@@ -92,45 +92,45 @@ function makeAnalysisZipVars(requestParams, ctx, ee, next) {
   return next();
 }
 
-function makeDownloadRequestVars(requestParams, ctx, ee, next){
-  let interval = 5000;
-  var intervalID = setInterval( () => {
-    var fileContent = fs.readFileSync(countFileName);
-    // the expected length may change based on the number of requests
-    // TODO: may take the number of requests from the yml file as a parameter?
-    if ( fileContent.length == 1 ) {
-      return new Promise(resolve => setTimeout(resolve, interval)).then( () => {
-        if ( fs.existsSync(countFileName) ) {
-          fs.unlinkSync(countFileName);
-        }
-        clearInterval(intervalID);
-        next();
-      } );
-    }
-  }, interval );
-  let room = uuid();
-  ctx.vars["room"] = room;
-
-  let fileContent = getAnalysisZipInput();
-  let q = {
-    fileContent,
-    room
-  };
-
-  console.log('preparing for download request, called analysisZip for room ', room);
-  let makeRequest = () => fetch( ctx.vars.target + '/api/analysisZip', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(q)
-  });
-
-  makeRequest().then( () => {
-    console.log('analysis is done for room ', room);
-    fs.appendFileSync(countFileName, '1');
-  } );
-}
+// function makeDownloadRequestVars(requestParams, ctx, ee, next){
+//   let interval = 5000;
+//   var intervalID = setInterval( () => {
+//     var fileContent = fs.readFileSync(countFileName);
+//     // the expected length may change based on the number of requests
+//     // TODO: may take the number of requests from the yml file as a parameter?
+//     if ( fileContent.length == 1 ) {
+//       return new Promise(resolve => setTimeout(resolve, interval)).then( () => {
+//         if ( fs.existsSync(countFileName) ) {
+//           fs.unlinkSync(countFileName);
+//         }
+//         clearInterval(intervalID);
+//         next();
+//       } );
+//     }
+//   }, interval );
+//   let room = uuid();
+//   ctx.vars["room"] = room;
+//
+//   let fileContent = getAnalysisZipInput();
+//   let q = {
+//     fileContent,
+//     room
+//   };
+//
+//   console.log('preparing for download request, called analysisZip for room ', room);
+//   let makeRequest = () => fetch( ctx.vars.target + '/api/analysisZip', {
+//       method: 'POST',
+//       headers: {
+//         'content-type': 'application/json'
+//       },
+//       body: JSON.stringify(q)
+//   });
+//
+//   makeRequest().then( () => {
+//     console.log('analysis is done for room ', room);
+//     fs.appendFileSync(countFileName, '1');
+//   } );
+// }
 
 // TODO: when analysis request is handled if analyzedRoomsFile does not have enough (20) lines alredy
 // and the status code is 200 then append the analysed room to the file
@@ -148,7 +148,7 @@ function analysisResponseHandler(requestParams, response, context, ee, next) {
       next();
     }
     else {
-      let path = response.body;
+      let path = response.body.replace('./analysisOut/', '').replace('/causative.json', '');
       fs.appendFileSync(analyzedRoomsFileName, path);
 
       next();
@@ -159,7 +159,7 @@ function analysisResponseHandler(requestParams, response, context, ee, next) {
 module.exports = {
   makeAnalysisDirVars,
   makeAnalysisZipVars,
-  makeDownloadRequestVars,
+  // makeDownloadRequestVars,
   makeGetJsonAtPathVars,
   analysisResponseHandler
 };
