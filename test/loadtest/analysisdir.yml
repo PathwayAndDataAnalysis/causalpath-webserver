@@ -1,14 +1,14 @@
 config:
   target: "http://localhost:3001"
   http:
-    timeout: 120
+    timeout: 240
   environments:
     production:
       target: "https://causalpath.org"
     staging:
       target: "http://35.192.108.199:3001"
       http:
-        timeout: 900
+        timeout: 1800
     local:
       target: "http://localhost:3001"
   phases:
