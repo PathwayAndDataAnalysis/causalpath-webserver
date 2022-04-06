@@ -590,5 +590,6 @@
       "pcLinks" : [ "http://identifiers.org/reactome/R-HSA-114600", "http://identifiers.org/reactome/R-HSA-5621355", "http://pathwaycommons.org/pc2/Catalysis_5b9709a641b3c761ecaa8142a1725209", "http://pathwaycommons.org/pc2/Catalysis_80d24046703b3e9bd41f911e15c1881e" ],
       "target" : "FCER1G"
     }
-  } ]
+  } ],
+  "description": "Immunoreactive subtype of Ovarian Cancer"
 }
