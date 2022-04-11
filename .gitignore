@@ -2,9 +2,10 @@
 /node_modules/
 .DS_Store
 .idea/workspace.xml
-analysisOut/.DS_Store
-analysisOut/7e326f1e-4338-4113-aa4e-98a57bcf066a/
-analysisOut/demo/.DS_Store
+analysisOut/*
+test/loadtest/analyzed_rooms_local.txt
+test/loadtest/analyzed_rooms_staging.txt
+test/loadtest/analyzed_rooms_production.txt
 jar/.DS_Store
 jar/analysisDir/
 lib/.DS_Store
