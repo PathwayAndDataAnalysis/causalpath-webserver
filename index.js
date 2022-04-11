@@ -7,7 +7,6 @@ var app = module.exports = require('derby').createApp('causalpath', __filename);
 // var $ = jQuery = require('jquery');
 const dirTree = require("directory-tree");
 
-var io = require('socket.io-client');
 var Noty = require('noty');
 var saveAs = require('file-saver').saveAs;
 var cytoscape = require('cytoscape');
@@ -23,7 +22,6 @@ app.loadViews(__dirname + '/views');
 
 var docReady = false;
 
-var socket;
 
 app.modelManager = null;
 
@@ -33,6 +31,20 @@ var graphChoiceEnum = {
 };
 
 var graphChoice;
+
+let handleResponse = ( res, afterResolve, handleRequestError, getResData ) => {
+    let { statusText, status, ok } = res;
+
+    if ( !ok ) {
+        let errStr = status + " - " + statusText;
+        return handleRequestError( errStr );
+    }
+
+    if ( !getResData ) {
+      getResData = () => res.text();
+    }
+    return getResData( res ).then( afterResolve );
+};
 
 app.get('/', function (page, model, params) {
     function getId() {
@@ -121,8 +133,6 @@ app.get('/:docId', function (page, model, arg, next) {
 
 app.proto.create = function (model) {
 
-
-
       Tippy.setDefaults({
         arrow: true,
         placement: 'bottom'
@@ -161,48 +171,24 @@ app.proto.init = function (model) {
 
     let self = this;
 
-    socket = this.socket = io();
-    // io('http://localhost', { transports: ['websocket'] });
-
     var id = model.get('_session.userId');
     var name = model.get('users.' + id +'.name');
     this.room = model.get('_page.room');
 
     this.modelManager = require('./public/src/model/modelManager.js')(model, self.room, model.get('_session.userId'),name );
 
-    socket.on('parameterDescription', function(fileContent){
-
-        self.parameterJson = JSON.parse(fileContent);
-
-        self.initParameters(model, self.parameterJson);
-
-        docReady = true;
-
-        self.initSelectBoxes();
-        self.initCheckBoxes();
-
-
-        //it can only run after the parameters are run
-        window.testApp = self;
-
-        console.log("Parameters acquired from the server");
-
-        //Run only after everything is ready
-        if(self.room.includes('test'))
-            self.runUnitTests();
-
-    });
-
-    model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
-        if(docReady) {
-            self.updateParameterVisibility();
-            setTimeout(function(){
-                self.initSelectBoxes();
-                // self.initSelectBoxes();
-            }, 100); //wait a little while so that dom elements are updated
-
-        }
-    });
+    docReady = true;
+    // TODO: later remove this and other code parts that would become useless after removing option a?
+    // model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
+    //     if(docReady) {
+    //         self.updateParameterVisibility();
+    //         setTimeout(function(){
+    //             self.initSelectBoxes();
+    //             // self.initSelectBoxes();
+    //         }, 100); //wait a little while so that dom elements are updated
+    //
+    //     }
+    // });
 }
 
 app.proto.runUnitTests = function(){
@@ -429,53 +415,6 @@ app.proto.resetToDefaultLayoutParameters= function(){
 
 app.proto.submitLayoutParameters = function(){
     document.getElementById('layout-properties-table').style.display='none';
-}
-
-/***
- * Sends the parameters to the server to write into a text file
- */
-app.proto.submitParameters = function (callback) {
-    let self = this;
-    let parameterList = this.modelManager.getModelParameters();
-
-    let isSuccessful = this.checkParameters();
-    if(isSuccessful) { //means all the parameters are assigned proper values
-
-        let fileContent = convertParameterListToFileContent(parameterList);
-
-        //send files first
-
-        var notyView = new Noty({type:"information", layout: "bottom",text: "Reading files...Please wait."});
-        notyView.show();
-
-        socket.emit("writeFileOnServerSide", self.room, fileContent, 'parameters.txt', true,function (data) {
-            document.getElementById('parameters-table').style.display='none';
-
-            if(data != undefined && data != null && data.indexOf("Error") == 0){
-                notyView.close();
-                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files.")});
-                notyView.show();
-                alert("The error message is:\n" + data);
-                if(callback) callback("error");
-            }
-            else{
-
-                notyView.setText( "Analyzing results...Please wait.");
-
-                self.showGraphContainer();
-                self.createCyGraphFromCgf(JSON.parse(data), function () {
-                    notyView.close();
-                });
-
-                self.model.set('_page.doc.cgfText', data);
-
-                if(callback) callback(data);
-            }
-
-        });
-
-    }
-
 }
 
 
@@ -733,38 +672,6 @@ app.proto.conditionResult = function(ind, value){
 }
 
 /***
- * Load file specified in the parameters
- */
-app.proto.loadFile = function(e, param, cnt, entryInd){
-
-    var self = this;
-    let id = self.model.get('_page.doc.parameters.' + param.ind + '.domId.' + cnt + '.' + entryInd);
-
-    var reader = new FileReader();
-
-
-    let file = this.getDomElement(param, cnt, entryInd)[0].files[0];
-
-    reader.onload = function (event) {
-        self.model.set('_page.doc.parameters.' + param.ind + '.value', [[file.name]]);
-
-        //also send to server
-        socket.emit("writeFileOnServerSide", self.room, event.target.result, file.name, false, function (data) {
-            if(data != undefined && data != null && data.indexOf("Error") == 0){
-                notyView.close();
-                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in parameters file.")});
-                notyView.show();
-                alert("The error message is:\n" + data);
-
-            }
-            // console.log("success");
-        });
-    };
-    reader.readAsText(file);
-
-}
-
-/***
  * Returns the element given the parameter and its indices
  * @param param
  * @param cnt
@@ -796,6 +703,7 @@ app.proto.reloadGraph = function(){
 /***
  * Load demo graph from demoJson.js
  */
+ // TODO: remove or comment out?
 app.proto.loadDemoGraph = function(){
     var demoJson = require('./public/demo/demoJson');
     graphChoice = graphChoiceEnum.DEMO;
@@ -808,6 +716,95 @@ app.proto.loadDemoGraph = function(){
 
     $('#download-div').hide(); //this only appears after analysis is performed -- demo has no analysis result
 
+}
+
+app.proto.loadSpecificDemoGraph = function(subId){
+  var self = this;
+  let choosenNodeId = '___samples___' + subId;
+  self.loadDemoGraphs(choosenNodeId);
+}
+
+app.proto.getFileText = function(filePath) {
+  if (window.XMLHttpRequest) {
+    xhttp = new XMLHttpRequest();
+  }
+  else {
+    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhttp.open("GET", filePath, false);
+  xhttp.send();
+  var text = xhttp.response;
+  return text;
+}
+
+app.proto.getFileObject = function(filePath){
+  var self = this;
+
+  function getFileBlob(filePath) {
+    var text = self.getFileText(filePath);
+    return new Blob([text]);
+  }
+
+  // function getFileBlob(filePath) {
+  //   if (window.XMLHttpRequest) {
+  //     xhttp = new XMLHttpRequest();
+  //   }
+  //   else {
+  //     xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  //   }
+  //   xhttp.open("GET", filePath, false);
+  //   xhttp.send();
+  //   var text = xhttp.response;
+  //   return new Blob([text]);
+  // }
+
+  var blobToFile = function (blob, name) {
+      blob.lastModifiedDate = new Date();
+      blob.name = name;
+      return blob;
+  };
+
+  var fileName = filePath.substring( filePath.lastIndexOf('/') + 1 );
+  var blob = getFileBlob(filePath);
+  var fileObj = blobToFile(blob, fileName);
+  return fileObj;
+}
+
+app.proto.loadDemoGraphs = function(choosenNodeId){
+  var self = this;
+
+  var notyView = new Noty({type: "information", layout: "bottom",  text: "Loading demo folders...Please wait."});
+  notyView.show();
+
+  const extendFileObj = ( fileObj, filePath ) => {
+    fileObj.webkitRelativePath = filePath.replace('demo/', '');
+    return fileObj;
+  };
+
+  let makeRequest = () => fetch( '/api/calculateDemoFolderFilePaths', {
+      method: 'POST'
+  });
+
+  let afterResolve = filePaths => {
+      var fileObjs = filePaths.map( filePath => {
+          filePath = filePath.replace('public/', '');
+          var fileObj = self.getFileObject( filePath );
+          fileObj = extendFileObj( fileObj, filePath );
+          return fileObj;
+      } );
+      notyView.close();
+      self.loadAnalysisFilesFromClient( fileObjs, choosenNodeId );
+  };
+
+  let handleRequestError = err => {
+      notyView.close();
+      notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in reading demo folder content.")});
+      notyView.show();
+      alert("The error message is:\n" + err);
+      throw err;
+  };
+
+  makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError, res => res.json() ) );
 }
 
 /***
@@ -832,23 +829,30 @@ app.proto.loadGraphFile = function(file){
     reader.readAsText(file);
 }
 
-function buildTree(parts, treeNode, file) {
+function buildTree(parts, treeNode, file, parentNodePath='') {
+    let idSeperator = '___';
     if(parts.length === 0) {
         return;
     }
 
     for(let i = 0 ; i < treeNode.length; i++) {
-        if(parts[0] == treeNode[i].text) {
-            buildTree(parts.splice(1,parts.length),treeNode[i].children, file);
+        let nodeText = treeNode[i].text;
+        if(parts[0] == nodeText) {
+            buildTree(parts.splice(1,parts.length),treeNode[i].children, file, parentNodePath + idSeperator + nodeText);
             return;
         }
     }
 
-    let newNode = {'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
+    let nodeId = parentNodePath + idSeperator + parts[0];
+    let newNode = {'id': nodeId, 'text': parts[0] ,'children':[],  'state': {'opened':true}, data:file};
 
 
     treeNode.push(newNode);
-    buildTree(parts.splice(1,parts.length),newNode.children, file);
+    buildTree(parts.splice(1,parts.length),newNode.children, file, nodeId);
+}
+
+app.proto.setGraphDescriptionText = function(text){
+  $("#graph-description-span").text(text);
 }
 
 /***
@@ -856,7 +860,7 @@ function buildTree(parts, treeNode, file) {
  * @param fileList: List of files to display
  * @param isFromClient: file list structure is different depending on whether it is coming from the server or client
  */
-app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
+app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient, choosenNodeId){
 
     let self = this;
     let maxTextLength = 0;
@@ -876,7 +880,21 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
         if(paths) {
             //update the div size for the folders
             for (let i = 0; i < paths.length; i++) {
-                let lenPathStr = paths[i].length * fontSize + (i + 1) * tabSize;
+                let path = paths[i];
+                let lenPathStr = path.length * fontSize + (i + 1) * tabSize;
+                let capitalCaseDifference = fontSize * 0.4;
+                // TODO:
+                // apperantly the calculation of 'lenPathStr' here is just an approximation
+                // when there were plenty of capital letters in path strings
+                // the folder tree the content was not fitting to the folder tree div
+                // for now add an extra value for the capital letters
+                // but for longer term may need to either update the css logic there
+                // or calculate 'lenPathStr' more precisely 
+                path.split('').forEach( ch => {
+                  if (ch >= "A" && ch <= "Z") {
+                    lenPathStr += capitalCaseDifference;
+                  }
+                } )
                 if (lenPathStr > maxTextLength)
                     maxTextLength = lenPathStr;
             }
@@ -884,8 +902,16 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
         }
     });
 
+    let sort = function( id1, id2 ) {
+      var node1 = this.get_node(id1);
+      var node2 = this.get_node(id2);
 
-    let hierarchy = { core:{data: data }};
+      var text1 = node1.text || '';
+      var text2 = node2.text || '';
+
+      return text1.localeCompare(text2, undefined, {numeric: 'true'});
+    };
+    let hierarchy = { core:{data: data }, sort, plugins : [ 'sort' ]};
 
 
     $("#folder-tree").jstree("destroy");
@@ -903,6 +929,8 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
 
     this.showGraphContainerAndFolderTree();
 
+    this.setGraphDescriptionText("");
+
     self.createCyGraphFromCgf();
 
 
@@ -918,37 +946,80 @@ app.proto.buildAndDisplayFolderTree = function(fileList, isFromClient){
             // get data from the server
             console.log(node.data);
 
+            let q = {
+              dir: node.data,
+              room: self.room
+            };
 
-            socket.emit('getJsonAtPath', node.data, self.room, function (fileContent) {
+            let makeRequest = () => fetch( '/api/getJsonAtPath', {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json'
+                },
+                body: JSON.stringify(q)
+            });
 
-
+            let afterResolve = fileContent => {
                 self.model.set('_page.doc.cgfText', fileContent);
                 self.createCyGraphFromCgf(JSON.parse(fileContent));
+            };
 
-            });
+            let handleRequestError = err => {
+                notyView.close();
+                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in reading json file content.")});
+                notyView.show();
+                alert("The error message is:\n" + err);
+                throw err;
+            };
+
+            makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
         }
         notyView.close();
     });
 
+    if ( choosenNodeId ) {
+      $('#folder-tree').on("ready.jstree", function (e) {
+        var instance = $.jstree.reference(this);
+        node = instance.get_node(choosenNodeId);
+        var nodeDivId = node.a_attr.id;
+
+        $("#" + nodeDivId).trigger("dblclick.jstree");
+        instance.select_node(node);
+      });
+    }
+
     var notyView = new Noty({type: "information", layout: "bottom",  text: "Double click on a folder to load the model in that folder.", timeout: 10000});
     notyView.show();
+
+    $('#back-button').unbind('click.removeNoty').bind('click.removeNoty', function() {
+      notyView.close();
+    });
 }
 
 /***
  * Load graph directories as a tree in json format
  * In visualize results from a previous analysis
  */
-app.proto.loadAnalysisDirFromClient = function(event){
+app.proto.loadAnalysisFilesFromClient = function(fileList, choosenNodeId){
 
     var self = this;
 
 
     graphChoice = graphChoiceEnum.JSON;
 
+    self.buildAndDisplayFolderTree(fileList, true, choosenNodeId);
+}
+
+/***
+ * Load graph directories as a tree in json format
+ * In visualize results from a previous analysis
+ */
+app.proto.loadAnalysisDirFromClientInput = function(event){
+
+    var self = this;
 
     let fileList = Array.from(event.target.files);
-
-    self.buildAndDisplayFolderTree(fileList, true);
+    self.loadAnalysisFilesFromClient(fileList);
 
     event.target.value = null; //to make sure the same files can be loaded again
 }
@@ -980,25 +1051,34 @@ app.proto.loadAnalysisDirFromServer = function(event){
         reader.onload = function (e) {
             fileContents.push({name: file.name, content: e.target.result});
             notyView.setText( "Analyzing results...Please wait.");
-            socket.emit('analysisZip', e.target.result, self.room, function(dirStr){
+            let q = {
+              fileContent: e.target.result,
+              room: self.room
+            };
 
-
-                if(dirStr != undefined && dirStr != null && dirStr.indexOf("Error") == 0){
-                    notyView.close();
-                    notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
-                    notyView.show();
-                    alert("The error message is:\n" + dirStr);
-
-                }
-                else {
-
-                    let fileStrList = dirStr.split("\n");
-                    self.buildAndDisplayFolderTree(fileStrList, false);
-
-                    notyView.close();
-                }
-
+            let makeRequest = () => fetch( '/api/analysisZip', {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json'
+                },
+                body: JSON.stringify(q)
             });
+
+            let afterResolve = dirStr => {
+                let fileStrList = dirStr.split("\n");
+                self.buildAndDisplayFolderTree(fileStrList, false);
+
+                notyView.close();
+            };
+
+            let handleRequestError = err => {
+                notyView.close();
+                notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in creating json file.")});
+                notyView.show();
+                alert("The error message is:\n" + err);
+            };
+
+            makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
         }
 
         reader.readAsBinaryString(file);
@@ -1024,39 +1104,40 @@ app.proto.loadAnalysisDirFromServer = function(event){
         });
 
         p1.then(function (content) {
-
             notyView.setText( "Analyzing results...Please wait.");
 
-            socket.emit('analysisDir', fileContents, self.room, function(dirStr){
+            let q = {
+              inputFiles: fileContents,
+              room: self.room
+            };
 
-                console.log("Output of analysisdir:");
-                console.log(dirStr);
-                if(dirStr != undefined && dirStr != null && dirStr.indexOf("Error") == 0){
-                    notyView.close();
-                    notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
-                    notyView.show();
-                    alert("The error message is:\n" + data);
-
-
-                }
-                else {
-                    let fileStrList = dirStr.split("\n");
-                    self.buildAndDisplayFolderTree(fileStrList, false);
-
-                    notyView.close();
-                    // self.createCyGraphFromCgf(JSON.parse(data), function () {
-                    //     notyView.close();
-                    // });
-                    //
-                    // self.model.set('_page.doc.cgfText', data);
-                }
+            let makeRequest = () => fetch( '/api/analysisDir', {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json'
+                },
+                body: JSON.stringify(q)
             });
 
+            let afterResolve = dirStr => {
+                console.log("Output of analysisdir:");
+                console.log(dirStr);
 
-        }), function (xhr, status, error) {
-            api.set('content.text', "Error retrieving data: " + error);
+                let fileStrList = dirStr.split("\n");
+                self.buildAndDisplayFolderTree(fileStrList, false);
 
-        }
+                notyView.close();
+            };
+
+            let handleRequestError = err => {
+                  notyView.close();
+                  notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in input files." )});
+                  notyView.show();
+                  alert("The error message is:\n" + err);
+            };
+
+            makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
+        })
     }
 
     event.target.value = null; //to make sure the same files can be loaded again
@@ -1120,8 +1201,27 @@ app.proto.createCyGraphFromCgf = function(cgfJson, callback){
 
             if (callback) callback();
         });
+
+        var graphDescription = cgfJson.description;
+        if ( graphDescription ) {
+          this.setGraphDescriptionText(graphDescription);
+        }
+        else {
+          this.setGraphDescriptionText("");
+        }
+
     }
 
+}
+
+app.proto.hideMoreInfo = function(){
+  $('#more-info-legend').hide();
+  $('#example-graph-indicators').removeClass('z-index-0');
+}
+
+app.proto.showMoreInfo = function(){
+  $('#more-info-legend').show();
+  $('#example-graph-indicators').addClass('z-index-0');
 }
 
 /***
@@ -1131,9 +1231,10 @@ app.proto.showGraphContainer = function(){
     $('#info-div').hide();
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
-    $('#graph-options-container').show();
+    $('#graph-options-container').addClass('display-flex');
     $('#graph-container').show();
     $('#folder-tree').hide();
+    $('#example-graphs-container').hide();
 
     $("#graph-container").css({left:0});
 
@@ -1147,7 +1248,8 @@ app.proto.showGraphContainer = function(){
 app.proto.showInputContainer = function(){
     $('#info-div').show();
     $('#input-container').show();
-    $('#graph-options-container').hide();
+    $('#example-graphs-container').show();
+    $('#graph-options-container').removeClass('display-flex');
     $('#graph-container').hide();
     $('#folder-tree').hide();
 }
@@ -1161,6 +1263,8 @@ app.proto.showGraphContainerAndFolderTree = function(){
     $('#info-div').hide();
     $('#input-container').hide();
     $('#download-div').hide(); //this only appears after analysis is performed
+    $('#example-graphs-container').hide();
+    $('#graph-options-container').addClass('display-flex');
     $('#graph-options-container').show();
     $('#graph-container').show();
     $('#folder-tree').show();
@@ -1183,25 +1287,35 @@ app.proto.downloadResults = function(){
     var notyView = new Noty({type:"information", layout: "bottom",text: "Compressing files...Please wait."});
     notyView.show();
 
-    socket.emit('downloadRequest', self.room, function(fileContent){
-        if(fileContent != undefined && fileContent != null && fileContent.indexOf("Error") == 0){
-            notyView.close();
-            notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
-            notyView.show();
-            alert("The error message is:\n" + fileContent);
+    let q = {
+      room: self.room
+    };
 
-        }
-        else{
-            console.log("Zip file received.");
-
-            var blob = base64ToZipBlob(fileContent);
-
-            saveAs(blob, (self.room + ".zip"));
-
-            notyView.close();
-        }
-
+    let makeRequest = () => fetch( '/api/downloadRequest', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(q)
     });
+
+    let afterResolve = fileContent => {
+        console.log("Zip file received.");
+
+        var blob = base64ToZipBlob(fileContent);
+        saveAs(blob, (self.room + ".zip"));
+
+        notyView.close();
+    };
+
+    let handleRequestError = err => {
+      notyView.close();
+      notyView = new Noty({type:"error", layout: "bottom",timeout: 4500, text: ("Error in downloading results\n.")});
+      notyView.show();
+      alert("The error message is:\n" + err);
+    };
+
+    makeRequest().then( res => handleResponse( res, afterResolve, handleRequestError ) );
 
 }
 

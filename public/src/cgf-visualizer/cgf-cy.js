@@ -180,7 +180,20 @@ function attachSiteBboxes(nodesData) {
   } );
 }
 
+// normalize and/or extend layout options
+function finilizeLayoutOptions(layoutOptions){
+  let randomize = !layoutOptions.incremental;
+  let tilingCompareBy = function ( nodeId1, nodeId2 ){
+    if ( nodeId1 < nodeId2 ) {
+      return -1;
+    }
+    return 0;
+  };
 
+  let extendedOptions = _.extend({}, layoutOptions, { randomize, tilingCompareBy });
+  delete extendedOptions.incremental;
+  return extendedOptions;
+};
 
 module.exports.initLayoutOptions = function(modelManager){
   let layoutOptions = {
@@ -193,12 +206,12 @@ module.exports.initLayoutOptions = function(modelManager){
     gravityCompound: 0,
     gravityRangeCompound: 1.5,
     numIter: 2500,
-    tileDisconnected: true,
+    tile: true,
     tilingPaddingVertical: 5,
     tilingPaddingHorizontal: 5,
     animate: false,
     incremental: false,
-    improveFlow: true,
+    // improveFlow: true,
     initialEnergyOnIncremental: 0.3,
     name: 'cose-bilkent'
   }
@@ -255,7 +268,8 @@ module.exports.convertModelJsonToCyElements = function(modelCy, doTopologyGroupi
 }
 
 module.exports.runLayout = function(layoutOptions){
-    cy.layout(layoutOptions).run();
+    let finalLayoutOptions = finilizeLayoutOptions(layoutOptions);
+    cy.layout(finalLayoutOptions).run();
 }
 
 module.exports.createContainer = function(el, doTopologyGrouping, modelManager, callback) {
@@ -280,7 +294,7 @@ module.exports.createContainer = function(el, doTopologyGrouping, modelManager, 
           minZoom:0.1,
           maxZoom:5,
 
-        layout: modelManager.getLayoutOptions(),
+        layout: finilizeLayoutOptions(modelManager.getLayoutOptions()),
 
         style: CgfStyleSheet,
 
@@ -520,7 +534,10 @@ var CgfStyleSheet = cytoscape.stylesheet()
         .selector("node:parent")
         .css({
             'text-valign': 'bottom',
-            'content': 'data(edgeType)', //there is a label when there's a clique among the nodes inside the compound
+            'content': function( node ){
+               //there is a label when there's a clique among the nodes inside the compound
+              return node.data('edgeType') || '';
+            },
             'font-size': 8,
 
 

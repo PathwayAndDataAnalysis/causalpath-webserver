@@ -1,0 +1,30 @@
+config:
+  target: "http://localhost:3001"
+  http:
+    timeout: 10
+  environments:
+    production:
+      target: "https://causalpath.org"
+    staging:
+      target: "http://35.192.108.199:3001"
+      http:
+        timeout: 300
+    local:
+      target: "http://localhost:3001"
+  phases:
+    - duration: 1
+      arrivalRate: 20
+      name: Load
+  # processor: "./processor.js"
+  payload:
+      # path is relative to the location of the test script
+      path: "analyzed_rooms_{{ $environment }}.txt"
+      fields:
+        - "room"
+scenarios:
+  - flow:
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
