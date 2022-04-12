@@ -794,3 +794,4 @@ public/build
 .idea/
 /jar/causalpath.jar
 jar/causalpath
+jar/parameter-info.json
