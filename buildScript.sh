@@ -5,7 +5,7 @@ sudo git pull origin master
 sudo npm install
 cd jar
 # Use the below line if this is first time installation of causalpath-webserver
-# git submodule add https://github.com/PathwayAndDataAnalysis/causalpath.git
+# git submodule add -f https://github.com/PathwayAndDataAnalysis/causalpath.git
 cd causalpath
 sudo git pull origin master
 sudo mvn clean install

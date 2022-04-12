@@ -1,0 +1,3 @@
+[submodule "jar/causalpath"]
+	path = jar/causalpath
+	url = https://github.com/PathwayAndDataAnalysis/causalpath.git
