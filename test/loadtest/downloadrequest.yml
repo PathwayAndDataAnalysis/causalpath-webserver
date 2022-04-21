@@ -5,15 +5,17 @@ config:
   environments:
     production:
       target: "https://causalpath.org"
+      http:
+        timeout: 1000
     staging:
       target: "http://35.192.108.199:3001"
       http:
-        timeout: 300
+        timeout: 1000
     local:
       target: "http://localhost:3001"
   phases:
     - duration: 1
-      arrivalRate: 20
+      arrivalRate: 1
       name: Load
   # processor: "./processor.js"
   payload:
@@ -23,6 +25,122 @@ config:
         - "room"
 scenarios:
   - flow:
+    # TODO: see if artilaryio provides a way of doing this without repeating the same code
+    # arrivalCount did not seem to work for that in my first trial
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
+    - post:
+        url: "/api/downloadRequest"
+        # beforeRequest: makeDownloadRequestVars
+        json:
+          room: "{{ room }}"
+    - think: 2
     - post:
         url: "/api/downloadRequest"
         # beforeRequest: makeDownloadRequestVars

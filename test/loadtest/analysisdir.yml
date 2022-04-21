@@ -5,19 +5,175 @@ config:
   environments:
     production:
       target: "https://causalpath.org"
+      http:
+        timeout: 4500
     staging:
       target: "http://35.192.108.199:3001"
       http:
-        timeout: 1800
+        timeout: 4500
     local:
       target: "http://localhost:3001"
   phases:
     - duration: 1
-      arrivalRate: 20
+      arrivalRate: 1
       name: Load
   processor: "./processor.js"
 scenarios:
   - flow:
+    # TODO: see if artilaryio provides a way of doing this without repeating the same code
+    # arrivalCount did not seem to work for that in my first trial
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
+    - post:
+        url: "/api/analysisDir"
+        beforeRequest: makeAnalysisDirVars
+        afterResponse: analysisResponseHandler
+        json:
+          inputFiles: "{{ inputFiles }}"
+          room: "{{ room }}"
+    - think: 5
     - post:
         url: "/api/analysisDir"
         beforeRequest: makeAnalysisDirVars
