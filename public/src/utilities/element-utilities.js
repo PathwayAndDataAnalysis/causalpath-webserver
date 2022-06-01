@@ -1,4 +1,4 @@
-var cytoscape = require('cytoscape');
+var cytoscape = require("cytoscape");
 
 function computeAbsSitePos({ site, parentBbox, node }) {
   if (!parentBbox) {
@@ -17,8 +17,8 @@ function computeAbsSitePos({ site, parentBbox, node }) {
 function getNodeBBox(node, useTopLeft) {
   var w = node.outerWidth();
   var h = node.outerHeight();
-  var x = node.position('x');
-  var y = node.position('y');
+  var x = node.position("x");
+  var y = node.position("y");
 
   if (useTopLeft) {
     x -= w / 2;
@@ -29,14 +29,14 @@ function getNodeBBox(node, useTopLeft) {
 }
 
 function checkPointSites(x, y, node, threshold = 0) {
-  var sites = node.data('sites');
+  var sites = node.data("sites");
   if (!sites) {
     return null;
   }
 
-  var nodeX = node.position('x');
-  var nodeY = node.position('y');
-  var padding = parseInt(node.css('border-width')) / 2;
+  var nodeX = node.position("x");
+  var nodeY = node.position("y");
+  var padding = parseInt(node.css("border-width")) / 2;
   var cyBaseNodeShapes = cytoscape.baseNodeShapes;
   var parentBbox = getNodeBBox(node);
 
@@ -49,7 +49,14 @@ function checkPointSites(x, y, node, threshold = 0) {
     var siteX = sitePos.x;
     var siteY = sitePos.y;
     var checkPoint = cyBaseNodeShapes["ellipse"].checkPoint(
-            x, y, padding, siteWidth, siteHeight, siteX, siteY);;
+      x,
+      y,
+      padding,
+      siteWidth,
+      siteHeight,
+      siteX,
+      siteY
+    );
 
     if (checkPoint == true) {
       return site;
@@ -65,11 +72,16 @@ function convertToRenderedPosition(modelPos, pan, zoom) {
 
   var res = {};
 
-  ['x', 'y'].forEach( function(dim) {
+  ["x", "y"].forEach(function (dim) {
     res[dim] = modelPos[dim] * zoom + pan[dim];
-  } );
+  });
 
   return res;
 }
 
-module.exports = { computeAbsSitePos, getNodeBBox, checkPointSites, convertToRenderedPosition };
+module.exports = {
+  computeAbsSitePos,
+  getNodeBBox,
+  checkPointSites,
+  convertToRenderedPosition,
+};
