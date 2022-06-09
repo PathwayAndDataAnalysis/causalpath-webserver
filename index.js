@@ -19,6 +19,7 @@ var cyPopper = require("cytoscape-popper");
 var Tippy = require("tippy.js");
 var causalityRenderer = require("./public/src/utilities/causality-cy-renderer");
 var cgfCy = require("./public/src/cgf-visualizer/cgf-cy.js");
+const Console = require("console");
 
 app.loadViews(__dirname + "/views");
 
@@ -1345,3 +1346,9 @@ function isValueMissing(arr, testAgainst) {
     }
     return false;
 }
+
+app.proto.openNewt = function () {
+
+}
+
+

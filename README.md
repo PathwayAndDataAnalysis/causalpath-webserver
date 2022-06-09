@@ -1,7 +1,6 @@
 A Web Server for [CausalPath](https://github.com/PathwayAndDataAnalysis/causalpath)
 =======================================
 
-
 Installation
 ------------
 
@@ -49,5 +48,5 @@ Run server:
 
 In order to open a client:
 
-Enter “http://localhost:3001” to the address bar of your browser. <span
+Enter “<http://localhost:3001>” to the address bar of your browser. <span
 id="_lzkutpoc5320" class="anchor"></span>
