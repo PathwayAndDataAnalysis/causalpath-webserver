@@ -3,7 +3,6 @@ body {
     height: 100%;
     margin: 0px;
     padding: 0px;
-
 }
 
 :root {
@@ -12,7 +11,6 @@ body {
     --margin-width: 10px;
     --total-height: 90%;
     --margin-width-wide: 40px;
-
 }
 
 #banner{
@@ -74,57 +72,42 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
 
 
 #graph-container{
-
     position: absolute;
     /*top: 150px;*/
     border: 1px solid #ddd;
     display: none;
-
     left: 205px;
     right: 0px;
-
     height: 83vh;
     margin: var(--margin-width);
-
     display: none;
-
 }
-
-
 
 #folder-tree{
     position: absolute;
     /*top: 150px;*/
     /*border: 1px solid #ddd;*/
-
     left: 0px;
     width: 200px;
-
     margin: var(--margin-width);
     display: none;
-
     overflow-x: auto;
     font-size: 15px;
 }
 
-
 .input-label {
-
     width: 500px;
     font-size:larger !important;
 }
 
 .input-text{
-
     font-size: small;
     align: left;
 }
 
 .tab-link{
-
     color: #444444;
 }
-
 
 /* Funda: don't forget to add this for fa file icons*/
 input[type="file"] {
@@ -134,7 +117,6 @@ input[type="file"] {
 input[id = "back-button"]{
     display: none;
 }
-
 
 input[id = "back-button"]{
     display: none;
@@ -159,7 +141,6 @@ input[id = "run-layout-button"]{
     display: none;
 }
 
-
 input[id = "show-legend-button"]{
     display: none;
 }
@@ -170,21 +151,17 @@ input[id = "show-legend-button"]{
 }
 
 #input-container{
-
     position: relative;
     /*top: 10%;*/
     /*width: 50%;*/
     /*left:10%;*/
     /*height: 20%;*/
     /*width: var(--input-width);*/
-
     /*height: var(--total-height);*/
     margin-left: 5%; /*same as the padding-left of the info text */
     /*margin-top: 10px;*/
-
     color: #444444;
     /*background-color: #0B9BCD;*/
-
     /*font-size:x-large;*/
     font-family: Verdana;
     margin-right: 5%;
@@ -235,7 +212,6 @@ input[id = "show-legend-button"]{
 {
     /*background: rgba(21, 197, 223, 0.7)*/
     background: #e9f8ff;
-
 }
 
 .fa-file-text{
@@ -283,14 +259,11 @@ input[id = "show-legend-button"]{
     font-size:medium;
 }
 
-
-
 /* Tooltip on right */
 /*.tooltip.bottom > .tooltip-inner {*/
     /*border-right: 5px solid black;*/
     /*font-size: medium;*/
 /*}*/
-
 
 .parameters{
     padding: 20px;
@@ -368,7 +341,6 @@ select, input, textarea, label{
     width:250px;
     height:20px;
     position: absolute;
-
 }
 
 #example-graphs-slider {
@@ -446,7 +418,7 @@ select, input, textarea, label{
     border: 1px solid #d5d5d5;
     left: 205px;
     right: 0px;
-    height: 120vh;
+    height: 1200px;
     margin: var(--margin-width);
 }
 
@@ -494,11 +466,11 @@ select, input, textarea, label{
 }
 
 .sbgn-nav-menu {
-    border: 1px solid #ddd;
+    border: 1px solid #bebebe;
     border-radius: 0.25em;
     margin: auto;
     height: 40px;
-    width: 1000px;
+    /*width: 1000px;*/
 }
 
 .sbgn-nav-menu .dropdown .dropdown-menu {
@@ -625,40 +597,29 @@ select, input, textarea, label{
     border: 2px solid #F7CAA9;
 }
 
-#network-panels-container {
-    margin: auto;
-    border: 1px solid #ddd;
-    height: 680px;
-    width: 800px;
-    /*overflow: auto !important;*/
-    overflow: hidden;
-    border-radius: 0.25em;
-    /*float: left;*/
-}
-
 .network-panel {
     height: 100%;
     width: 100%;
 }
 
 .select-cursor {
-    cursor: url(../../app/img/select-cursor.svg), pointer !important;
+    cursor: url("../img/select-cursor.svg"), pointer !important;
 }
 
 .add-node-cursor {
-    cursor: url(../../app/img/add-node-cursor.svg), pointer !important;
+    cursor: url(../img/add-node-cursor.svg), pointer !important;
 }
 
 .add-edge-cursor {
-    cursor: url(../../app/img/add-edge-cursor.svg), pointer !important;
+    cursor: url(../img/add-edge-cursor.svg), pointer !important;
 }
 
 .zoom-cursor {
-    cursor: url(../../app/img/zoom-cursor.svg), pointer !important;
+    cursor: url(../img/zoom-cursor.svg), pointer !important;
 }
 
 #network-tabs-list-container {
-    width: 1000px;
+    width: 90%;
     margin: auto;
     background-color: #eaeaea;
     padding-bottom: 0.2%;
@@ -669,24 +630,35 @@ select, input, textarea, label{
 }
 
 #sbgn-inspector-and-canvas {
-    margin: auto;
+    margin: 0;
+    width: 100%;
+    position: relative;
+}
+
+#network-panels-container {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ddd;
+    height: 1100px;
+    width: 1200px;
     overflow: auto !important;
+    border-radius: 0.25em;
+    float: left;
 }
 
 #sbgn-inspector {
-    margin: auto;
+    margin: 0;
     border: 1px solid #ddd;
-    height: 680px;
+    height: 1100px;
     width: 200px;
     overflow: auto !important;
     border-radius: 0.25em;
-    /*padding-left: 2px;*/
     padding-right: 2px;
-    /*float: right;*/
+    float: right;
 }
 
 .target-cursor {
-    cursor: url(../../app/img/target-cursor.svg), pointer !important;
+    cursor: url(../img/target-cursor.svg), pointer !important;
 }
 
 .inside-menu {
@@ -747,7 +719,7 @@ select, input, textarea, label{
 
 .sbgn-nav-bar {
     margin: auto;
-    width: 1000px;
+    /*width: 1000px;*/
     overflow: visible !important;
     font-size: 12px !important;
     min-height: 0px;
@@ -852,7 +824,6 @@ select, input, textarea, label{
 .sbgn-toolbar-element:hover {
     background-color: #eaeaea !important;
     border-radius: 5px;
-
 }
 
 .sbgn-toolbar-element {
@@ -1351,7 +1322,6 @@ img#template-reversible-output-add-button:hover {
     border: 1px #0b9bcd solid;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-
 }
 
 #map-exp-table td, #search-exp-table {

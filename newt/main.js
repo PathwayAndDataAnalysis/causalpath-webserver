@@ -9,8 +9,10 @@ var cytoscape = require("cytoscape");
 require("jquery-expander")($);
 require("bootstrap");
 
-var appUtilities = require("./js/app-utilities");
-var appMenu = require("./js/app-menu");
+// var appUtilities = require("./js/app-utilities");
+// var appMenu = require("./js/app-menu");
+var appUtilities = require("./app-utilities");
+var appMenu = require("./app-menu");
 
 // Get cy extension instances
 var cyPanzoom = require("cytoscape-panzoom");
