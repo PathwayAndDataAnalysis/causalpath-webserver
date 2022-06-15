@@ -4,9 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npm run bundle:css && node server.js",
+    "start": "npm run bundle:css && npm run build-bundle-js && node server.js",
     "bundle:css": "postcss public/css/index.css -o public/build/bundle.css",
-    "watch:css": "postcss --watch public/css/index.css -o build/bundle.css"
+    "watch:css": "postcss --watch public/css/index.css -o build/bundle.css",
+    "build-bundle-js": "browserify newt/main.js -o public/build/newt-bundle.js --bedug"
   },
   "repository": {
     "type": "git",
