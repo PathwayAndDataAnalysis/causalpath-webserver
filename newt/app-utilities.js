@@ -346,7 +346,8 @@ appUtilities.adjustVisibilityOfNetworkTabs = function () {
 
 	// if there is just one tab hide tabs container else show it
 	if (this.networkIdsStack.length === 1) {
-		tabsContainer.hide();
+		// tabsContainer.hide();
+		tabsContainer.show();
 	} else {
 		tabsContainer.show();
 	}
@@ -2969,7 +2970,7 @@ appUtilities.launchWithModelFile = function () {
 		loadFromURL(url_path, chiseInstance, promptInvalidURLWarning);
 	else if (uri_path != undefined)
 		loadFromURI(uri_path, chiseInstance, promptInvalidURIWarning);
-	else tutorial.introduction(true);
+	// else tutorial.introduction(true);
 
 	function loadFromURL(filepath, chiseInstance, promptInvalidURLWarning) {
 		var loadCallbackSBGNMLValidity = function (text) {

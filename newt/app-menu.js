@@ -53,10 +53,10 @@ module.exports = function () {
 	function loadSample(filename, callback) {
 		var chiseInstance = appUtilities.getActiveChiseInstance();
 		var textXml = new XMLSerializer().serializeToString(
-			chiseInstance.loadXMLDoc('app/samples/' + filename)
+			chiseInstance.loadXMLDoc('newt-samples/' + filename)
 		);
 		validateSBGNML(textXml);
-		return chiseInstance.loadSample(filename, 'app/samples/', callback);
+		return chiseInstance.loadSample(filename, 'newt-samples/', callback);
 	}
 
 	console.log('init the sbgnviz template/page');

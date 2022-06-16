@@ -16,26 +16,20 @@ body {
 #banner{
     position: relative;
     height: 70px;
-    /*width: 99%;*/
-    /*width:var(--graph-width);*/
-    /*width:  calc( var(--input-width) + var(--graph-width) + var(--margin-width));*/
-    /*background-color: #7d7d80;*/
     margin:var(--margin-width);
     padding: 10px;
     overflow: hidden;
     text-align: left;
     font-size: xx-large;
-    /*color:floralwhite;*/
 }
 .custom-header{
     background-color: #617d8a;
     color:floralwhite;
 }
 
-img.cp-logo{
+img.cp-logo {
     margin-top: -30px;
-
-   width:80px;
+    width: 80px;
 }
 
 #info-div{
@@ -50,13 +44,7 @@ a:visited {color:coral; background-color:transparent; text-decoration:none}
 a:hover   {color:red; background-color:transparent; text-decoration:underline}
 a:active  {color:yellow; background-color:transparent; text-decoration:underline}
 
-
 #graph-options-container{
-    /*position:absolute;*/
-    /*top: 60px;*/
-    /*margin:10px;*/
-    /*height: 10px;*/
-    /*width:var(--graph-width);*/
     margin-left:10px;
     margin-right: 10px;
     height:90px;
@@ -70,10 +58,8 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
   display: flex !important;
 }
 
-
 #graph-container{
     position: absolute;
-    /*top: 150px;*/
     border: 1px solid #ddd;
     display: none;
     left: 205px;
@@ -85,8 +71,6 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
 
 #folder-tree{
     position: absolute;
-    /*top: 150px;*/
-    /*border: 1px solid #ddd;*/
     left: 0px;
     width: 200px;
     margin: var(--margin-width);
@@ -145,81 +129,42 @@ input[id = "show-legend-button"]{
     display: none;
 }
 
-
 #graph-legend .w3-modal-content{
   width: 520px;
 }
 
 #input-container{
     position: relative;
-    /*top: 10%;*/
-    /*width: 50%;*/
-    /*left:10%;*/
-    /*height: 20%;*/
-    /*width: var(--input-width);*/
-    /*height: var(--total-height);*/
     margin-left: 5%; /*same as the padding-left of the info text */
-    /*margin-top: 10px;*/
     color: #444444;
-    /*background-color: #0B9BCD;*/
-    /*font-size:x-large;*/
-    font-family: Verdana;
     margin-right: 5%;
 }
 
 /*One column of the initial input screen*/
-.main-input-content td{
-    /*border: 1px solid #ccc;*/
-    /*display: inline-block;*/
-    /*font-size: xx-large;*/
-    /*padding: 6px 12px;*/
+.main-input-content td {
     cursor: pointer;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    /*background-color: #e9f8ff;*/
-    /*color: floralwhite;*/
+    padding: 20px;
     color: #3a3a3a;
     border-radius: 25px;
-
-    /*background: #e9f8ff;*/
-    /*border: 2px solid #d6e5ec;*/
-    /*border-color: #0e90d2;*/
-
-    /*width:calc( var(--input-width)/2);*/
 }
-
-
 
 .main-input-content label, #graph-options-container label {
-  cursor: pointer !important;
+    cursor: pointer !important;
 }
 
-/*.main-input-content tr{*/
-    /*border: 2px solid #d6e5ec;*/
-    /*border-radius: 10px;*/
-
-/*!*border-color: #0e90d2;*!*/
-/*!*background: rgba(255,127,80, 0.3)*!*/
-/*}*/
-
-.main-input-content tr:nth-child(even)
-{
+.main-input-content tr:nth-child(even) {
     background: #98c1d9;
-
-    /*background: rgba(255,127,80, 0.3)*/
 }
-.main-input-content tr:nth-child(odd)
-{
-    /*background: rgba(21, 197, 223, 0.7)*/
+
+.main-input-content tr:nth-child(odd) {
     background: #e9f8ff;
 }
 
-.fa-file-text{
+.fa-file-text {
     font-size: xx-large !important;
 }
 
-.fa-arrow-circle-left{
-    /*padding-top: 10px;*/
+.fa-arrow-circle-left {
     font-size: xx-large !important;
 }
 
@@ -230,25 +175,23 @@ input[id = "show-legend-button"]{
 .fa-info-circle{
     font-size:xx-large !important;
 }
+
 #download-div .fa-download{
     font-size:xx-large !important;
 }
+
 #sif-topology-grouping{
     font-size:xx-large !important;
 }
 
 .graph-options-td{
-
     padding-left:20px;
-    /*padding-top: 30px;*/
     font-size: inherit;
 }
 
 .main-input-content td:hover {
-    /*background-color: rgb(2, 122, 180);*/
     background-color: coral;
     color: floralwhite;
-    /*opacity: 0.2;*/
 }
 
 .instructions{
@@ -259,17 +202,10 @@ input[id = "show-legend-button"]{
     font-size:medium;
 }
 
-/* Tooltip on right */
-/*.tooltip.bottom > .tooltip-inner {*/
-    /*border-right: 5px solid black;*/
-    /*font-size: medium;*/
-/*}*/
-
 .parameters{
     padding: 20px;
     font-size:small;
     overflow-y: auto;
-
 }
 .close-button, .graph-legend-link-button{
     color: #617d8a !important;
@@ -293,21 +229,19 @@ input[type="text"]{
 .parameters-input{
     /*width: 100%;*/
 }
+
 .parameter-content{
     font-size: small;
-
-
 }
+
 .parameters-select{
     height:100%;
-    /*width: 100px;*/
 }
 
 select, input, textarea, label{
     max-width: 200px !important;
     margin: 5px !important;
 }
-
 
 #batch-input{
     width: 500px;
@@ -319,17 +253,11 @@ select, input, textarea, label{
     padding-bottom: 5px !important;
     padding-left: 5px !important;
     padding-right: 5px !important;
-
 }
 
 .inner-table tr td{
     border:none;
 }
-
-/*.parameter-content table td:nth-child(1){*/
-    /*width: 10px;*/
-/*}*/
-
 
 .img-td{
     padding: 2px !important;
@@ -348,8 +276,6 @@ select, input, textarea, label{
 }
 
 #example-graphs-container {
-  /*width:35%;*/
-  /*margin: auto;*/
   display: flex;
   align-items: center;
   justify-content: center;
@@ -357,7 +283,6 @@ select, input, textarea, label{
 
 #more-info-text-container {
   padding: 20px !important;
-  /*z-index: 20 !important;*/
 }
 
 .carousel-control-next-icon,
@@ -391,35 +316,21 @@ select, input, textarea, label{
     cursor: pointer;
 }
 
-/*table[class = "parameter-content"], tr, td {*/
-/*border: 1px solid black;*/
-/*}*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*Newt styles*/
+.graph-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
 
 #newt-graph-container {
-    position: absolute;
-    border: 1px solid #d5d5d5;
-    left: 205px;
-    right: 0px;
-    height: 1200px;
-    margin: var(--margin-width);
+    position: relative;
+    border: 1px solid #6a6a6a;
+    width: 100%;
+    height: 100%;
 }
 
 .drag-and-drop-file {
@@ -469,8 +380,8 @@ select, input, textarea, label{
     border: 1px solid #bebebe;
     border-radius: 0.25em;
     margin: auto;
-    height: 40px;
-    /*width: 1000px;*/
+    height: 50px;
+    width: 100%;
 }
 
 .sbgn-nav-menu .dropdown .dropdown-menu {
@@ -516,7 +427,8 @@ select, input, textarea, label{
 
 /*Adjust font-size of a tags inside .sbgn-nav-menu*/
 .sbgn-nav-menu a {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .sbgn-nav-menu li.dropdown.open > a.dropdown-toggle {
@@ -573,7 +485,6 @@ select, input, textarea, label{
 }
 
 /*bootstrap.css is no more supporting dropdown submenus handle it here end*/
-
 .sbgn-nav-menu .right-caret {
     border-bottom: 4px solid transparent;
     border-top: 4px solid transparent;
@@ -630,17 +541,16 @@ select, input, textarea, label{
 }
 
 #sbgn-inspector-and-canvas {
-    margin: 0;
-    width: 100%;
-    position: relative;
+    margin: auto;
+    overflow: auto !important;
 }
 
 #network-panels-container {
     margin: 0;
     padding: 0;
     border: 1px solid #ddd;
-    height: 1100px;
-    width: 1100px;
+    height: 700px;
+    width: 800px;
     overflow: auto !important;
     border-radius: 0.25em;
     float: left;
@@ -649,7 +559,7 @@ select, input, textarea, label{
 #sbgn-inspector {
     margin: 0;
     border: 1px solid #ddd;
-    height: 1100px;
+    height: 800px;
     width: 300px;
     overflow: auto !important;
     border-radius: 0.25em;
@@ -686,13 +596,10 @@ select, input, textarea, label{
 }
 
 #sbgn-toolbar {
-    margin: auto;
     width: 100%;
     height: 30px;
-    /*margin-bottom: 10px;*/
     margin-top: 5px !important;
-    margin-bottom: 2px !important;
-    /*overflow: auto !important;*/
+    margin-bottom: 5px !important;
 }
 
 .newt-logo {
@@ -1031,7 +938,7 @@ menu:not([title]):before {
 
 .panel-heading {
     cursor: pointer;
-    height: 17px;
+    height: 42px;
     margin: 0px;
     padding: 0px;
     text-align: center;
@@ -1116,11 +1023,6 @@ hr.inspector-divider {
     padding: 3px;
 }
 
-.element-palette div {
-    /*width: 36px;*/
-    /*height: 30px;*/
-}
-
 .selected-mode.inactive-palette-element {
     border-style: dotted;
     border-width: 1px;
@@ -1135,6 +1037,7 @@ hr.inspector-divider {
     padding-left: 5px !important;
     padding-right: 5px !important;
     border-radius: 8px 8px 0 0 !important;
+    font-size: 14px !important;
 }
 
 .chise-network-tab a {
@@ -1148,9 +1051,6 @@ hr.inspector-divider {
     border-top: 0px !important;
 }
 
-/*.chise-tab.active {
-    font-weight: bold;
-}*/
 .chise-tab.active a {
     background: #eaeaea !important;
 }
