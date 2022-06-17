@@ -59,14 +59,10 @@ a:active  {color:yellow; background-color:transparent; text-decoration:underline
 }
 
 #graph-container{
-    position: absolute;
-    border: 1px solid #ddd;
-    display: none;
-    left: 205px;
-    right: 0px;
+    position: relative;
+    border: 1px solid #7fa7f4;
     height: 83vh;
     margin: var(--margin-width);
-    display: none;
 }
 
 #folder-tree{
@@ -323,7 +319,6 @@ select, input, textarea, label{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 10px;
 }
 
 #newt-graph-container {
@@ -712,7 +707,7 @@ select, input, textarea, label{
 
 .sbgn-toolbar-element {
     margin-left: 4px;
-    margin-right: 0px;
+    margin-right: 4px;
     padding-right: 0px;
     float: left;
     cursor: pointer;

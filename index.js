@@ -3,26 +3,26 @@
  *  Event handlers of model updates
  *	Author: Funda Durupinar Babur<f.durupinar@gmail.com>
  */
-var app = (module.exports = require('derby').createApp(
+const app = (module.exports = require('derby').createApp(
 	'causalpath',
 	__filename
 ));
 // var $ = jQuery = require('jquery');
 const dirTree = require('directory-tree');
 
-var Noty = require('noty');
-var saveAs = require('file-saver').saveAs;
-var cytoscape = require('cytoscape');
-var cyCoseBilkent = require('cytoscape-cose-bilkent');
-var cyContextMenus = require('cytoscape-context-menus');
-var cyPopper = require('cytoscape-popper');
-var Tippy = require('tippy.js');
-var causalityRenderer = require('./public/src/utilities/causality-cy-renderer');
-var cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
+const Noty = require('noty');
+const saveAs = require('file-saver').saveAs;
+const cytoscape = require('cytoscape');
+const cyCoseBilkent = require('cytoscape-cose-bilkent');
+const cyContextMenus = require('cytoscape-context-menus');
+const cyPopper = require('cytoscape-popper');
+const Tippy = require('tippy.js');
+const causalityRenderer = require('./public/src/utilities/causality-cy-renderer');
+const cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
 
 app.loadViews(__dirname + '/views');
 
-var docReady = false;
+let docReady = false;
 
 app.modelManager = null;
 
@@ -32,7 +32,7 @@ var graphChoiceEnum = {
 	DEMO: 3,
 };
 
-var graphChoice;
+let graphChoice;
 
 let handleResponse = (res, afterResolve, handleRequestError, getResData) => {
 	let {statusText, status, ok} = res;
@@ -49,16 +49,18 @@ let handleResponse = (res, afterResolve, handleRequestError, getResData) => {
 };
 
 app.get('/', function (page, model, params) {
+	let docId;
+
 	function getId() {
 		return model.id();
 	}
 
 	function idIsReserved() {
-		var ret = model.get('documents.' + docId) != undefined;
+		const ret = model.get('documents.' + docId) != undefined;
 		return ret;
 	}
 
-	var docId = getId();
+	docId = getId();
 
 	while (idIsReserved()) {
 		docId = getId();
