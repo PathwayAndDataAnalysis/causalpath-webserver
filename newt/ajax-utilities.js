@@ -3,6 +3,7 @@ var fs = require('fs');
 var request = require('request');
 var querystring = require('querystring');
 var nodeMailer = require('nodemailer');
+
 /*
 	functions in this file all have to take the same arguments:
 	 - req: the ajax request object, contains parameters sent threw ajax call in req.query 
@@ -11,9 +12,9 @@ var nodeMailer = require('nodemailer');
 	Then it is possible to throw the error and let it be handled by the server.js call.
 */
 exports.validateSBGNML = function (req, res) {
-	var sbgnml;
+	let sbgnml;
 	// passing the entire map for validation is too big to use GET request. POST should be prefered.
-	if (req.method == 'POST') {
+	if (req.method === 'POST') {
 		var body = '';
 		req.on('data', function (data) {
 			body += data;
@@ -24,7 +25,6 @@ exports.validateSBGNML = function (req, res) {
 				req.connection.destroy();
 				res.status(413);
 				res.send('Error: Too much data passed');
-				return;
 			}
 		});
 
@@ -33,7 +33,7 @@ exports.validateSBGNML = function (req, res) {
 			sbgnml = post.sbgnml;
 			executeValidate(sbgnml, res);
 		});
-	} else if (req.method == 'GET') {
+	} else if (req.method === 'GET') {
 		sbgnml = req.query.sbgnml;
 		executeValidate(sbgnml, res);
 	}
@@ -41,7 +41,7 @@ exports.validateSBGNML = function (req, res) {
 	function executeValidate(sbgnml, res) {
 		var xsdString;
 		try {
-			xsdString = fs.readFileSync('./app/resources/libsbgn-0.3.xsd', {
+			xsdString = fs.readFileSync('./newt-resources/libsbgn-0.3.xsd', {
 				encoding: 'utf8',
 			}); // function (err, data) {
 		} catch (err) {
@@ -120,7 +120,7 @@ exports.sendEmail = function (req, res) {
 			pass: 'reportbug',
 		},
 	});
-	var attachment = fileContent == 'no-data' ? false : true;
+	var attachment = fileContent !== 'no-data';
 	let mailOptions = {
 		// should be replaced with real recipient's account
 		to: 'replyto.lcsb.gitlab+minerva-core-499-3hxqgkf3oh3yq2zb9veolqjo6-issue@gmail.com',
@@ -146,9 +146,10 @@ exports.sendEmail = function (req, res) {
 };
 
 exports.ServerRequest = function (req, res) {
-	//request for taking authentication from minerva api
+	let options;
+//request for taking authentication from minerva api
 	if (req.body.postType === 'auth') {
-		var options = {
+		options = {
 			url: req.body.address,
 			method: 'POST',
 			timeout: 30000,
@@ -165,7 +166,7 @@ exports.ServerRequest = function (req, res) {
 			Cookie: req.body.token,
 			'Content-Type': 'text/plain',
 		};
-		var options = {
+		options = {
 			url: req.body.url,
 			method: 'POST',
 			qs: req.query.qs,

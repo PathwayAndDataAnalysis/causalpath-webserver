@@ -26,7 +26,7 @@ let docReady = false;
 
 app.modelManager = null;
 
-var graphChoiceEnum = {
+const graphChoiceEnum = {
 	JSON: 1,
 	ANALYSIS: 2,
 	DEMO: 3,
@@ -56,8 +56,7 @@ app.get('/', function (page, model, params) {
 	}
 
 	function idIsReserved() {
-		const ret = model.get('documents.' + docId) != undefined;
-		return ret;
+		return model.get('documents.' + docId) !== undefined;
 	}
 
 	docId = getId();
@@ -70,10 +69,10 @@ app.get('/', function (page, model, params) {
 });
 
 app.get('/:docId', function (page, model, arg, next) {
-	var messagesQuery, room;
+	let messagesQuery, room;
 	room = arg.docId;
 
-	var docPath = 'documents.' + arg.docId;
+	const docPath = 'documents.' + arg.docId;
 
 	if (arg.docId.includes('test') && model.get('documents.' + arg.docId))
 		model.set('documents.' + arg.docId, null);
@@ -88,12 +87,12 @@ app.get('/:docId', function (page, model, arg, next) {
 			id: arg.docId,
 		});
 
-		var cgfTextPath = model.at(docPath + '.cgfText');
-		var cyPath = model.at(docPath + '.cy');
-		var parametersPath = model.at(docPath + '.parameters');
-		var layoutPath = model.at(docPath + '.layout');
-		var enumerationsPath = model.at(docPath + '.enumerations');
-		var folderTree = model.at(docPath + '.folderTree');
+		const cgfTextPath = model.at(docPath + '.cgfText');
+		const cyPath = model.at(docPath + '.cy');
+		const parametersPath = model.at(docPath + '.parameters');
+		const layoutPath = model.at(docPath + '.layout');
+		const enumerationsPath = model.at(docPath + '.enumerations');
+		const folderTree = model.at(docPath + '.folderTree');
 
 		cgfTextPath.subscribe(function () {
 			cyPath.subscribe(function () {
@@ -160,15 +159,13 @@ app.proto.create = function (model) {
  * @param model
  */
 app.proto.init = function (model) {
-	let self = this;
-
-	var id = model.get('_session.userId');
-	var name = model.get('users.' + id + '.name');
+	const id = model.get('_session.userId');
+	const name = model.get('users.' + id + '.name');
 	this.room = model.get('_page.room');
 
 	this.modelManager = require('./public/src/model/modelManager.js')(
 		model,
-		self.room,
+		this.room,
 		model.get('_session.userId'),
 		name
 	);
@@ -177,10 +174,10 @@ app.proto.init = function (model) {
 	// TODO: later remove this and other code parts that would become useless after removing option a?
 	// model.on('all', '_page.doc.parameters.*.value.**', function(ind, op, val, prev, passed){
 	//     if(docReady) {
-	//         self.updateParameterVisibility();
+	//         this.updateParameterVisibility();
 	//         setTimeout(function(){
-	//             self.initSelectBoxes();
-	//             // self.initSelectBoxes();
+	//             this.initSelectBoxes();
+	//             // this.initSelectBoxes();
 	//         }, 100); //wait a little while so that dom elements are updated
 	//
 	//     }
@@ -214,34 +211,30 @@ app.proto.initParameters = function (model, json) {
  * These cannot be updated directly by handlebars
  */
 app.proto.initSelectBoxes = function () {
-	let self = this;
 	let parameterList = this.modelManager.getModelParameters();
 
 	if (parameterList) {
 		parameterList.forEach(function (param) {
 			if (param.isVisible) {
 				//otherwise dom elements will not have been created yet
-
-				self.initParamSelectBox(param);
+				this.initParamSelectBox(param);
 			}
 		});
 	}
 };
 
 app.proto.initParamSelectBox = function (param) {
-	let self = this;
 	param.cnt.forEach(function (cnt) {
 		for (let j = 0; j < param.EntryType.length; j++) {
-			let enumList = self.getEnum(param.EntryType[j]);
+			let enumList = this.getEnum(param.EntryType[j]);
 
 			if (enumList) {
 				if (param.value && param.value[cnt] && param.value[cnt][j]) {
-					let selectedInd = enumList.indexOf(param.value[cnt][j]);
-					self.getDomElement(param, cnt, j)[0].selectedIndex =
-						selectedInd;
+					this.getDomElement(param, cnt, j)[0].selectedIndex =
+						enumList.indexOf(param.value[cnt][j]);
 				} else {
 					//no value assigned
-					self.getDomElement(param, cnt, j)[0].selectedIndex = -1;
+					this.getDomElement(param, cnt, j)[0].selectedIndex = -1;
 				}
 			}
 		}
@@ -251,7 +244,6 @@ app.proto.initParamSelectBox = function (param) {
 app.proto.unselectParameter = function (param, cnt, entryInd) {
 	if (param.value) {
 		// let currentValue = param.value[cnt][entryInd];
-
 		let currentInd = this.getDomElement(param, cnt, entryInd)[0]
 			.selectedIndex;
 
@@ -259,7 +251,7 @@ app.proto.unselectParameter = function (param, cnt, entryInd) {
 			param.value[cnt][entryInd]
 		);
 
-		if (currentInd === selectedInd && currentInd != -1) {
+		if (currentInd === selectedInd && currentInd !== -1) {
 			//double click
 			this.getDomElement(param, cnt, entryInd)[0].selectedIndex = -1; //unselect
 			//update the value too
@@ -277,26 +269,24 @@ app.proto.unselectParameter = function (param, cnt, entryInd) {
  * These cannot be updated directly by handlebars
  */
 app.proto.initCheckBoxes = function () {
-	let self = this;
 	let parameterList = this.modelManager.getModelParameters();
 
 	if (parameterList) {
 		parameterList.forEach(function (param) {
 			if (param.isVisible) {
-				self.initParamCheckBox(param);
+				this.initParamCheckBox(param);
 			}
 		});
 	}
 };
 
 app.proto.initParamCheckBox = function (param) {
-	let self = this;
 
 	param.cnt.forEach(function (cnt) {
 		for (let j = 0; j < param.EntryType.length; j++) {
 			if (param.EntryType[j] === 'Boolean') {
 				let val = param.value[cnt][j];
-				self.getDomElement(param, cnt, j).prop('checked', val);
+				this.getDomElement(param, cnt, j).prop('checked', val);
 			}
 		}
 	});
@@ -345,7 +335,7 @@ app.proto.updateChecked = function (param, cnt, entryInd) {
  * @param ind: parameter's idnex
  */
 app.proto.updateBatch = function (param) {
-	let self = this;
+	// let this = this;
 
 	let cnt = this.modelManager.getModelParameterCnt(param.ind);
 	let valStr = $('#' + param.batchDomId)
@@ -359,20 +349,20 @@ app.proto.updateBatch = function (param) {
 	//first clear cnt array
 	this.modelManager.emptyModelParameterCntArr(param.ind);
 
-	self.model.set('_page.doc.parameters.' + param.ind + '.domId', null);
+	this.model.set('_page.doc.parameters.' + param.ind + '.domId', null);
 
 	//then add the input boxes back
 	for (let i = 0; i < newCnt; i++) {
 		let valEntry = vals[i].split(' ');
 		for (let entryInd = 0; entryInd < valEntry.length; entryInd++) {
-			self.modelManager.setModelParameterValue(
+			this.modelManager.setModelParameterValue(
 				param.ind,
 				i,
 				entryInd,
 				valEntry[entryInd]
 			);
 		}
-		self.addParameterInput(param);
+		this.addParameterInput(param);
 	}
 };
 
@@ -432,7 +422,7 @@ var convertParameterListToFileContent = function (parameterList) {
 				if (val) {
 					let valContent = '';
 					for (let i = 0; i < val.length; i++) {
-						if (!val[i] || val[i] == '') {
+						if (!val[i] || val[i] === '') {
 							//don't write the file if a value is missing
 							valContent = '';
 							break;
@@ -456,7 +446,7 @@ app.proto.getEnum = function (type) {
 	if (this.modelManager) {
 		let enumList = this.modelManager.getModelEnumerations();
 
-		for (var i = 0; i < enumList.length; i++) {
+		for (let i = 0; i < enumList.length; i++) {
 			if (enumList[i].name === type) {
 				return enumList[i].values;
 			}
@@ -469,7 +459,7 @@ app.proto.getEnum = function (type) {
  * @param param
  */
 app.proto.addParameterInput = function (param) {
-	let self = this;
+	// let this = this;
 
 	if (isValueMissing(param.value, null)) {
 		alert('First enter missing values for ' + param.Title);
@@ -481,7 +471,7 @@ app.proto.addParameterInput = function (param) {
 	this.modelManager.pushModelParameterCnt(param.ind, newCnt); //id of the html field
 
 	for (let j = 0; j < param.EntryType.length; j++)
-		self.model.set(
+		this.model.set(
 			'_page.doc.parameters.' + param.ind + '.domId.' + newCnt + '.' + j,
 			param.ID + '-' + newCnt + '-' + j
 		); //for multiple fields
@@ -490,7 +480,7 @@ app.proto.addParameterInput = function (param) {
 
 	for (let j = 0; j < param.EntryType.length; j++) {
 		if (!param.value || !param.value[newCnt] || !param.value[newCnt][j])
-			self.model.set(
+			this.model.set(
 				'_page.doc.parameters.' +
 				param.ind +
 				'.value.' +
@@ -502,8 +492,8 @@ app.proto.addParameterInput = function (param) {
 	}
 
 	//update ui elements accordingly
-	self.initParamSelectBox(param);
-	self.initParamCheckBox(param);
+	this.initParamSelectBox(param);
+	this.initParamCheckBox(param);
 };
 
 /**
@@ -534,7 +524,7 @@ app.proto.updateBatchBox = function (param) {
  */
 app.proto.updateParameterVisibility = function () {
 	let parameterList = this.modelManager.getModelParameters();
-	let self = this;
+	// let this = this;
 
 	parameterList.forEach(function (param) {
 		if (param.Condition) {
@@ -542,33 +532,33 @@ app.proto.updateParameterVisibility = function () {
 
 			if (!condition.Operator) {
 				//a single condition without an operator
-				let condParam = self.modelManager.findModelParameterFromId(
+				let condParam = this.modelManager.findModelParameterFromId(
 					condition.Parameter
 				);
-				if (self.conditionResult(condParam.ind, condition.Value)) {
-					self.model.set(
+				if (this.conditionResult(condParam.ind, condition.Value)) {
+					this.model.set(
 						'_page.doc.parameters.' + param.ind + '.isVisible',
 						true
 					);
 				} else {
-					self.model.set(
+					this.model.set(
 						'_page.doc.parameters.' + param.ind + '.isVisible',
 						false
 					);
 				}
 			} else {
 				if (
-					self.satisfiesConditions(
+					this.satisfiesConditions(
 						condition.Operator,
 						condition.Conditions
 					)
 				) {
-					self.model.set(
+					this.model.set(
 						'_page.doc.parameters.' + param.ind + '.isVisible',
 						true
 					);
 				} else {
-					self.model.set(
+					this.model.set(
 						'_page.doc.parameters.' + param.ind + '.isVisible',
 						false
 					);
@@ -585,7 +575,7 @@ app.proto.updateParameterVisibility = function () {
  * @returns {*}
  */
 app.proto.satisfiesConditions = function (op, conditions) {
-	let self = this;
+	// let this = this;
 	let results = [];
 	for (let i = 0; i < conditions.length; i++) {
 		let condition = conditions[i];
@@ -595,19 +585,18 @@ app.proto.satisfiesConditions = function (op, conditions) {
 			condition.Value !== undefined
 		) {
 			//if it is not composite
-
-			let condParam = self.modelManager.findModelParameterFromId(
+			let condParam = this.modelManager.findModelParameterFromId(
 				condition.Parameter
 			);
 
-			let result = self.conditionResult(condParam.ind, condition.Value);
+			let result = this.conditionResult(condParam.ind, condition.Value);
 			results.push(result);
 
-			if (condition.Parameter == 'fdr-threshold-for-network-significance')
+			if (condition.Parameter === 'fdr-threshold-for-network-significance')
 				console.log(result);
 		} else if (condition.Operator) {
 			results.push(
-				self.satisfiesConditions(
+				this.satisfiesConditions(
 					condition.Operator,
 					condition.Conditions
 				)
@@ -668,7 +657,7 @@ app.proto.runLayout = function () {
  */
 app.proto.reloadGraph = function () {
 	cy.destroy();
-	var cgfText = this.model.get('_page.doc.cgfText');
+	const cgfText = this.model.get('_page.doc.cgfText');
 	this.createCyGraphFromCgf(JSON.parse(cgfText));
 };
 
@@ -677,7 +666,8 @@ app.proto.reloadGraph = function () {
  */
 // TODO: remove or comment out?
 app.proto.loadDemoGraph = function () {
-	var demoJson = require('./public/demo/demoJson');
+	console.log("Display Demo Graphs Clicked");
+	const demoJson = require('./public/demo/demoJson');
 	graphChoice = graphChoiceEnum.DEMO;
 	this.model.set('_page.doc.cgfText', JSON.stringify(demoJson));
 	this.showGraphContainer();
@@ -690,12 +680,13 @@ app.proto.loadDemoGraph = function () {
 };
 
 app.proto.loadSpecificDemoGraph = function (subId) {
-	var self = this;
+	// const this = this;
 	let choosenNodeId = '___samples___' + subId;
-	self.loadDemoGraphs(choosenNodeId);
+	this.loadDemoGraphs(choosenNodeId);
 };
 
 app.proto.getFileText = function (filePath) {
+	let xhttp;
 	if (window.XMLHttpRequest) {
 		xhttp = new XMLHttpRequest();
 	} else {
@@ -703,15 +694,14 @@ app.proto.getFileText = function (filePath) {
 	}
 	xhttp.open('GET', filePath, false);
 	xhttp.send();
-	var text = xhttp.response;
-	return text;
+	return xhttp.response;
 };
 
 app.proto.getFileObject = function (filePath) {
-	var self = this;
+	// const this = this;
 
 	function getFileBlob(filePath) {
-		var text = self.getFileText(filePath);
+		const text = this.getFileText(filePath);
 		return new Blob([text]);
 	}
 
@@ -728,22 +718,21 @@ app.proto.getFileObject = function (filePath) {
 	//   return new Blob([text]);
 	// }
 
-	var blobToFile = function (blob, name) {
+	const blobToFile = function (blob, name) {
 		blob.lastModifiedDate = new Date();
 		blob.name = name;
 		return blob;
 	};
 
-	var fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
-	var blob = getFileBlob(filePath);
-	var fileObj = blobToFile(blob, fileName);
-	return fileObj;
+	const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+	const blob = getFileBlob(filePath);
+	return blobToFile(blob, fileName);
 };
 
 app.proto.loadDemoGraphs = function (choosenNodeId) {
-	var self = this;
+	// const this = this;
 
-	var notyView = new Noty({
+	let notyView = new Noty({
 		type: 'information',
 		layout: 'bottom',
 		text: 'Loading demo folders...Please wait.',
@@ -761,14 +750,14 @@ app.proto.loadDemoGraphs = function (choosenNodeId) {
 		});
 
 	let afterResolve = (filePaths) => {
-		var fileObjs = filePaths.map((filePath) => {
+		const fileObjs = filePaths.map((filePath) => {
 			filePath = filePath.replace('public/', '');
-			var fileObj = self.getFileObject(filePath);
+			let fileObj = this.getFileObject(filePath);
 			fileObj = extendFileObj(fileObj, filePath);
 			return fileObj;
 		});
 		notyView.close();
-		self.loadAnalysisFilesFromClient(fileObjs, choosenNodeId);
+		this.loadAnalysisFilesFromClient(fileObjs, choosenNodeId);
 	};
 
 	let handleRequestError = (err) => {
@@ -795,15 +784,14 @@ app.proto.loadDemoGraphs = function (choosenNodeId) {
  * Load graph file in json format
  */
 app.proto.loadGraphFile = function (file) {
-	var self = this;
-
+	// const this = this;
 	graphChoice = graphChoiceEnum.JSON;
 
-	var reader = new FileReader();
+	const reader = new FileReader();
 
 	reader.onload = function (e) {
-		self.model.set('_page.doc.cgfText', this.result);
-		self.createCyGraphFromCgf(JSON.parse(this.result));
+		this.model.set('_page.doc.cgfText', this.result);
+		this.createCyGraphFromCgf(JSON.parse(this.result));
 	};
 
 	reader.readAsText(file);
@@ -817,7 +805,7 @@ function buildTree(parts, treeNode, file, parentNodePath = '') {
 
 	for (let i = 0; i < treeNode.length; i++) {
 		let nodeText = treeNode[i].text;
-		if (parts[0] == nodeText) {
+		if (parts[0] === nodeText) {
 			buildTree(
 				parts.splice(1, parts.length),
 				treeNode[i].children,
@@ -855,7 +843,8 @@ app.proto.buildAndDisplayFolderTree = function (
 	isFromClient,
 	choosenNodeId
 ) {
-	let self = this;
+	let notyView;
+	// let this = this;
 	let maxTextLength = 0;
 
 	let data = [];
@@ -917,23 +906,21 @@ app.proto.buildAndDisplayFolderTree = function (
 
 	this.setGraphDescriptionText('');
 
-	self.createCyGraphFromCgf();
+	this.createCyGraphFromCgf();
 
 	$('#folder-tree').on('dblclick.jstree', function (e) {
-		var instance = $.jstree.reference(this);
-		node = instance.get_node(e.target);
+		const instance = $.jstree.reference(this);
+		let node = instance.get_node(e.target);
 		if (isFromClient) {
 			//directly load graph
-
 			let file = node.data;
-			self.loadGraphFile(file);
+			this.loadGraphFile(file);
 		} else {
 			// get data from the server
 			console.log(node.data);
-
 			let q = {
 				dir: node.data,
-				room: self.room,
+				room: this.room,
 			};
 
 			let makeRequest = () =>
@@ -946,8 +933,8 @@ app.proto.buildAndDisplayFolderTree = function (
 				});
 
 			let afterResolve = (fileContent) => {
-				self.model.set('_page.doc.cgfText', fileContent);
-				self.createCyGraphFromCgf(JSON.parse(fileContent));
+				this.model.set('_page.doc.cgfText', fileContent);
+				this.createCyGraphFromCgf(JSON.parse(fileContent));
 			};
 
 			let handleRequestError = (err) => {
@@ -971,16 +958,16 @@ app.proto.buildAndDisplayFolderTree = function (
 
 	if (choosenNodeId) {
 		$('#folder-tree').on('ready.jstree', function (e) {
-			var instance = $.jstree.reference(this);
-			node = instance.get_node(choosenNodeId);
-			var nodeDivId = node.a_attr.id;
+			const instance = $.jstree.reference(this);
+			let node = instance.get_node(choosenNodeId);
+			const nodeDivId = node.a_attr.id;
 
 			$('#' + nodeDivId).trigger('dblclick.jstree');
 			instance.select_node(node);
 		});
 	}
 
-	var notyView = new Noty({
+	notyView = new Noty({
 		type: 'information',
 		layout: 'bottom',
 		text: 'Double click on a folder to load the model in that folder.',
@@ -1000,11 +987,11 @@ app.proto.buildAndDisplayFolderTree = function (
  * In visualize results from a previous analysis
  */
 app.proto.loadAnalysisFilesFromClient = function (fileList, choosenNodeId) {
-	var self = this;
+	// const this = this;
 
 	graphChoice = graphChoiceEnum.JSON;
 
-	self.buildAndDisplayFolderTree(fileList, true, choosenNodeId);
+	this.buildAndDisplayFolderTree(fileList, true, choosenNodeId);
 };
 
 /***
@@ -1012,10 +999,8 @@ app.proto.loadAnalysisFilesFromClient = function (fileList, choosenNodeId) {
  * In visualize results from a previous analysis
  */
 app.proto.loadAnalysisDirFromClientInput = function (event) {
-	var self = this;
-
 	let fileList = Array.from(event.target.files);
-	self.loadAnalysisFilesFromClient(fileList);
+	this.loadAnalysisFilesFromClient(fileList);
 
 	event.target.value = null; //to make sure the same files can be loaded again
 };
@@ -1025,11 +1010,10 @@ app.proto.loadAnalysisDirFromClientInput = function (event) {
  * Produces graph from analysis results
  */
 app.proto.loadAnalysisDirFromServer = function (event) {
-	var self = this;
 	graphChoice = graphChoiceEnum.ANALYSIS;
-	var fileCnt = $('#analysis-directory-input')[0].files.length;
-	var fileContents = [];
-	var notyView = new Noty({
+	const fileCnt = $('#analysis-directory-input')[0].files.length;
+	const fileContents = [];
+	let notyView = new Noty({
 		type: 'information',
 		layout: 'bottom',
 		text: 'Reading files...Please wait.',
@@ -1041,22 +1025,22 @@ app.proto.loadAnalysisDirFromServer = function (event) {
 	console.log($('#analysis-directory-input')[0].files);
 	//Sending a zip file
 	if (
-		fileCnt == 1 &&
+		fileCnt === 1 &&
 		$('#analysis-directory-input')[0]
 			.files[0].name.split('.')
 			.pop()
-			.toLowerCase() == 'zip'
+			.toLowerCase() === 'zip'
 	) {
-		var file = $('#analysis-directory-input')[0].files[0];
+		const file = $('#analysis-directory-input')[0].files[0];
 
-		var reader = new FileReader();
+		const reader = new FileReader();
 
 		reader.onload = function (e) {
 			fileContents.push({name: file.name, content: e.target.result});
 			notyView.setText('Analyzing results...Please wait.');
 			let q = {
 				fileContent: e.target.result,
-				room: self.room,
+				room: this.room,
 			};
 
 			let makeRequest = () =>
@@ -1070,8 +1054,7 @@ app.proto.loadAnalysisDirFromServer = function (event) {
 
 			let afterResolve = (dirStr) => {
 				let fileStrList = dirStr.split('\n');
-				self.buildAndDisplayFolderTree(fileStrList, false);
-
+				this.buildAndDisplayFolderTree(fileStrList, false);
 				notyView.close();
 			};
 
@@ -1094,12 +1077,11 @@ app.proto.loadAnalysisDirFromServer = function (event) {
 
 		reader.readAsBinaryString(file);
 	} else {
-		var p1 = new Promise(function (resolve, reject) {
-			for (var i = 0; i < fileCnt; i++) {
+		const p1 = new Promise(function (resolve, reject) {
+			for (let i = 0; i < fileCnt; i++) {
 				(function (file) {
 					//Send these files to server
-					var reader = new FileReader();
-
+					const reader = new FileReader();
 					reader.onload = function (e) {
 						fileContents.push({
 							name: file.name,
@@ -1120,7 +1102,7 @@ app.proto.loadAnalysisDirFromServer = function (event) {
 
 			let q = {
 				inputFiles: fileContents,
-				room: self.room,
+				room: this.room,
 			};
 
 			let makeRequest = () =>
@@ -1137,8 +1119,7 @@ app.proto.loadAnalysisDirFromServer = function (event) {
 				console.log(dirStr);
 
 				let fileStrList = dirStr.split('\n');
-				self.buildAndDisplayFolderTree(fileStrList, false);
-
+				this.buildAndDisplayFolderTree(fileStrList, false);
 				notyView.close();
 			};
 
@@ -1167,23 +1148,23 @@ app.proto.loadAnalysisDirFromServer = function (event) {
  * @param cgfJson
  */
 app.proto.createCyGraphFromCgf = function (cgfJson, callback) {
-	var noTopologyGrouping = this.model.get('_page.doc.noTopologyGrouping');
+	let cgfContainer;
+	const noTopologyGrouping = this.model.get('_page.doc.noTopologyGrouping');
 
 	if (cgfJson == null) {
 		// var cgfText = this.model.get('_page.doc.cgfText');
 		// if(cgfText)
 		//     cgfJson = JSON.parse(cgfText);
 		// else {
-		//
 		// display an empty graph -- don't show the previous model
 		this.modelManager.clearModel();
 		// this.showGraphContainer();
-		var cgfContainer = new cgfCy.createContainer(
+		cgfContainer = new cgfCy.createContainer(
 			$('#graph-container'),
 			!noTopologyGrouping,
 			this.modelManager,
 			function () {
-				if (graphChoice != graphChoiceEnum.JSON)
+				if (graphChoice !== graphChoiceEnum.JSON)
 					//As json object is not associated with any analysis data
 					$('#download-div').show();
 
@@ -1205,19 +1186,19 @@ app.proto.createCyGraphFromCgf = function (cgfJson, callback) {
 		} //cytoscape is loaded
 
 		// this.showGraphContainer();
-		var notyView = new Noty({
+		const notyView = new Noty({
 			type: 'information',
 			layout: 'bottom',
 			text: 'Drawing graph...Please wait.',
 		});
 		notyView.show();
 
-		var cgfContainer = new cgfCy.createContainer(
+		cgfContainer = new cgfCy.createContainer(
 			$('#graph-container'),
 			!noTopologyGrouping,
 			this.modelManager,
 			function () {
-				if (graphChoice != graphChoiceEnum.JSON)
+				if (graphChoice !== graphChoiceEnum.JSON)
 					//As json object is not associated with any analysis data
 					$('#download-div').show();
 				notyView.close();
@@ -1225,7 +1206,7 @@ app.proto.createCyGraphFromCgf = function (cgfJson, callback) {
 			}
 		);
 
-		var graphDescription = cgfJson.description;
+		const graphDescription = cgfJson.description;
 		if (graphDescription) {
 			this.setGraphDescriptionText(graphDescription);
 		} else {
@@ -1289,14 +1270,12 @@ app.proto.showGraphContainerAndFolderTree = function () {
  *Download and save results in <room>.zip
  */
 app.proto.downloadResults = function () {
-	let self = this;
-
-	if (graphChoice == graphChoiceEnum.DEMO) {
+	if (graphChoice === graphChoiceEnum.DEMO) {
 		console.log('No analysis results');
 		return;
 	}
 
-	var notyView = new Noty({
+	let notyView = new Noty({
 		type: 'information',
 		layout: 'bottom',
 		text: 'Compressing files...Please wait.',
@@ -1304,7 +1283,7 @@ app.proto.downloadResults = function () {
 	notyView.show();
 
 	let q = {
-		room: self.room,
+		room: this.room,
 	};
 
 	let makeRequest = () =>
@@ -1319,8 +1298,8 @@ app.proto.downloadResults = function () {
 	let afterResolve = (fileContent) => {
 		console.log('Zip file received.');
 
-		var blob = base64ToZipBlob(fileContent);
-		saveAs(blob, self.room + '.zip');
+		const blob = base64ToZipBlob(fileContent);
+		saveAs(blob, this.room + '.zip');
 
 		notyView.close();
 	};
@@ -1348,18 +1327,16 @@ app.proto.downloadResults = function () {
  * @returns {*}
  */
 function base64ToZipBlob(data) {
-	var byteCharacters = atob(data);
-	var byteNumbers = new Array(byteCharacters.length);
-	for (var i = 0; i < byteCharacters.length; i++) {
+	const byteCharacters = atob(data);
+	const byteNumbers = new Array(byteCharacters.length);
+	for (let i = 0; i < byteCharacters.length; i++) {
 		byteNumbers[i] = byteCharacters.charCodeAt(i);
 	}
-	var byteArray = new Uint8Array(byteNumbers);
-	var blob = new Blob([byteArray], {type: 'application/zip'});
-	return blob;
+	const byteArray = new Uint8Array(byteNumbers);
+	return new Blob([byteArray], {type: 'application/zip'});
 }
 
 /***
- *
  * @param arr
  * @param testAgainst : can be null or undefined
  * @returns {boolean}
@@ -1367,9 +1344,9 @@ function base64ToZipBlob(data) {
 function isValueMissing(arr, testAgainst) {
 	if (arr === undefined) return true;
 	for (let i = 0; i < arr.length; i++) {
-		if (arr[i] == testAgainst) return true;
+		if (arr[i] === testAgainst) return true;
 		for (let j = 0; j < arr[i].length; j++) {
-			if (arr[i][j] == testAgainst) return true;
+			if (arr[i][j] === testAgainst) return true;
 		}
 	}
 	return false;
