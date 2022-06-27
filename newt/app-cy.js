@@ -1,19 +1,19 @@
-var jquery = ($ = require('jquery'));
-var appUtilities = require('./app-utilities');
-var modeHandler = require('./app-mode-handler');
-var inspectorUtilities = require('./inspector-utilities');
-var appUndoActionsFactory = require('./app-undo-actions-factory');
-var _ = require('underscore');
+const jquery = ($ = require('jquery'));
+const appUtilities = require('./app-utilities');
+const modeHandler = require('./app-mode-handler');
+const inspectorUtilities = require('./inspector-utilities');
+const appUndoActionsFactory = require('./app-undo-actions-factory');
+const _ = require('underscore');
 
 module.exports = function (chiseInstance) {
-	var getExpandCollapseOptions =
+	const getExpandCollapseOptions =
 		appUtilities.getExpandCollapseOptions.bind(appUtilities);
 	//  var nodeQtipFunction = appUtilities.nodeQtipFunction.bind(appUtilities);
-	var refreshUndoRedoButtonsStatus =
+	const refreshUndoRedoButtonsStatus =
 		appUtilities.refreshUndoRedoButtonsStatus.bind(appUtilities);
 
 	// use chise instance associated with chise instance
-	var cy = chiseInstance.getCy();
+	const cy = chiseInstance.getCy();
 
 	// register extensions and bind events when cy is ready
 	cy.ready(function () {
@@ -29,10 +29,10 @@ module.exports = function (chiseInstance) {
 	function registerUndoRedoActions() {
 		// only if undoRedo is set
 		// get ur extension instance for cy
-		var ur = cy.undoRedo();
+		const ur = cy.undoRedo();
 
 		// generate an instance of app undo actions with related cy
-		var appUndoActions = appUndoActionsFactory(cy);
+		const appUndoActions = appUndoActionsFactory(cy);
 
 		// bind ur actions
 		ur.action(
@@ -135,7 +135,7 @@ module.exports = function (chiseInstance) {
 	function cytoscapeExtensionsAndContextMenu() {
 		cy.expandCollapse(getExpandCollapseOptions(cy));
 
-		var contextMenus = cy.contextMenus({
+		const contextMenus = cy.contextMenus({
 			menuItemClasses: ['custom-menu-item'],
 		});
 
@@ -259,10 +259,10 @@ module.exports = function (chiseInstance) {
 				id: 'ctx-menu-tile-all-information-boxes',
 				content: 'Tile Information Boxes',
 				onClickFunction: function () {
-					var cy = appUtilities.getActiveCy();
-					var eles = cy.nodes();
-					var ur = cy.undoRedo();
-					var actions = [];
+					const cy = appUtilities.getActiveCy();
+					const eles = cy.nodes();
+					const ur = cy.undoRedo();
+					const actions = [];
 
 					eles.forEach(function (node) {
 						if (
@@ -326,7 +326,7 @@ module.exports = function (chiseInstance) {
 				selector: 'node.cy-expand-collapse-collapsed-node',
 				onClickFunction: function (event) {
 					// The function to be executed on click
-					var node = event.target || event.cyTarget;
+					const node = event.target || event.cyTarget;
 					chiseInstance.expandNodes(node);
 				},
 			},
@@ -342,7 +342,7 @@ module.exports = function (chiseInstance) {
 				},
 				selector: 'node:parent',
 				onClickFunction: function (event) {
-					var node = event.target || event.cyTarget;
+					const node = event.target || event.cyTarget;
 					chiseInstance.collapseNodes(node);
 				},
 			},
@@ -366,8 +366,8 @@ module.exports = function (chiseInstance) {
 				content: 'Select Objects of This Type',
 				selector: 'node, edge',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
-					var sbgnclass = cyTarget.data('class');
+					const cyTarget = event.target || event.cyTarget;
+					const sbgnclass = cyTarget.data('class');
 
 					cy.elements().unselect();
 					cy.elements('[class="' + sbgnclass + '"]').select();
@@ -378,7 +378,7 @@ module.exports = function (chiseInstance) {
 				content: 'Show Hidden Neighbors',
 				selector: 'node[thickBorder]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
+					const cyTarget = event.target || event.cyTarget;
 					appUtilities.showHiddenNeighbors(
 						cyTarget,
 						appUtilities.getChiseInstance(cy)
@@ -391,7 +391,7 @@ module.exports = function (chiseInstance) {
 				selector:
 					'node[class="process"],[class="omitted process"],[class="uncertain process"],[class="association"],[class="dissociation"]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
+					const cyTarget = event.target || event.cyTarget;
 					cyTarget.select();
 					$('#highlight-neighbors-of-selected').trigger('click');
 				},
@@ -402,7 +402,7 @@ module.exports = function (chiseInstance) {
 				selector:
 					'node[class="unspecified entity"],[class^="simple chemical"],[class^="macromolecule"],[class^="nucleic acid feature"],[class^="complex"]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
+					const cyTarget = event.target || event.cyTarget;
 					cyTarget.select();
 					$('#highlight-processes-of-selected').trigger('click');
 				},
@@ -412,7 +412,7 @@ module.exports = function (chiseInstance) {
 				content: 'Navigate to Other End',
 				selector: 'edge',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
+					const cyTarget = event.target || event.cyTarget;
 					appUtilities.navigateToOtherEnd(
 						cyTarget,
 						event.renderedPosition,
@@ -425,8 +425,8 @@ module.exports = function (chiseInstance) {
 				content: 'Convert into Reversible Reaction',
 				selector: 'node[class="process"]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
-					var consumptionEdges = cyTarget._private.edges.filter(
+					const cyTarget = event.target || event.cyTarget;
+					const consumptionEdges = cyTarget._private.edges.filter(
 						(edge) => edge._private.data.class === 'consumption'
 					);
 
@@ -438,7 +438,7 @@ module.exports = function (chiseInstance) {
 							mapType: 'HybridAny',
 						});
 					}
-					var currentArrowScale = Number($('#arrow-scale').val());
+					const currentArrowScale = Number($('#arrow-scale').val());
 					cyTarget
 						.connectedEdges()
 						.style('arrow-scale', currentArrowScale);
@@ -450,7 +450,7 @@ module.exports = function (chiseInstance) {
 				selector:
 					'node[class^="macromolecule"],[class^="complex"],[class^="simple chemical"],[class^="nucleic acid feature"],[class^="compartment"],[class="SIF macromolecule"],[class="SIF simple chemical"]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
+					const cyTarget = event.target || event.cyTarget;
 					appUtilities.relocateInfoBoxes(cyTarget);
 				},
 			},
@@ -460,8 +460,8 @@ module.exports = function (chiseInstance) {
 				selector:
 					'node[class^="macromolecule"],[class^="complex"],[class^="simple chemical"],[class^="nucleic acid feature"],[class^="compartment"],[class="SIF macromolecule"],[class="SIF simple chemical"]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
-					var locations = ['top', 'bottom', 'right', 'left']; //Fit all locations
+					const cyTarget = event.target || event.cyTarget;
+					const locations = ['top', 'bottom', 'right', 'left']; //Fit all locations
 					chiseInstance.fitUnits(cyTarget, locations); //Force fit
 				},
 			},
@@ -472,9 +472,9 @@ module.exports = function (chiseInstance) {
 					'node[class^="macromolecule"],[class^="complex"],[class^="simple chemical"],[class^="nucleic acid feature"],' +
 					'[class^="unspecified entity"], [class^="perturbing agent"],[class^="phenotype"],[class^="tag"],[class^="compartment"],[class^="submap"],[class^="BA"],[class="SIF macromolecule"],[class="SIF simple chemical"]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
+					const cyTarget = event.target || event.cyTarget;
 					//Collection holds the element and is used to generalize resizeNodeToContent function (which is used from Edit-> Menu)
-					var collection = cy.collection();
+					let collection = cy.collection();
 					collection = collection.add(cyTarget);
 					appUtilities.resizeNodesToContent(collection);
 				},
@@ -484,9 +484,9 @@ module.exports = function (chiseInstance) {
 				content: 'Query PC IDs',
 				selector: 'edge',
 				onClickFunction: function (event) {
-					var edge = event.target || event.cyTarget;
-					var qUrl = 'http://www.pathwaycommons.org/pc2/get?';
-					var pcIDSet = edge.data('pcIDSet');
+					const edge = event.target || event.cyTarget;
+					let qUrl = 'http://www.pathwaycommons.org/pc2/get?';
+					const pcIDSet = edge.data('pcIDSet');
 
 					for (var pcID in pcIDSet) {
 						qUrl += 'uri=' + pcID + '&';
@@ -531,7 +531,7 @@ module.exports = function (chiseInstance) {
 				content: 'Clone',
 				selector: '[class="simple chemical"]',
 				onClickFunction: function (event) {
-					var cyTarget = event.target || event.cyTarget;
+					const cyTarget = event.target || event.cyTarget;
 					if (cyTarget.connectedEdges().length > 1) {
 						cy.undoRedo().do('cloneHighDegreeNode', cyTarget);
 					}
@@ -559,14 +559,14 @@ module.exports = function (chiseInstance) {
 					// Since during clone operation the reference of object is changed we cannot use .indexOf() method
 					// Instead we compare the objects by stringifing them. However, string representation of the objects may be the same.
 					// To prevent conflictions in such cases we need to keep used incdices here and pass the already used indices.
-					var usedIndices = {};
+					const usedIndices = {};
 
 					// maintain consistency of layouts, and infoboxes through them
 					// we need to replace the layouts contained in ele by new cloned layouts
-					var globalInfoboxCount = 0;
-					for (var side in ele.data('auxunitlayouts')) {
-						var layout = ele.data('auxunitlayouts')[side];
-						var newLayout =
+					let globalInfoboxCount = 0;
+					for (const side in ele.data('auxunitlayouts')) {
+						const layout = ele.data('auxunitlayouts')[side];
+						const newLayout =
 							chiseInstance.classes.AuxUnitLayout.copy(
 								layout,
 								cy,
@@ -574,25 +574,25 @@ module.exports = function (chiseInstance) {
 							); // get a new layout
 
 						// copy each infobox of the layout
-						for (var i = 0; i < layout.units.length; i++) {
-							var auxunit = layout.units[i];
-							var auxunitStr = JSON.stringify(auxunit);
+						for (let i = 0; i < layout.units.length; i++) {
+							const auxunit = layout.units[i];
+							const auxunitStr = JSON.stringify(auxunit);
 							// keep the new infobox at exactly the same position in the statesandinfos list
 							// var statesandinfosIndex = ele.data('statesandinfos').indexOf(auxunit);
 
-							var statesandinfos = ele.data('statesandinfos');
+							const statesandinfos = ele.data('statesandinfos');
 
 							// keep the new infobox at exactly the same position in the statesandinfos list
-							var statesandinfosIndex;
+							let statesandinfosIndex;
 
 							// Go through the not used indices of statesandinfos to get the index of aucilary unit
-							for (var j = 0; j < statesandinfos.length; j++) {
+							for (let j = 0; j < statesandinfos.length; j++) {
 								// Already used pass it
 								if (usedIndices[j]) {
 									continue;
 								}
 
-								var currentBox = statesandinfos[j];
+								const currentBox = statesandinfos[j];
 
 								// Found out the correct index
 								if (JSON.stringify(currentBox) === auxunitStr) {
@@ -603,7 +603,7 @@ module.exports = function (chiseInstance) {
 							}
 
 							// copy the current infobox
-							var newAuxunit = chiseInstance.classes
+							const newAuxunit = chiseInstance.classes
 								.getAuxUnitClass(auxunit)
 								.copy(
 									auxunit,
@@ -789,11 +789,11 @@ module.exports = function (chiseInstance) {
 				node.data('minHeightBiasBottom', minHeightBiasBottom);
 			},
 			minWidth: function (node) {
-				var data = node.data('resizeMinWidth');
+				const data = node.data('resizeMinWidth');
 				return data ? data : 10;
 			}, // a function returns min width of node
 			minHeight: function (node) {
-				var data = node.data('resizeMinHeight');
+				const data = node.data('resizeMinHeight');
 				return data ? data : 10;
 			}, // a function returns min height of node
 
@@ -801,7 +801,7 @@ module.exports = function (chiseInstance) {
 				//Initially checks if Aspect ratio in Object properties is checked
 				if (appUtilities.nodeResizeUseAspectRatio) return true;
 				//Otherwise it checks 'processes', 'and', 'or' etc. which have fixedAspectRatio as default
-				var sbgnclass = node.data('class');
+				const sbgnclass = node.data('class');
 				return chiseInstance.elementUtilities.mustBeSquare(sbgnclass);
 			}, // with only 4 active grapples (at corners)
 			isNoResizeMode: function (node) {
@@ -831,7 +831,7 @@ module.exports = function (chiseInstance) {
 			},
 
 			resizeToContentCueEnabled: function (node) {
-				var enabled_classes = [
+				const enabled_classes = [
 					'macromolecule',
 					'complex',
 					'simple chemical',
@@ -844,8 +844,8 @@ module.exports = function (chiseInstance) {
 					'submap',
 					'BA',
 				];
-				var node_class = node.data('class');
-				var result = false;
+				const node_class = node.data('class');
+				let result = false;
 
 				enabled_classes.forEach(function (enabled_class) {
 					if (node_class.indexOf(enabled_class) > -1) result = true;
@@ -870,7 +870,7 @@ module.exports = function (chiseInstance) {
 					return;
 				}
 
-				var modeProperties = appUtilities.getScratch(
+				const modeProperties = appUtilities.getScratch(
 					cy,
 					'modeProperties'
 				);
@@ -883,18 +883,18 @@ module.exports = function (chiseInstance) {
 				 */
 				if (modeProperties.mode === 'add-edge-mode') {
 					// fired when edgehandles is done and entities are added
-					var source = sourceNode.id();
-					var target = targetNodes[0].id();
-					var edgeParams = {
+					const source = sourceNode.id();
+					const target = targetNodes[0].id();
+					const edgeParams = {
 						class: modeProperties.selectedEdgeType,
 						language: modeProperties.selectedEdgeLanguage,
 					};
-					var promptInvalidEdge = function () {
+					const promptInvalidEdge = function () {
 						appUtilities.promptInvalidEdgeWarning.render();
 					};
 
-					var isMapTypeValid = false;
-					var currentMapType = chiseInstance.getMapType();
+					let isMapTypeValid = false;
+					const currentMapType = chiseInstance.getMapType();
 					if (currentMapType == 'HybridAny') {
 						isMapTypeValid = true;
 					} else if (currentMapType == 'HybridSbgn') {

@@ -1,0 +1,54 @@
+node	all-nodes	color	255 255 255
+node	all-nodes	bordercolor	50 50 50
+node	MIF	rppasite	MIF-rna|r|255 80 40|50 50 50|11.179609326503158
+node	LDHA	rppasite	LDHA-rna|r|255 80 40|50 50 50|18.654372206786515
+node	SCD	rppasite	SCD-rna|r|255 193 179|50 50 50|3.5342963824790083
+node	NFYB	bordercolor	0 180 20
+node	NFYB	rppasite	NFYB-active-by-network-sig|!|255 238 234|0 180 20|1.0
+node	EGLN1	rppasite	EGLN1-rna|r|255 80 40|50 50 50|13.659760759175432
+node	MVD	rppasite	MVD-rna|r|255 80 40|50 50 50|14.110736637807506
+node	PRL	rppasite	PRL-rna|r|255 128 99|50 50 50|7.260198312173622
+node	CDKN1A	rppasite	CDKN1A-rna|r|255 80 40|50 50 50|32.59797686951347
+node	SREBF2	bordercolor	0 180 20
+node	SREBF2	rppasite	SREBF2-active-by-network-sig|!|255 238 234|0 180 20|1.0
+node	CEBPA	rppasite	CEBPA-rna|r|255 80 40|50 50 50|38.05536856818326
+node	PKM	rppasite	PKM-rna|r|255 115 83|50 50 50|7.997103950636972
+node	IDI1	rppasite	IDI1-rna|r|255 80 40|50 50 50|17.565219672698433
+node	PTGES	rppasite	PTGES-rna|r|255 80 40|50 50 50|26.85095272349481
+node	NCOA1	bordercolor	0 180 20
+node	NCOA1	rppasite	NCOA1-active-by-network-sig|!|255 238 234|0 180 20|1.0
+node	APEX1	rppasite	APEX1-rna|r|147 167 255|50 50 50|-5.021725596150414
+node	HIF1A	bordercolor	0 180 20
+node	HIF1A	rppasite	HIF1A-active-by-network-sig|!|255 238 234|0 180 20|1.0
+node	EGLN3	rppasite	EGLN3-rna|r|255 80 40|50 50 50|55.80158134292339
+node	TGFA	rppasite	TGFA-rna|r|255 80 40|50 50 50|15.75188918816218
+node	NFYC	bordercolor	0 180 20
+node	NFYC	rppasite	NFYC-active-by-network-sig|!|255 238 234|0 180 20|1.0
+node	ACLY	rppasite	ACLY-rna|r|255 196 182|50 50 50|3.3734199284932522
+node	SDHB	rppasite	SDHB-rna|r|40 80 255|50 50 50|-10.135528406726262
+node	LDLR	rppasite	LDLR-rna|r|255 160 139|50 50 50|5.417102165521725
+node	SC5D	rppasite	SC5D-rna|r|255 80 40|50 50 50|18.131681685747843
+node	PMVK	rppasite	PMVK-rna|r|255 106 72|50 50 50|8.50093858730776
+node	HK1	rppasite	HK1-rna|r|255 125 96|50 50 50|7.410130849644447
+node	FDFT1	rppasite	FDFT1-rna|r|255 80 40|50 50 50|23.855300227243916
+node	NDRG1	rppasite	NDRG1-rna|r|255 80 40|50 50 50|26.74852754268345
+node	HIGD1A	rppasite	HIGD1A-rna|r|255 80 40|50 50 50|47.22653192625067
+node	PGK1	rppasite	PGK1-rna|r|255 80 40|50 50 50|18.043225547838478
+node	SLC2A1	rppasite	SLC2A1-rna|r|255 80 40|50 50 50|10.385233926066068
+node	HMGCS1	rppasite	HMGCS1-rna|r|255 119 88|50 50 50|7.753486647761781
+node	ENO1	rppasite	ENO1-rna|r|255 80 40|50 50 50|11.328381984119076
+node	GRHL1	rppasite	GRHL1-rna|r|255 80 40|50 50 50|114.07438544748575
+node	HBEGF	rppasite	HBEGF-rna|r|255 104 70|50 50 50|8.606639866138774
+node	ADM	rppasite	ADM-rna|r|255 180 163|50 50 50|4.260011893574725
+node	NFYA	bordercolor	0 180 20
+node	NFYA	rppasite	NFYA-active-by-network-sig|!|255 238 234|0 180 20|1.0
+node	ARNT	bordercolor	0 180 20
+node	ARNT	rppasite	ARNT-active-by-network-sig|!|255 238 234|0 180 20|1.0
+node	CYP51A1	rppasite	CYP51A1-rna|r|255 80 40|50 50 50|15.64468367523918
+node	SLC29A1	rppasite	SLC29A1-rna|r|161 178 255|50 50 50|-4.372811214972093
+node	BNIP3	rppasite	BNIP3-rna|r|255 80 40|50 50 50|41.76840808403779
+node	ALDOA	rppasite	ALDOA-rna|r|255 80 40|50 50 50|29.38640166847143
+node	FDPS	rppasite	FDPS-rna|r|255 80 40|50 50 50|20.389374727350052
+node	PFKL	rppasite	PFKL-rna|r|255 80 40|50 50 50|20.363747626183518
+node	SREBF1	bordercolor	0 180 20
+node	SREBF1	rppasite	SREBF1-active-by-network-sig|!|255 238 234|0 180 20|1.0

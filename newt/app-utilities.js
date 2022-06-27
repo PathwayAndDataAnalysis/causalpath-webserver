@@ -50,10 +50,9 @@ appUtilities.networkIdToChiseInstance = {};
 
 appUtilities.adjustUIComponents = function (_cy) {
 	// if _cy param is not set use the active cy instance
-	var cy = _cy || appUtilities.getActiveCy();
+	const cy = _cy || appUtilities.getActiveCy();
 
 	// adjust UI components in inspector map tab
-
 	appUtilities.colorSchemeInspectorView.render();
 	appUtilities.mapTabGeneralPanel.render();
 	appUtilities.mapTabLabelPanel.render();
@@ -62,11 +61,11 @@ appUtilities.adjustUIComponents = function (_cy) {
 	// needing an appUndoActions instance here is something unexpected
 	// but since appUndoActions.refreshColorSchemeMenu is used below in an unfortunate way we need an instance of it
 	// that uses the active cy instance
-	var appUndoActionsFactory = require('./app-undo-actions-factory');
-	var appUndoActions = appUndoActionsFactory(appUtilities.getActiveCy());
+	const appUndoActionsFactory = require('./app-undo-actions-factory');
+	const appUndoActions = appUndoActionsFactory(appUtilities.getActiveCy());
 
 	// get current general properties for cy
-	var generalProperties = appUtilities.getScratch(
+	const generalProperties = appUtilities.getScratch(
 		cy,
 		'currentGeneralProperties'
 	);
@@ -79,7 +78,7 @@ appUtilities.adjustUIComponents = function (_cy) {
 	});
 
 	// set the file content by the current file name for cy
-	var fileName = appUtilities.getScratch(cy, 'currentFileName');
+	const fileName = appUtilities.getScratch(cy, 'currentFileName');
 	appUtilities.setFileContent(fileName);
 
 	// reset the status of undo redo buttons
@@ -88,7 +87,7 @@ appUtilities.adjustUIComponents = function (_cy) {
 	// adjust UI components related to mode properties
 
 	// access the mode properties of cy
-	var modeProperties = appUtilities.getScratch(cy, 'modeProperties');
+	const modeProperties = appUtilities.getScratch(cy, 'modeProperties');
 
 	// html values to select
 	var nodeVal = modeProperties.selectedNodeType.replace(/ /gi, '-'); // Html values includes '-' instead of ' '
@@ -234,13 +233,13 @@ appUtilities.getNetworkId = function (networkKey) {
 	}
 
 	// get the last index of '-'
-	var index = networkKey.lastIndexOf('-');
+	const index = networkKey.lastIndexOf('-');
 
 	// get the remaining part of string after the last occurance of '-'
-	var rem = networkKey.substring(index + 1);
+	const rem = networkKey.substring(index + 1);
 
 	// id is the integer representation of the remaining string
-	var id = parseInt(rem);
+	const id = parseInt(rem);
 
 	// return the obtained id
 	return id;
@@ -330,7 +329,7 @@ appUtilities.removeFromChiseInstances = function (key) {
 // if key param is a cy instance or tab/panel id/selector use the actual network id
 appUtilities.getChiseInstance = function (key) {
 	// if key is a cy instance go for its container id
-	var networkId = typeof key === 'object' ? key.container().id : key;
+	let networkId = typeof key === 'object' ? key.container().id : key;
 
 	// if the network id parameter is the network tab/panel id/selector get the actual network id
 	networkId = this.getNetworkId(networkId);
@@ -342,7 +341,7 @@ appUtilities.getChiseInstance = function (key) {
 // If there is just one network then network tabs should not be rendered.
 // This function is to adjust that.
 appUtilities.adjustVisibilityOfNetworkTabs = function () {
-	var tabsContainer = $('#network-tabs-list-container');
+	const tabsContainer = $('#network-tabs-list-container');
 
 	// if there is just one tab hide tabs container else show it
 	if (this.networkIdsStack.length === 1) {
@@ -671,7 +670,7 @@ appUtilities.createPhysicalNetworkComponents = function (
 
 	$('ul').on('mousedown', '#' + tabId, function (e) {
 		if (e.which == 2) {
-			var networkId = tabId.substring(17);
+			const networkId = tabId.substring(17);
 			appUtilities.setActiveNetwork(networkId);
 			appUtilities.closeActiveNetwork();
 		}
@@ -683,7 +682,8 @@ appUtilities.createPhysicalNetworkComponents = function (
 // basically get the active chise instance
 appUtilities.getActiveChiseInstance = function () {
 	// get the networkId of the active network that is at the top of networkIdsStack
-	var activeNetworkId = this.networkIdsStack[this.networkIdsStack.length - 1];
+	const activeNetworkId = this.networkIdsStack[this.networkIdsStack.length - 1];
+	console.log(`activeNetworkId: ${activeNetworkId}`);
 
 	// return the chise instance mapped for active network id that is the active networks itself
 	return this.getChiseInstance(activeNetworkId);
@@ -738,7 +738,7 @@ appUtilities.getActiveSbgnvizInstance = function () {
 
 // returns the cy instance associated with the currently active network
 appUtilities.getActiveCy = function () {
-	var chiseInstance = this.getActiveChiseInstance();
+	const chiseInstance = this.getActiveChiseInstance();
 
 	return chiseInstance ? chiseInstance.getCy() : false;
 };
@@ -868,22 +868,22 @@ appUtilities.setFileContent = function (fileName) {
 
 appUtilities.triggerLayout = function (_cy, randomize) {
 	// use parametrized cy if exists. Otherwise use the recently active cy
-	var cy = _cy || this.getActiveCy();
+	const cy = _cy || this.getActiveCy();
 
 	// access the current general properties of cy
-	var currentGeneralProperties = this.getScratch(
+	const currentGeneralProperties = this.getScratch(
 		cy,
 		'currentGeneralProperties'
 	);
 
 	// access the current layout properties of cy
-	var currentLayoutProperties = this.getScratch(
+	const currentLayoutProperties = this.getScratch(
 		cy,
 		'currentLayoutProperties'
 	);
 
 	// If 'animate-on-drawing-changes' is true then animate option must be true instead of false
-	var preferences = {
+	const preferences = {
 		animate: currentGeneralProperties.animateOnDrawingChanges
 			? true
 			: false,
@@ -902,7 +902,7 @@ appUtilities.triggerLayout = function (_cy, randomize) {
 	//  }
 
 	// access chise instance related to cy
-	var chiseInstance = appUtilities.getChiseInstance(cy);
+	const chiseInstance = appUtilities.getChiseInstance(cy);
 
 	// layout must not be undoable
 	this.layoutPropertiesView.applyLayout(preferences, true, chiseInstance);

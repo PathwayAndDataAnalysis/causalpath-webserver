@@ -1,8 +1,8 @@
-var libxmljs = require('libxmljs');
-var fs = require('fs');
-var request = require('request');
-var querystring = require('querystring');
-var nodeMailer = require('nodemailer');
+const libxmljs = require('libxmljs');
+const fs = require('fs');
+const request = require('request');
+const querystring = require('querystring');
+const nodeMailer = require('nodemailer');
 
 /*
 	functions in this file all have to take the same arguments:
@@ -15,7 +15,7 @@ exports.validateSBGNML = function (req, res) {
 	let sbgnml;
 	// passing the entire map for validation is too big to use GET request. POST should be prefered.
 	if (req.method === 'POST') {
-		var body = '';
+		let body = '';
 		req.on('data', function (data) {
 			body += data;
 			// Security: too much POST data, kill the connection!
@@ -29,7 +29,7 @@ exports.validateSBGNML = function (req, res) {
 		});
 
 		req.on('end', function () {
-			var post = querystring.parse(body);
+			const post = querystring.parse(body);
 			sbgnml = post.sbgnml;
 			executeValidate(sbgnml, res);
 		});
@@ -39,7 +39,7 @@ exports.validateSBGNML = function (req, res) {
 	}
 
 	function executeValidate(sbgnml, res) {
-		var xsdString;
+		let xsdString;
 		try {
 			xsdString = fs.readFileSync('./newt-resources/libsbgn-0.3.xsd', {
 				encoding: 'utf8',
@@ -50,7 +50,7 @@ exports.validateSBGNML = function (req, res) {
 			return;
 		}
 
-		var xsdDoc;
+		let xsdDoc;
 		try {
 			xsdDoc = libxmljs.parseXml(xsdString);
 		} catch (err) {
@@ -59,7 +59,7 @@ exports.validateSBGNML = function (req, res) {
 			return;
 		}
 
-		var xmlDoc;
+		let xmlDoc;
 		try {
 			xmlDoc = libxmljs.parseXml(sbgnml);
 		} catch (err) {
@@ -96,7 +96,7 @@ exports.validateSBGNML = function (req, res) {
  * by the application to other domains than the application's domain.
  */
 exports.testURL = function (req, res) {
-	var options = {
+	const options = {
 		url: req.query.url,
 		method: 'GET',
 		qs: req.query.qs,
@@ -109,7 +109,7 @@ exports.testURL = function (req, res) {
 };
 
 exports.sendEmail = function (req, res) {
-	var fileContent = req.body.fileContent;
+	const fileContent = req.body.fileContent;
 	let transporter = nodeMailer.createTransport({
 		host: 'smtp.gmail.com',
 		port: 465,
@@ -120,7 +120,7 @@ exports.sendEmail = function (req, res) {
 			pass: 'reportbug',
 		},
 	});
-	var attachment = fileContent !== 'no-data';
+	const attachment = fileContent !== 'no-data';
 	let mailOptions = {
 		// should be replaced with real recipient's account
 		to: 'replyto.lcsb.gitlab+minerva-core-499-3hxqgkf3oh3yq2zb9veolqjo6-issue@gmail.com',
@@ -162,7 +162,7 @@ exports.ServerRequest = function (req, res) {
 		});
 	} else {
 		//request for sending the file to be changed
-		var headers = {
+		const headers = {
 			Cookie: req.body.token,
 			'Content-Type': 'text/plain',
 		};

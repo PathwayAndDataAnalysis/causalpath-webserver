@@ -19,6 +19,8 @@ const cyPopper = require('cytoscape-popper');
 const Tippy = require('tippy.js');
 const causalityRenderer = require('./public/src/utilities/causality-cy-renderer');
 const cgfCy = require('./public/src/cgf-visualizer/cgf-cy.js');
+const appUtilities = require("./newt/app-utilities");
+const BackboneViews = require("./newt/backbone-views");
 
 app.loadViews(__dirname + '/views');
 
@@ -27,8 +29,7 @@ let docReady = false;
 app.modelManager = null;
 
 const graphChoiceEnum = {
-	JSON: 1,
-	ANALYSIS: 2,
+	JSON: 1, ANALYSIS: 2,
 	DEMO: 3,
 };
 
@@ -264,6 +265,7 @@ app.proto.unselectParameter = function (param, cnt, entryInd) {
 		}
 	}
 };
+
 /***
  * Initializes html check boxes
  * These cannot be updated directly by handlebars
@@ -414,7 +416,7 @@ app.proto.checkParameters = function () {
  * @param parameterList
  * @returns {string}
  */
-var convertParameterListToFileContent = function (parameterList) {
+const convertParameterListToFileContent = function (parameterList) {
 	let content = '';
 	parameterList.forEach(function (parameter) {
 		if (parameter.isVisible && parameter.value) {
@@ -459,8 +461,6 @@ app.proto.getEnum = function (type) {
  * @param param
  */
 app.proto.addParameterInput = function (param) {
-	// let this = this;
-
 	if (isValueMissing(param.value, null)) {
 		alert('First enter missing values for ' + param.Title);
 		return;
@@ -524,7 +524,6 @@ app.proto.updateBatchBox = function (param) {
  */
 app.proto.updateParameterVisibility = function () {
 	let parameterList = this.modelManager.getModelParameters();
-	// let this = this;
 
 	parameterList.forEach(function (param) {
 		if (param.Condition) {
@@ -575,7 +574,6 @@ app.proto.updateParameterVisibility = function () {
  * @returns {*}
  */
 app.proto.satisfiesConditions = function (op, conditions) {
-	// let this = this;
 	let results = [];
 	for (let i = 0; i < conditions.length; i++) {
 		let condition = conditions[i];
@@ -666,7 +664,6 @@ app.proto.reloadGraph = function () {
  */
 // TODO: remove or comment out?
 app.proto.loadDemoGraph = function () {
-	console.log("Display Demo Graphs Clicked");
 	const demoJson = require('./public/demo/demoJson');
 	graphChoice = graphChoiceEnum.DEMO;
 	this.model.set('_page.doc.cgfText', JSON.stringify(demoJson));
@@ -680,28 +677,25 @@ app.proto.loadDemoGraph = function () {
 };
 
 app.proto.loadSpecificDemoGraph = function (subId) {
-	// const this = this;
 	let choosenNodeId = '___samples___' + subId;
 	this.loadDemoGraphs(choosenNodeId);
 };
 
-app.proto.getFileText = function (filePath) {
+app.proto.getFileText = (filePath) => {
 	let xhttp;
 	if (window.XMLHttpRequest) {
 		xhttp = new XMLHttpRequest();
 	} else {
-		xhttp = new ActiveXObject('Microsoft.XMLHTTP');
+		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	xhttp.open('GET', filePath, false);
+	xhttp.open("GET", filePath, false);
 	xhttp.send();
 	return xhttp.response;
 };
 
 app.proto.getFileObject = function (filePath) {
-	// const this = this;
-
 	function getFileBlob(filePath) {
-		const text = this.getFileText(filePath);
+		const text = app.proto.getFileText(filePath);
 		return new Blob([text]);
 	}
 
@@ -730,8 +724,6 @@ app.proto.getFileObject = function (filePath) {
 };
 
 app.proto.loadDemoGraphs = function (choosenNodeId) {
-	// const this = this;
-
 	let notyView = new Noty({
 		type: 'information',
 		layout: 'bottom',
@@ -763,28 +755,23 @@ app.proto.loadDemoGraphs = function (choosenNodeId) {
 	let handleRequestError = (err) => {
 		notyView.close();
 		notyView = new Noty({
-			type: 'error',
-			layout: 'bottom',
-			timeout: 4500,
-			text: 'Error in reading demo folder content.',
+			type: 'error', layout: 'bottom', timeout: 4500, text: 'Error in reading demo folder content.',
 		});
 		notyView.show();
 		alert('The error message is:\n' + err);
 		throw err;
 	};
 
-	makeRequest().then((res) =>
-		handleResponse(res, afterResolve, handleRequestError, (res) =>
-			res.json()
-		)
-	);
+	makeRequest().then((res) => {
+		console.log(res)
+		handleResponse(res, afterResolve, handleRequestError, (res) => res.json())
+	});
 };
 
 /***
  * Load graph file in json format
  */
 app.proto.loadGraphFile = function (file) {
-	// const this = this;
 	graphChoice = graphChoiceEnum.JSON;
 
 	const reader = new FileReader();
@@ -844,7 +831,6 @@ app.proto.buildAndDisplayFolderTree = function (
 	choosenNodeId
 ) {
 	let notyView;
-	// let this = this;
 	let maxTextLength = 0;
 
 	let data = [];
@@ -882,19 +868,21 @@ app.proto.buildAndDisplayFolderTree = function (
 	});
 
 	let sort = function (id1, id2) {
-		var node1 = this.get_node(id1);
-		var node2 = this.get_node(id2);
+		const node1 = this.get_node(id1);
+		const node2 = this.get_node(id2);
 
-		var text1 = node1.text || '';
-		var text2 = node2.text || '';
+		const text1 = node1.text || '';
+		const text2 = node2.text || '';
 
 		return text1.localeCompare(text2, undefined, {numeric: 'true'});
 	};
 	let hierarchy = {core: {data: data}, sort, plugins: ['sort']};
 
+
 	$('#folder-tree').jstree('destroy');
 
 	$('#folder-tree').jstree(hierarchy);
+
 
 	let ftWidth = Math.min(maxTextLength + 20, 400);
 
@@ -911,6 +899,7 @@ app.proto.buildAndDisplayFolderTree = function (
 	$('#folder-tree').on('dblclick.jstree', function (e) {
 		const instance = $.jstree.reference(this);
 		let node = instance.get_node(e.target);
+		console.log(node)
 		if (isFromClient) {
 			//directly load graph
 			let file = node.data;
@@ -987,10 +976,7 @@ app.proto.buildAndDisplayFolderTree = function (
  * In visualize results from a previous analysis
  */
 app.proto.loadAnalysisFilesFromClient = function (fileList, choosenNodeId) {
-	// const this = this;
-
 	graphChoice = graphChoiceEnum.JSON;
-
 	this.buildAndDisplayFolderTree(fileList, true, choosenNodeId);
 };
 
@@ -1099,7 +1085,6 @@ app.proto.loadAnalysisDirFromServer = function (event) {
 
 		p1.then(function (content) {
 			notyView.setText('Analyzing results...Please wait.');
-
 			let q = {
 				inputFiles: fileContents,
 				room: this.room,
@@ -1297,10 +1282,8 @@ app.proto.downloadResults = function () {
 
 	let afterResolve = (fileContent) => {
 		console.log('Zip file received.');
-
 		const blob = base64ToZipBlob(fileContent);
 		saveAs(blob, this.room + '.zip');
-
 		notyView.close();
 	};
 
@@ -1350,4 +1333,31 @@ function isValueMissing(arr, testAgainst) {
 		}
 	}
 	return false;
+}
+
+app.proto.loadSampleSIF = () => {
+	$('#sif-file-input').trigger('click');
+	//
+	// appUtilities.createNewNetwork();
+	//
+	// const chiseInstance = appUtilities.getActiveChiseInstance();
+	// console.log(`chiseInstance for Demo: ${chiseInstance}`)
+
+	// // use cy instance associated with chise instance
+	// const cy = appUtilities.getActiveCy();
+	// console.log(cy)
+
+	// const file = new File([], "./demo/samples/TTPC/causative.sif")
+	//
+	// const loadFcn = function () {
+	// 	const layoutBy = function () {
+	// 		appUtilities.triggerLayout(cy, true);
+	// 	};
+	// 	console.log("Sample Result Clicked")
+	// 	chiseInstance.loadSIFFile(
+	// 		file,
+	// 		layoutBy
+	// 	);
+	// };
+	// loadFcn();
 }

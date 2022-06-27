@@ -638,16 +638,16 @@ module.exports = function () {
 		});
 
 		$('#sif-style-input').change(function () {
-			if ($(this).val() != '') {
-				var file = this.files[0];
-				var reader = new FileReader();
+			if ($(this).val() !== '') {
+				const file = this.files[0];
+				const reader = new FileReader();
 
 				reader.onload = function (e) {
 					//Get the text result of the file.
-					var text = this.result;
+					const text = this.result;
 
-					var chiseInstance = appUtilities.getActiveChiseInstance();
-					var sifStyle = sifStyleFactory();
+					const chiseInstance = appUtilities.getActiveChiseInstance();
+					const sifStyle = sifStyleFactory();
 					sifStyle(chiseInstance);
 					sifStyle.apply(text);
 				};
@@ -679,20 +679,21 @@ module.exports = function () {
 
 		// TODO: eliminate code replication in similar functions.
 		$('#sif-file-input').change(function () {
-			var chiseInstance = appUtilities.getActiveChiseInstance();
+			const chiseInstance = appUtilities.getActiveChiseInstance();
+			console.log(`chiseInstance:  ${chiseInstance}`);
 
-			// use cy instance assocated with chise instance
-			var cy = appUtilities.getActiveCy();
+			// use cy instance associated with chise instance
+			const cy = appUtilities.getActiveCy();
 
-			var loadCallbackInvalidityWarning = function () {
+			const loadCallbackInvalidityWarning = function () {
 				promptInvalidFileView.render();
 			};
 
-			if ($(this).val() != '') {
-				var file = this.files[0];
-
-				var loadFcn = function () {
-					var layoutBy = function () {
+			if ($(this).val() !== '') {
+				const file = this.files[0];
+				console.log(file)
+				const loadFcn = function () {
+					const layoutBy = function () {
 						appUtilities.triggerLayout(cy, true);
 					};
 					chiseInstance.loadSIFFile(
@@ -701,7 +702,7 @@ module.exports = function () {
 						loadCallbackInvalidityWarning
 					);
 				};
-				if (cy.elements().length != 0)
+				if (cy.elements().length !== 0)
 					promptConfirmationView.render(loadFcn);
 				else loadFcn();
 
@@ -1007,7 +1008,7 @@ module.exports = function () {
 			e.stopPropagation();
 		});
 
-		var selectorToSampleFileName = {
+		const selectorToSampleFileName = {
 			'#load-sample1': 'neuronal_muscle_signaling.nwt',
 			'#load-sample2': 'cam-camk_dependent_signaling_to_the_nucleus.nwt',
 			'#load-sample3':
@@ -1033,13 +1034,13 @@ module.exports = function () {
 			'#load-sample20': 'af_learners_card.nwt',
 		};
 
-		for (var selector in selectorToSampleFileName) {
+		for (const selector in selectorToSampleFileName) {
 			(function (selector) {
 				$(selector).click(function (e) {
 					// use active cy instance
 					var cy = appUtilities.getActiveCy();
 
-					if (cy.elements().length != 0) {
+					if (cy.elements().length !== 0) {
 						promptConfirmationView.render(function () {
 							loadSample(selectorToSampleFileName[selector]);
 						});
@@ -1052,7 +1053,7 @@ module.exports = function () {
 
 		$('#select-all').click(function (e) {
 			// use active cy instance
-			var cy = appUtilities.getActiveCy();
+			const cy = appUtilities.getActiveCy();
 
 			cy.elements().unselect();
 			cy.elements().select();
@@ -1060,7 +1061,7 @@ module.exports = function () {
 
 		$('#select-all-nodes').click(function (e) {
 			// use active cy instance
-			var cy = appUtilities.getActiveCy();
+			const cy = appUtilities.getActiveCy();
 
 			cy.elements().unselect();
 			cy.nodes().select();
@@ -1068,7 +1069,7 @@ module.exports = function () {
 
 		$('#select-all-edges').click(function (e) {
 			// use active cy instance
-			var cy = appUtilities.getActiveCy();
+			const cy = appUtilities.getActiveCy();
 
 			cy.elements().unselect();
 			cy.edges().select();
@@ -1076,7 +1077,7 @@ module.exports = function () {
 
 		$('#hide-selected, #hide-selected-icon').click(function (e) {
 			// use active cy instance
-			var cy = appUtilities.getActiveCy();
+			const cy = appUtilities.getActiveCy();
 
 			appUtilities.hideNodesSmart(cy.nodes(':selected'));
 			$('#inspector-palette-tab a').tab('show');
@@ -1084,7 +1085,7 @@ module.exports = function () {
 
 		$('#show-selected, #show-selected-icon').click(function (e) {
 			// use the active chise instance
-			var chiseInstance = appUtilities.getActiveChiseInstance();
+			const chiseInstance = appUtilities.getActiveChiseInstance();
 
 			// use cy instance associated with chise instance
 			var cy = chiseInstance.getCy();

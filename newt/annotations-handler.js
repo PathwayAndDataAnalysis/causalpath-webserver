@@ -3,13 +3,12 @@
  * validating them.
  * Annotations are attached to elements through data('annotations'), which contains a list of objects.
  */
-
-var jquery = ($ = require('jquery'));
-var AnnotationListView = require('./backbone-views').AnnotationListView;
-var Backbone = require('backbone');
+const jquery = ($ = require('jquery'));
+const AnnotationListView = require('./backbone-views').AnnotationListView;
+const Backbone = require('backbone');
 var _ = require('underscore');
 
-var ns = {};
+const ns = {};
 
 var prefixes = {
 	rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -18,8 +17,8 @@ var prefixes = {
 	sio: 'http://semanticscience.org/resource/',
 };
 
-var identifiersURL = 'http://identifiers.org/';
-var validateRESTURL = 'http://identifiers.org/rest/identifiers/validate/';
+const identifiersURL = 'http://identifiers.org/';
+const validateRESTURL = 'http://identifiers.org/rest/identifiers/validate/';
 
 ns.vocabulary = {
 	// bqmodel
@@ -373,7 +372,7 @@ ns.validateAnnotation = function (dbKey, resourceID, callback) {
 			);
 		}
 	} else {
-		var validateURL = ns.IDToValidateURL(dbKey, resourceID);
+		const validateURL = ns.IDToValidateURL(dbKey, resourceID);
 		// validate url syntax
 		$.ajax({
 			type: 'GET',
@@ -405,7 +404,7 @@ ns.validateAnnotation = function (dbKey, resourceID, callback) {
 };
 
 ns.IDToValidateURL = function (dbKey, id) {
-	var dbID = ns.dbList[dbKey].id;
+	const dbID = ns.dbList[dbKey].id;
 	return validateRESTURL + dbID + ':' + id;
 };
 
