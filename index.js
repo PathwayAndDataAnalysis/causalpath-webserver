@@ -820,6 +820,10 @@ app.proto.setGraphDescriptionText = function (text) {
 	$('#graph-description-span').text(text);
 };
 
+function deployTree(hierarchy) {
+	$('#folder-tree').jstree(hierarchy);
+}
+
 /***
  * Organizes data as a tree and displays the jstree associated with it
  * @param fileList: List of files to display
@@ -876,19 +880,28 @@ app.proto.buildAndDisplayFolderTree = function (
 
 		return text1.localeCompare(text2, undefined, {numeric: 'true'});
 	};
-	let hierarchy = {core: {data: data}, sort, plugins: ['sort']};
+
+	let hierarchy = {
+		core: {
+			animation: 0,
+			check_callback: true,
+			force_text: true,
+			data: data
+		}, sort, plugins: ['sort']
+	};
+
+	deployTree(hierarchy);
+
+	// $('#folder-tree').jstree('destroy');
+	//
+	// $('#folder-tree').jstree(hierarchy);
+	//
+	// let ftWidth = Math.min(maxTextLength + 20, 400);
+	//
+	// $('#folder-tree').width(ftWidth);
 
 
-	$('#folder-tree').jstree('destroy');
-
-	$('#folder-tree').jstree(hierarchy);
-
-
-	let ftWidth = Math.min(maxTextLength + 20, 400);
-
-	$('#folder-tree').width(ftWidth);
-
-	$('#graph-container').css({left: ftWidth + 5});
+	// $('#graph-container').css({left: ftWidth + 5});
 
 	this.showGraphContainerAndFolderTree();
 
