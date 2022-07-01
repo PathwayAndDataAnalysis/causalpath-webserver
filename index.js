@@ -35,6 +35,7 @@ const graphChoiceEnum = {
 
 let graphChoice;
 
+
 let handleResponse = (res, afterResolve, handleRequestError, getResData) => {
 	let {statusText, status, ok} = res;
 
@@ -750,6 +751,7 @@ app.proto.loadDemoGraphs = function (choosenNodeId) {
 		});
 		notyView.close();
 		this.loadAnalysisFilesFromClient(fileObjs, choosenNodeId);
+
 	};
 
 	let handleRequestError = (err) => {
@@ -820,10 +822,6 @@ app.proto.setGraphDescriptionText = function (text) {
 	$('#graph-description-span').text(text);
 };
 
-function deployTree(hierarchy) {
-	$('#folder-tree').jstree(hierarchy);
-}
-
 /***
  * Organizes data as a tree and displays the jstree associated with it
  * @param fileList: List of files to display
@@ -890,18 +888,19 @@ app.proto.buildAndDisplayFolderTree = function (
 		}, sort, plugins: ['sort']
 	};
 
-	deployTree(hierarchy);
+	let jsTreeInstance = $('#folder-tree')
+	console.log("jsTreeInstance");
+	console.log(jsTreeInstance)
 
-	// $('#folder-tree').jstree('destroy');
-	//
-	// $('#folder-tree').jstree(hierarchy);
-	//
-	// let ftWidth = Math.min(maxTextLength + 20, 400);
-	//
-	// $('#folder-tree').width(ftWidth);
+	$('#folder-tree').jstree('destroy');
+	$('#folder-tree').jstree(hierarchy);
+
+	let ftWidth = Math.min(maxTextLength + 20, 400);
+
+	$('#folder-tree').width(ftWidth);
 
 
-	// $('#graph-container').css({left: ftWidth + 5});
+	$('#graph-container').css({left: ftWidth + 5});
 
 	this.showGraphContainerAndFolderTree();
 
@@ -982,6 +981,7 @@ app.proto.buildAndDisplayFolderTree = function (
 		.bind('click.removeNoty', function () {
 			notyView.close();
 		});
+
 };
 
 /***
@@ -1232,6 +1232,7 @@ app.proto.showGraphContainer = function () {
 	$('#download-div').hide(); //this only appears after analysis is performed
 	$('#graph-options-container').addClass('display-flex');
 	$('#graph-container').show();
+	$('#graph-container').addClass('display-flex');
 	$('#folder-tree').hide();
 	$('#example-graphs-container').hide();
 
@@ -1246,6 +1247,7 @@ app.proto.showInputContainer = function () {
 	$('#input-container').show();
 	$('#example-graphs-container').show();
 	$('#graph-options-container').removeClass('display-flex');
+	$('#graph-container').removeClass('display-flex');
 	$('#graph-container').hide();
 	$('#folder-tree').hide();
 };
@@ -1261,6 +1263,7 @@ app.proto.showGraphContainerAndFolderTree = function () {
 	$('#graph-options-container').addClass('display-flex');
 	$('#graph-options-container').show();
 	$('#graph-container').show();
+	$('#graph-container').addClass('display-flex');
 	$('#folder-tree').show();
 };
 
